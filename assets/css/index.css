@@ -95,8 +95,11 @@ h2 {
 .scencs {
 	width:300px;
 	height:300px;
-	margin:165px auto 0;
-	position:relative;
+	position:fixed;
+	left:50%;
+	margin-left:-150px;
+	top:50%;
+	margin-top:-150px;
 }
 
 /* LINE FOLLOW */
