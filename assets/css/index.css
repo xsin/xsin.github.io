@@ -78,9 +78,9 @@ h2 {
 	
 	opacity:0;
 
-	-moz-animation:moveLogo 4s ease-out forwards; 
-	-webkit-animation:moveLogo 4s ease-out forwards;
-	animation:moveLogo 4s ease-out forwards;
+	-moz-animation:moveLogo 2s ease-out forwards; 
+	-webkit-animation:moveLogo 2s ease-out forwards;
+	animation:moveLogo 2s ease-out forwards;
 }
 		
 .lnk_logo:hover {
