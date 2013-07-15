@@ -22,7 +22,7 @@
 
 /* =====Sprites===== */
 .mobile_icson_store a,
-.mobile_icson_tdcode {background-image:url(gb.png);background-repeat:no-repeat;}
+.mobile_icson_tdcode {background-image:url(/icson/img/common/gb.png);background-repeat:no-repeat;}
 
         .ulike_guang_bg,
     .notice_go i,
@@ -34,7 +34,7 @@
 .daily_tit_ico,
 .slider_go_prev,
 .slider_go_next,
-.customer_ico {background-image:url(index.png);background-repeat:no-repeat;}
+.customer_ico {background-image:url(/icson/img/index/index.png);background-repeat:no-repeat;}
 
 /* =====Private tiny module====== */
 h3,
@@ -218,7 +218,7 @@ img {display:block;}
 
     /* 充值 */
     .chong_frm {clear:both;height:219px;border-right:1px solid #ccc;border-bottom:1px solid #ccc;overflow:hidden;}
-    .chong_frm iframe {width:199px;height:219px;background-color:#ccc;}
+    .chong_frm iframe {width:199px;height:219px;}
 
     /* 手机易迅 */
     .mobile_icson {height:109px;padding-left:15px;border-right:1px solid #ccc;border-bottom:1px solid #ccc;}
@@ -358,6 +358,7 @@ img {display:block;}
 
         /* daily goods */
         .daily .mod_goods_w120 {padding-left:90px; height:auto!important; min-height:80px; height:80px;}
+        .daily .mod_goods_img {margin-top:20px;}
         .daily .mod_goods_img,
         .daily .mod_goods_img img {width:80px;height:80px;}
 
