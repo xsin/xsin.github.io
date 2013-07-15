@@ -22,7 +22,7 @@
 
 /* =====Sprites===== */
 .mobile_icson_store a,
-.mobile_icson_tdcode {background-image:url(/icson/img/common/gb.png);background-repeat:no-repeat;}
+.mobile_icson_tdcode {background-image:url(gb.png);background-repeat:no-repeat;}
 
         .ulike_guang_bg,
     .notice_go i,
@@ -34,7 +34,7 @@
 .daily_tit_ico,
 .slider_go_prev,
 .slider_go_next,
-.customer_ico {background-image:url(/icson/img/index/index.png);background-repeat:no-repeat;}
+.customer_ico {background-image:url(index.png);background-repeat:no-repeat;}
 
 /* =====Private tiny module====== */
 h3,
