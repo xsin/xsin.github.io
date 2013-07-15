@@ -44,11 +44,11 @@
 .ic_header {height:100px;background-color:#1D7AD9;}
 
     /* logo */
-    .mod_logo {float:left;width:259px;height:50px;margin-top:25px;border-right:1px solid #0D67B3;#display:inline;margin-right:10px;overflow:hidden;border-right:1px solid #0D67B3;}
+    .mod_logo {float:left;width:269px;height:35px;margin-top:35px;border-right:1px solid #0D67B3;#display:inline;margin-right:10px;overflow:hidden;border-right:1px solid #0D67B3;}
     .mod_logo a {display:block;height:100%;text-indent:-9999px;}
 
     /* sublogo area  */
-    .mod_city {float:left;margin-top:30px;}
+    .mod_city {float:left;margin-top:35px;}
     .mod_city_prom {clear:both;color:#FEE602;font-weight:700;}
 
     /* region choose */
