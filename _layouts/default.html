@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html><!-- manifest="cache.manifest"-->
+<head>
+    <meta charset="utf-8" />
+    <meta name="author" content="{{ site.author }}" />
+    <title>{{ page.title }} | {{ site.author }}</title>
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="/feed/" rel="alternate" title="{{ site.author }}" type="application/atom+xml" />
+    <link rel="stylesheet" href="{{ site.url }}/assets/css/style.css"/>
+    <link rel="prerender" href="http://oxox.io/jq/"/>
+</head>
+<body>
+    <div id="container">
+        <div id="main" role="main">
+            <header>
+                <h1>{{ page.title }}</h1>
+            </header>
+            <nav id="nav" class="nav">
+                <a title="home page" class="current" href="/"><i>&#9730;</i>Home</a>
+                <a title="categories" class="" href="/categories/"><i>&#9730;</i>Cates</a>
+                <a title="tags" class="" href="/tags/"><i>&#9730;</i>Tags</a>
+                <a title="archives" class="" href="/archive/"><i>&#9730;</i>Archives</a>
+                <a title="about" class="" href="/about/"><i>&#9730;</i>About</a>
+                <ul class="favnav">
+                    <a href="http://oxox.io/jq/" title="JQuery plugins" target="_blank">JQ</a>
+                    <a href="http://oxox.io/c3h5/" title="CSS3 and HTML5" target="_blank">C3H5</a>
+                    <a href="http://oxox.io/tools/" target="_blank">Tools</a>
+                </ul>
+            </nav>
+            <article class="content">
+            {{ content }}
+            </article>
+        </div>
+
+        <footer>
+            <p class="copyright">Copyright oxox - {{site.time | date:"%Y"}} by <a href="/about/">Team OX</a></small></p>
+        </footer>
+    </div>
+    {% include scripts.md %}
+</body>
+</html>

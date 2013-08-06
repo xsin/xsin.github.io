@@ -1,0 +1,12 @@
+{
+  "family": "ox",
+  "name": "common",
+  "version": "1.0.0",
+
+  "spm": {
+    "alias": {
+      "jquery": "jquery"
+    },
+    "output": ["main.js","about.js","cate.js", "style.css"]
+  }
+}
