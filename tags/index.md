@@ -1,5 +1,5 @@
 ---
-title: Tags
+title: OX Tags
 layout: page
 ---
 

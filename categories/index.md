@@ -1,5 +1,5 @@
 ---
-title: Categories
+title: OX Categories
 layout: page
 ---
 
