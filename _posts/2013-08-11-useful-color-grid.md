@@ -5,8 +5,13 @@ date:   2013-08-11 17:08:02
 categories: 
 - Notes 
 tags:
-- webdesign
-- css
+- Webdesign
+- Css
+style: |
+    .color_grid{border:0;width:100%;font-size:0.85em;line-height:16px;}
+    .color_grid td{width:25%;}
+    .color_grid td span{display:block;padding:10px;color:#fff;text-transform:uppercase;}
+    .color_grid td span.color_grid_ctxt1{color:#000;}
 
 ---
 

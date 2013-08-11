@@ -8,6 +8,11 @@
     <link href="/feed/" rel="alternate" title="{{ site.author }}" type="application/atom+xml" />
     <link rel="stylesheet" href="{{ site.url }}/assets/css/style.css"/>
     <link rel="prerender" href="http://oxox.io/jq/"/>
+    {% if page.style %}
+    <style type="text/css">
+        {{ page.style }}
+    </style>
+    {% endif %}
 </head>
 <body>
     <div id="container">

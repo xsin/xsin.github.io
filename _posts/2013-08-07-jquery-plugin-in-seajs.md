@@ -1,11 +1,11 @@
 ---
 layout: post
-title:  "seajs中使用jquery插件"
+title:  "SeaJs中使用jquery插件"
 date:   2013-08-07 00:16:02
 categories: 
 - Notes 
 tags:
-- seajs
+- SeaJs
 
 ---
 

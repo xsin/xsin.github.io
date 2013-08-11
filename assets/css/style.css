@@ -199,8 +199,3 @@ color: #2e9afe;
 #ds-thread #ds-reset .ds-login-buttons .ds-more-services{color:#2e9afe !important;}
 #ds-thread #ds-reset a.ds-unread-comments-count{background-color:#2e9afe;}
 #ds-thread #ds-reset .ds-sort a.ds-current, #ds-thread #ds-reset .ds-sort a:active{color:#2e9afe !important;}
-
-.color_grid{border:0;width:100%;font-size:0.85em;line-height:16px;}
-.color_grid td{width:25%;}
-.color_grid td span{display:block;padding:10px;color:#fff;text-transform:uppercase;}
-.color_grid td span.color_grid_ctxt1{color:#000;}
