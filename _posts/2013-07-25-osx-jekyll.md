@@ -7,7 +7,7 @@ categories:
 tags:
 - Jekyll
 - GitHub
-- OS X
+- OSX
 
 ---
 

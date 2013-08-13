@@ -3,3 +3,4 @@ permalink: /:categories/:title/
 author: oxox.io
 safe: true
 paginate: 16
+exclude: ["less"]
