@@ -12,11 +12,17 @@ tags:
 
     “离娄之明，公输子之巧，不以规矩，不能成方圆。” -- 战国·邹·孟轲《孟子·离娄上》
 
-基于[DRY](http://en.wikipedia.org/wiki/Don't_repeat_yourself)原则，本文接下来在[活动重构规范Part1-活动页面的基本框架](docs/yixun-event-spec-part1/)的基础上，将活动页面通用的html代码和css代码整理成模板。
+基于[DRY](http://en.wikipedia.org/wiki/Don't_repeat_yourself)原则，本文接下来在[活动重构规范Part1-活动页面的基本框架](/docs/yixun-event-spec-part1/)的基础上，将活动页面通用的html代码和css代码整理成模板。
 
 ### 模板位置：
 
-    {活动svn url}/{html|css}/event/yydd_xx/index.html
+* 走运营平台发布的活动模板
+
+    > {活动svn url}/2013/yydd_xx/
+
+* 正常发布的活动
+
+    > {活动svn url}/{html|css}/event/yydd_xx/index.html
 
 
 ### 为什么需要模板?
@@ -325,6 +331,7 @@ ol.act_list,ol.act_list li{
     这个不解释了，看看类名就知道怎么用。
 
 {% highlight css %}
+.act_clear{clear:both;}
 .act_hide{display: none !important;}
 .act_hidden{visibility: hidden !important;}
 .act_show{display: block !important;}
@@ -336,4 +343,4 @@ ol.act_list,ol.act_list li{
 
 ### Part3预告
 
-> [如何使用模板快速制作活动？](docs/yixun-event-spec-part1/)
+> [活动重构规范Part3-如何使用模板快速制作活动](/docs/yixun-event-spec-part3/)

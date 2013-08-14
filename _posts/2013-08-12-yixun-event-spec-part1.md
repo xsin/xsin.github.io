@@ -29,7 +29,6 @@ tags:
 ### 页面基本框架代码
 
 {% highlight html %}
-
 <!--S 活动主体内容-->
 <div class="act_wrapper">
     <!--内容内嵌层，可选，有时候做背景图效果需要用到-->
@@ -80,5 +79,8 @@ tags:
     </div>
 </div>
 <!--E 活动主体内容-->
-
 {% endhighlight html %}
+
+### Part2预告
+
+> [活动重构规范Part2-活动页面模板介绍](/docs/yixun-event-spec-part2/)
