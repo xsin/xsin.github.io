@@ -1,1 +1,15 @@
-.d_mod_imgvtop img{vertical-align: top !important;}
+.xdata_menu{
+    background: #ddd;
+    width:100px;
+    border:1px solid #efefef;
+    position: fixed;
+    right:0;
+    bottom: 0;
+}
+.xdata_menu a{
+    width: 99px;
+    height: 29px;
+    font: 700 12px/29px Arial;
+    color: #666;
+    display: inline-block;
+}
