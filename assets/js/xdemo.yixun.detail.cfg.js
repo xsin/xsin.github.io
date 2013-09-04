@@ -6,5 +6,5 @@
   "matches": ["http://*yixun.com/*"],
   "ename": "ecd.yixun.detail",
   "author": "levinhuang",
-  "descrition": "易迅商详体验优化"
+  "descrition": "易迅商详体验优化哇咔咔！"
 }
