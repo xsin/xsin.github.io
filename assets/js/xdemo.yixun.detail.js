@@ -87,6 +87,7 @@ G.ABTest.randomExec([30,70],[function(){
 },function(){
     //首页：70%显示第二天抢购
     $('#j_daily_hd,.daily_hd_next').hide().eq(1).fadeIn();
+    $('.daily_goods').hide().eq(1).fadeIn();
     //商详：70%边栏在左边
     $('.xcontent_row4').removeClass('grid_c2b').addClass('grid_c2a');
 }]);
