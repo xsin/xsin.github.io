@@ -1,18 +1,86 @@
+.xdata_c1{
+    color:#F70;
+}
+.xdata_c2{
+    color:#1d7ad9;
+}
+.xdata_loading {
+    display: inline-block;
+    height:20px;
+    width:20px;
+    margin:0px auto;
+    position:relative;
+    -webkit-animation: xdataRotation .6s infinite linear;
+    -moz-animation: xdataRotation .6s infinite linear;
+    -o-animation: xdataRotation .6s infinite linear;
+    animation: xdataRotation .6s infinite linear;
+    border-left:2px solid rgba(0,174,239,.15);
+    border-right:2px solid rgba(0,174,239,.15);
+    border-bottom:2px solid rgba(0,174,239,.15);
+    border-top:2px solid rgba(0,174,239,.8);
+    border-radius:100%;
+}
+
+@-webkit-keyframes xdataRotation {
+    from {-webkit-transform: rotate(0deg);}
+    to {-webkit-transform: rotate(359deg);}
+}
+@-moz-keyframes xdataRotation {
+    from {-moz-transform: rotate(0deg);}
+    to {-moz-transform: rotate(359deg);}
+}
+@-o-keyframes xdataRotation {
+    from {-o-transform: rotate(0deg);}
+    to {-o-transform: rotate(359deg);}
+}
+@keyframes xdataRotation {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(359deg);}
+}
+
 .xdata_menu{
     background: #333;
     width:90px;
     border:1px solid #efefef;
     position: fixed;
-    right:0;
+    right:-88px;
     bottom: 120px;
     padding:5px;
     z-index: 10000001;
-}
-.xdata_menu a{
-    width:90px;
-    height: 29px;
-    font: 700 12px/29px Arial;
-    color: #FFF;
-    display: inline-block;
+    opacity: 0.8;
     text-align: center;
-}
+    transition:all .4s ease-out;
+ }
+    .xdata_menu li{height:29px;line-height: 29px;}
+    .xdata_menu .xdata_loading{position: absolute;top:0;left:50%;margin-left: -10px;}
+    .xdata_menu_rock{
+        right:0;
+        opacity: 1;
+    }
+    .xdata_menulist a{
+        width:90px;
+        height: 29px;
+        font: 700 12px/29px Arial;
+        color: #FFF;
+        display: inline-block;
+    }
+    .xdata_menu_close{
+        position: absolute;
+        left: -5px;
+        top: -5px;
+        width: 18px;
+        height: 18px;
+        font: 16px/18px Simsun;
+        text-align: center;
+        color: #fdfdfd;
+        background: #333;
+        border-radius: 50%;
+        visibility: hidden;
+        opacity: 0;
+        transition:all .2s ease-out;
+    }
+    .xdata_menu_close:hover{text-decoration: none;}
+    .xdata_menu:hover .xdata_menu_close{
+        visibility: visible;
+        opacity: 1;
+    }

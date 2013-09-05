@@ -1,33 +1,194 @@
 /* S J */
 var J=function(e){return function(t){var n=typeof t;if(n==="undefined"){return J}if(n==="string"){return J[t]}if(n==="function"){var r={_:{}};t.call(J,e,r._,r);if(!r.id){alert("A J module require a public id property!");return}if(J[r.id]){alert('A J module with id "'+r.id+'" exists!');return}J[r.id]=r;r=null}}}(jQuery);(function(e){var t={},n={};t.onLoaded=function(){for(var e in J){if(e==="init"||e==="onLoad"){continue}e=J[e];if(t.isFunc(e._onLoad)){e._onLoad.call(e);delete e._onLoad}if(e._){t.loadSub(e._);delete e._}}};t.initEvents=function(n){e(document).ready(t.onLoaded)};t.isFunc=function(e){return e&&typeof e==="function"};t.initSub=function(e){for(var n in e){n=e[n];if(!n){continue}if(t.isFunc(n._init)){n._init.call(n);delete n._init}for(var r in n){r=n[r];if(!r)continue;if(t.isFunc(r._init)){r._init.call(r);delete r._init}}}};t.loadSub=function(e){for(var n in e){n=e[n];if(!n){continue}if(t.isFunc(n._onLoad)){n._onLoad.call(n);delete n._onLoad}for(var r in n){r=n[r];if(!r)continue;if(t.isFunc(r._onLoad)){r._onLoad.call(r);delete r._onLoad}}}};n.init=function(n){J.opts=t.opts=n=e.extend(n||{},J.opts||{});for(var r in J){if(r==="init"||r==="onLoad"){continue}r=J[r];if(t.isFunc(r._init)){r._init.call(r);delete r._init}if(r._){t.initSub(r._)}}t.initEvents()};n.onLoad=t.onLoaded;for(var r in n){if(!r){continue}J[r]=n[r]}})(window["jQuery"]);
+(function(e){e.fn.onTransitioned=function(t){return this.each(function(){if(t===false){e(this).unbind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd");return}e(this).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd",t)})}})(jQuery);
+J.heredoc = function(fn){return (fn.toString().split('\n').slice(1,-1).join('\n') + '\n');};
+J.log = function(obj){(window['console']||{log:function(x){alert(x);}}).log(obj);};
+J.$win = $(window);
+J.$body=$('body');
 /* E J */
+
+/* S 数据 */
+J(function($,p,pub){
+    pub.id="data";
+    var uid = null,
+        pid = window['yPageId']||'1000',
+        wsid=null,
+        areaid=null,
+        today = new Date(),
+        ck = (document.cookie||''),
+        isParamsReady = false;
+    try{
+        uid = ck.split('yx_uid=')[1].split(';')[0];
+        wsid=ck.split('wsid=')[1].split(';')[0];
+        areaid=ck.split('areasInfo=')[1].split(';')[0];
+        isParamsReady=true;
+    }catch(e){
+        J.log('获取统计参数失败！'+e.toString());
+    };
+    var clickStreamData = function(_type,_params,_cbk){
+        if (!isParamsReady) {
+            _cbk('获取统计参数失败！');
+            return;
+        };
+        $.ajax({
+            type: "GET",
+            url: 'http://statistic.yixun.com/json.php?mod=stat&act='+_type,
+            data: _params,
+            dataType: 'json'
+        }).fail(function(jqXHR,txtStatus,err){
+            _cbk(_type+':'+err);
+        }).done(function(data,txtStatus,jqXHR){
+            _cbk(null,data);
+        });
+    };
+    //获取日期数据
+    pub.getDateTimeStr=function(dObj,ignoreHMS){
+        var o =[dObj.getFullYear()+'-',(dObj.getMonth()+1)],
+        format = function(i){
+            return (i<10?('0'+i):i);
+        };
+        o[1]=format(o[1])+'-';
+        o.push(format(dObj.getDate()));
+
+        if(ignoreHMS){
+            o.push(" 00:00:00");
+        }else{
+            o.push(' ');
+            tempObj = dObj.getHours();
+            o.push(format(dObj.getHours())+':');
+            o.push(format(dObj.getMinutes())+':');
+            o.push(format(dObj.getSeconds()));
+        }
+
+        return o.join('');
+
+    };
+    //获取主数据
+    pub.getKeyData = function(_params,cbk){
+        _params = $.extend({},{
+            uid:uid, 
+            start_date:pub.getDateTimeStr(today,true), 
+            end_date:pub.getDateTimeStr(today), 
+            date_type:"today", 
+            page_id:pid, 
+            warehouse_id:wsid, 
+            areasInfo:areaid
+        },_params||{});
+        clickStreamData('PageKeyData',_params,cbk);
+    };
+    //获取点击数据
+    pub.getClickData = function(_params,cbk){
+        _params = $.extend({},{
+            uid:uid, 
+            start_date:pub.getDateTimeStr(today,true), 
+            end_date:pub.getDateTimeStr(today), 
+            date_type:"today", 
+            page_id:pid, 
+            warehouse_id:wsid, 
+            areasInfo:areaid
+        },_params||{});
+        clickStreamData('PageClickData',_params,cbk);
+    };
+    //获取指定YTag的数据
+    pub.getRangeClickData = function(_params,cbk){
+        _params = $.extend({},{
+            uid:uid, 
+            start_date:pub.getDateTimeStr(today,true), 
+            end_date:pub.getDateTimeStr(today), 
+            date_type:"today", 
+            page_id:pid, 
+            warehouse_id:wsid, 
+            areasInfo:areaid,
+            page_tag_ids:"-1"
+        },_params||{});
+        clickStreamData('DragClickData',_params,cbk);
+    };
+
+    pub.EVT = {
+        'InitKeyData':'onXDataInitKeyData',
+        'InitClickData':'onXDataInitClickData'
+    };
+
+    pub.init = function(){
+        //获取主数据和点击数据
+        pub.getKeyData(null,function(err,data){
+            pub["InitKeyData"] = data;
+            J.$win.trigger(pub.EVT.InitKeyData,[err,data]);
+            if(!err){
+                pub.getClickData(null,function(err1,data1){
+                    pub['InitClickData']=data1;
+                    J.$win.trigger(pub.EVT.InitClickData,[err1,data1]);
+                });
+            }
+        });
+    };
+
+
+});
+/* E 数据 */
 
 /* S 菜单 */
 J(function($,p,pub){
     pub.id="xdata_menu";
-    var $body = $('body');
+    var $body = J.$body;
     //menu
     p.menu={
-        tpl:'<div id="xdataMenu" class="xdata_menu">'+
-                '<ul>'+
-                    '<li><a href="javascript:;" class="xdata_lnk1" rel="1">总热区图</a></li>'+
-                    '<li><a href="javascript:;" class="xdata_lnk2" rel="2">模块数据</a></li>'+
-                '</ul>'+
-            '</div>',
+        $d:null,
+        tpl0:'<div id="xdataMenu" class="xdata_menu xdata_menu_rock"><strong class="xdata_c1">C</strong>lick<strong class="xdata_c2">S</strong>tream<span class="xdata_loading"></span></div>',
+        tpl1:J.heredoc(function(){/*
+            <a id="xdataMenuClose" class="xdata_menu_close" href="javascript:;">&times;</a>
+            <ul class="xdata_menulist">
+                <li><a href="javascript:;" class="xdata_lnk1" rel="1"><strong class="xdata_c1">热</strong>区数据</a></li>
+                <li><a href="javascript:;" class="xdata_lnk1" rel="2"><strong class="xdata_c2">模</strong>块数据</a></li>
+            </ul>
+        */}),
         _init:function(){
-            $body.append(this.tpl);
+            $body.append(this.tpl0);
+            this.$d = $('#xdataMenu');
             this._initEvts();
         },
         _initEvts:function(){
-            $('#xdataMenu a').bind('click.xdata',function(e){
-                $body.trigger('onXDataMenuClick',[{
-                    rel:this.rel
-                }]);
+            J.$win.bind(J.data.EVT.InitKeyData,function(e,err,data){
+                if(err){
+                    p.menu.showError(err);
+                    return;
+                }
+            }).bind(J.data.EVT.InitClickData,function(e,err,data){
+                if (err) {
+                    p.menu.showError(err);
+                    return;
+                };
+                //这里主数据和点击数据已经拿到
+                p.menu.onDataReady();
             });
+        },
+        onDataReady:function(){
+            this.$d.removeClass('xdata_menu_rock').onTransitioned(function(){
+                this.innerHTML = p.menu.tpl1;
+                $('#xdataMenu a').bind('click.xdata',function(e){
+                    $body.trigger('onXDataMenuClick',[{
+                        rel:this.rel
+                    }]);
+                });
+                p.menu.$d.onTransitioned(false).addClass('xdata_menu_rock');
+            });
+        },
+        showError:function(txt){
+            this.$d.html('<span class="xdata_err">'+txt.toString()+'</span>');
+        },
+        show:function(){
+            this.$d.addClass('xdata_menu_rock');
+        },
+        hide:function(){
+            this.$d.removeClass('xdata_menu_rock');
         }
     };
 });
 /* E 菜单 */
+
+/* S SingleYTag */
+
+/* E SingleYTag */
 
 /* S 热区 */
 J(function($,p,pub){
@@ -57,6 +218,8 @@ J(function($,p,pub){
             canvasObj.style.top=offset.top+'px';
         },
         getData:function(){
+
+
 
             //max-坐标的最大点击数
             //data-坐标点击数据。
@@ -158,3 +321,4 @@ J(function($,p,pub){
 /* E 模块运营数据 */
 
 J.init();
+J.data.init();
