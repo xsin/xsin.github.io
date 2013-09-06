@@ -37,7 +37,22 @@
     from {transform: rotate(0deg);}
     to {transform: rotate(359deg);}
 }
-
+.xdata_tip{border-color:#999;background-color: #333;color:#999;}
+.xdata_logo{
+    -webkit-transform:rotate(90deg);
+    text-transform: uppercase;
+    writing-mode:tb-rl;
+    width:78px;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: -50%;
+    margin-left: 18px;
+    margin-top: -34px;
+    color:#aaa;
+}
+.xdata_logo em{color:#999;color:#aaa;}
+.xdata_menu_rock .xdata_logo{display: none;}
 .xdata_menu{
     background: #333;
     width:90px;
@@ -46,7 +61,7 @@
     right:-88px;
     bottom: 120px;
     padding:5px;
-    z-index: 10000001;
+    z-index: 10000;
     opacity: 0.8;
     text-align: center;
     transition:all .4s ease-out;
@@ -70,17 +85,18 @@
         top: -5px;
         width: 18px;
         height: 18px;
-        font: 16px/18px Simsun;
+        font: 16px/18px Arial;
         text-align: center;
         color: #fdfdfd;
         background: #333;
         border-radius: 50%;
         visibility: hidden;
-        opacity: 0;
-        transition:all .2s ease-out;
+        -webkit-transform:rotate(0);
     }
     .xdata_menu_close:hover{text-decoration: none;}
     .xdata_menu:hover .xdata_menu_close{
         visibility: visible;
-        opacity: 1;
+    }
+    .xdata_menu_rock .xdata_menu_close{
+        -webkit-transform:rotate(45deg);
     }
