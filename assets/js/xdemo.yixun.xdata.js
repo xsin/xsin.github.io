@@ -14,419 +14,14 @@ this._partialCache||!this._loadPartial||this.compilePartial(a,this._loadPartial(
 "string"===typeof b&&(b=b.split(v));if(2!==b.length)throw Error("Invalid tags: "+b.join(", "));for(var c=w(b),g=new n(a),e=[],k=[],f=[],h=!1,p=!1,s,l,r,q;!g.eos();){s=g.pos;if(r=g.scanUntil(c[0])){q=0;for(var u=r.length;q<u;++q)if(l=r.charAt(q),D.call(A,l)?p=!0:f.push(k.length),k.push(["text",l,s,s+1]),s+=1,"\n"==l){if(h&&!p)for(;f.length;)delete k[f.pop()];else f=[];p=h=!1}}if(!g.scan(c[0]))break;h=!0;l=g.scan(C)||"name";g.scan(x);"="===l?(r=g.scanUntil(z),g.scan(z),g.scanUntil(c[1])):"{"===l?(r=
 g.scanUntil(RegExp("\\s*"+m("}"+b[1]))),g.scan(B),g.scanUntil(c[1]),l="&"):r=g.scanUntil(c[1]);if(!g.scan(c[1]))throw Error("Unclosed tag at "+g.pos);q=[l,r,s,g.pos];k.push(q);if("#"===l||"^"===l)e.push(q);else if("/"===l){if(0===e.length)throw Error('Unopened section "'+r+'" at '+s);l=e.pop();if(l[1]!==r)throw Error('Unclosed section "'+l[1]+'" at '+s);}else if("name"===l||"{"===l||"&"===l)p=!0;else if("="===l){b=r.split(v);if(2!==b.length)throw Error("Invalid tags at "+s+": "+b.join(", "));c=w(b)}}if(l=
 e.pop())throw Error('Unclosed section "'+l[1]+'" at '+g.pos);for(var c=k,g=[],t,k=0,f=c.length;k<f;++k)if(e=c[k])"text"===e[0]&&t&&"text"===t[0]?(t[1]+=e[1],t[3]=e[3]):(t=e,g.push(e));t=g;g=c=[];e=[];f=0;for(h=t.length;f<h;++f)switch(k=t[f],k[0]){case "#":case "^":e.push(k);g.push(k);g=k[4]=[];break;case "/":e.pop()[5]=k[2];g=0<e.length?e[e.length-1][4]:c;break;default:g.push(k)}return c};d.escape=function(a){return String(a).replace(/[&<>"'\/]/g,function(a){return F[a]})};var u=new p;d.clearCache=
-function(){return u.clearCache()};d.compile=function(a,b){return u.compile(a,b)};d.compilePartial=function(a,b,c){return u.compilePartial(a,b,c)};d.compileTokens=function(a,b){return u.compileTokens(a,b)};d.render=function(a,b,c){return u.render(a,b,c)};d.to_html=function(a,b,c,g){a=d.render(a,b,c);if("function"===typeof g)g(a);else return a}});
-
-/**
- * 一个提示浮层的jQuery插件，能够动态计算提示或浮层的位置
- * @author levin
- * @version 1.0.0
- * @class jQuery.oxtip
- * @static
- */
-(function($){
-
-    var $doc = $(document),
-        $win = $(window);
-
-    var util = {
-        winWidth:$win.width(),
-        winHeight:$win.height(),
-        init:function(){
-            $win.bind('resize.oxtip',function(e){
-                util.winWidth = $win.width();
-                util.winHeight = $win.height();
-            });
-        }
-    };
-
-    util.init();
-
-    /**
-     * oxtip插件入口方法
-     * @method jQuery.fn.oxtip
-     * @param {Object} opts 配置对象，具体各个配置属性请参考jQuery.fn.oxtip.defaults
-     * @example
-            $('#test').oxtip({oxtiptrigger:'click.oxtip'});
-     */
-    $.fn.oxtip = function(opts) {
-
-        /**
-         * Internal core class for oxtip
-         * @class model
-         * @constructor
-         * @param {Object} $d jquery dom object for the oxtip
-         * @param {Object} opts0 configuration options
-         */
-        var model = function ($d,opts0) {
-            /**
-             * oxtip's trigger object
-             * @property $trigger
-             * @type Object
-             */
-            this.$trigger = $d;
-            /**
-             * oxtip's jquery data
-             * @property data
-             * type Object
-             */
-            this.data = $d.data();
-            /**
-             * oxtip's configuration object
-             * @property opts
-             * @type Object
-             * @default jQuery.fn.oxtip.defaults
-             */
-            this.opts = $.extend({},opts0,this.data||{});
-            /**
-             * oxtip's jquery dom object
-             * @property $tip
-             * @type Object
-             */
-            this.$tip = $(this.data.oxtipid);
-            /**
-             * oxtip's arrow object
-             * @property $arrow
-             * @type Object
-             */
-            this.$arrow = this.$tip.find(this.opts.oxtiparrow);
-
-            /**
-             * trigger's offset
-             * @property offset0
-             * @type Object
-             */
-            this.offset0 = null;
-            /**
-             * tip's offset
-             * @property offset
-             * @type Object
-             */
-            this.offset=null;
-
-            this.autoHideTimer=null;
-            
-            this._init();
-        };
-        model.prototype = {
-            _init: function () {
-                if(this.$tip.length===0){
-                    return;
-                }
-                this._initItems();
-                this._initEvt();
-            },
-            _initEvt:function(){
-                var me = this;
-
-                this.$trigger.bind(this.opts.oxtiptrigger,function(e){
-                    me._onTrigger();
-                    return false;
-                });
-
-                if (this.opts.oxtipautohide) {
-                    this.$trigger.bind('mouseleave.oxtip',function(e){
-                        me.hide();
-                    });
-                    this.$tip.bind('mouseleave.oxtip',function(e){
-                        me.hide();
-                    }).bind('mouseenter.oxtip',function(e){
-                        clearTimeout(me.autoHideTimer);
-                    });
-                };
-
-                $win.bind('resize.oxtip',function(e){
-                    me._onResize();
-                });
-
-            },
-            _onTrigger:function(){
-            
-                if(this.isTipVisible()&&this.opts.skipVisibleTip){
-                    return;
-                };
-                this.show();
-            },
-            _onResize:function(){
-                this.offset0=null;
-                this.offset=null;
-                if(this.isTipVisible()){
-                    this.updateOffset();
-                }
-            },
-            /**
-             * 更新提示的位置数据
-             * @method updateOffset
-             */
-            updateOffset:function(){
-                this.getTipOffset();
-                this.$tip.css(this.offset);
-                this.$arrow.css(this.arrowOffset);
-            },
-            /**
-             * 隐藏提示
-             * @method hide
-             */
-            hide:function(){
-                clearTimeout(this.autoHideTimer);
-                var me = this;
-                this.autoHideTimer = setTimeout(function(){
-                    me.$tip.hide();
-                },this.opts.oxtipautohidedelay);
-            },
-            /**
-             * 显示提示
-             * @method show
-             */
-            show:function(){
-                clearTimeout(this.autoHideTimer);
-                this.updateOffset();
-                this.$tip.show();
-            },
-            /**
-             * 提示是否可见
-             * @method isTipVisible
-             */
-            isTipVisible:function(){
-                return ( !this.$tip.is(":hidden") );
-            },
-            /**
-             * 获取提示触发元素相对于body的偏移值
-             * @method getTriggerOffset
-             * @return {Object} 相对于body的偏移值
-             */
-            getTriggerOffset:function(){
-                //位置已缓存
-                if(this.offset0!==null){
-                    return this.offset0;
-                }
-                //计算位置
-                this.offset0 = this.$trigger.offset();
-                return this.offset0;
-            },
-            /**
-             * 获取提示相对于body的偏移值
-             * @method getTipOffset
-             * @return {Object} 相对于body的偏移值
-             */
-            getTipOffset:function(){
-                //位置已缓存
-                if(this.offset!==null){
-                    return this.offset;
-                }
-
-                this.getTriggerOffset();
-                this.offset = {
-                    position:'absolute',
-                    zIndex:this.opts.oxtipindex
-                };
-                this.arrowOffset = {};
-                //计算left
-                if(this.isBeyondRight()&&this.isBeyondLeft()){
-                    //居中
-                    this.offset.left = this.offset0.left - this.tipWidth/2+this.triggerWidth/2;
-                    this.arrowOffset.left = this.tipWidth/2-this.arrowWidth/2;
-                }else if(this.isBeyondRight()){
-                    this.offset.left = this.offset0.left - this.tipWidth+this.triggerWidth;
-                    this.arrowOffset.left = this.tipWidth-this.triggerWidth/2;
-                }else{
-                    this.offset.left = this.offset0.left;
-                    this.arrowOffset.left = this.triggerWidth/2;
-                }
-                //箭头left值修正
-                if( (this.arrowOffset.left+this.arrowWidth) > this.tipWidth ){
-                    this.arrowOffset.left = this.tipWidth-this.arrowWidth;
-                }else if(this.arrowOffset.left<0){
-                    this.arrowOffset.left = 0;
-                }
-                //计算top
-                this.$arrow.removeClass(this.opts.oxtiparrow1+' '+this.opts.oxtiparrow2)
-                    .addClass(this.opts.oxtiparrow1);
-                this.offset.top = this.offset0.top + (this.opts.oxtipmargin||this.triggerHeight)+this.arrowHeight;
-                if(this.isBeyondBottom()){
-                    this.offset.top = this.offset0.top - this.tipHeight - this.arrowHeight;
-                    //使用下箭头
-                    this.$arrow.removeClass(this.opts.oxtiparrow1)
-                    .addClass(this.opts.oxtiparrow2);
-                }
-
-                return this.offset;
-            },
-            /**
-             * 提示是否超出了右窗口
-             * @method isBeyondRight
-             * @return {Boolean}
-             */
-            isBeyondRight:function(){
-                if( (this.tipWidth+this.offset0.left) > util.winWidth ){
-                    return true;
-                }
-                return false;
-            },
-            /**
-             * 提示是否超出了左窗口
-             * @method isBeyondLeft
-             * @return {Boolean}
-             */
-            isBeyondLeft:function(){
-                if( (this.offset0.left - this.tipWidth) <0 ){
-                    return true;
-                }
-                return false;
-            },
-            /**
-             * 提示是否超出了上窗口
-             * @method isBeyondTop
-             * @return {Boolean}
-             */
-            isBeyondTop:function(){
-                if( (this.offset0.top - this.tipHeight) <0 ){
-                    return true;
-                }
-                return false;
-            },
-            /**
-             * 提示是否超出了下窗口
-             * @method isBeyondBottom
-             * @return {Boolean}
-             */
-            isBeyondBottom:function(){
-                if( (this.offset0.top+this.tipHeight) > util.winHeight ){
-                    return true;
-                }
-                return false;
-            },
-            _initItems:function(){
-                this.arrowWidth = this.$arrow.width();
-                this.arrowHeight = this.$arrow.height();
-                this.triggerHeight = this.$trigger.height();
-                this.triggerWidth = this.$trigger.width();
-                this.tipHeight = this.$tip.height();
-                this.tipWidth = this.$tip.width();
-            },
-            _dispose:function(){
-                this.$trigger.unbind('.oxtip');
-                $win.unbind('.oxtip');
-                this.$tip.unbind('.oxtip');
-                this.offset0=null;
-                this.offset = null;
-                return this;
-            },
-            //update the options
-            _update: function (opts,reInit) {
-                this.opts = opts;
-                if (reInit) {
-                    this._dispose()._init();
-                }
-            }
-        };
-
-
-        // Set the options.
-        var optsType = typeof (opts),
-            opts1 = optsType !== 'string' ? $.extend(true, {}, $.fn.oxtip.defaults, opts || {}) : $.fn.oxtip.defaults,
-            args = arguments;
-
-        return this.each(function () {
-
-            var $me = $(this),
-                instance = $me.data("oxtip");
-            if (instance) {
-
-                if (instance[opts]) {
-
-                    instance[opts].apply(instance, Array.prototype.slice.call(args, 1));
-
-                } else if (typeof (opts) === 'object' || !opts) {
-
-                    instance._update.apply(instance, args);
-
-                } else {
-                    console.log('Method ' + opts + ' does not exist in jQuery.fn.oxtip');
-                }
-
-            } else {
-                $me.data("oxtip", new model($me,opts1));
-            }
-
-        });
-    };
-    /**
-     * jQuery.oxtip's default configuration
-     * @class jQuery.fn.oxtip.defaults
-     * @static
-     */
-    $.fn.oxtip.defaults={
-        /**
-         * 提示触发元素的css选择器
-         * @property oxtiptrigger
-         * @type {String}
-         * @default 'mouseenter.oxtip'
-         */
-        oxtiptrigger:'mouseenter.oxtip',
-        /**
-         * 是否自动隐藏
-         * @property oxtipautohide
-         * @type {Boolean}
-         * @default true
-         */
-        oxtipautohide:true,
-        /**
-         * 自动隐藏延时
-         * @property oxtipautohidedelay
-         * @type {Integer}
-         * @default 300
-         */
-        oxtipautohidedelay:300,//auto-hiding delay in ms
-        /**
-         * 提示箭头的css选择器
-         * @property oxtiparrow
-         * @type {String}
-         * @default '>i'
-         */
-        oxtiparrow:'>i',//箭头选择器
-        /**
-         * 上箭头的类名
-         * @property oxtiparrow1
-         * @type {String}
-         * @default 'mod_hint_arrow1'
-         */
-        oxtiparrow1:'mod_hint_arrow1',
-        /**
-         * 下箭头的类名
-         * @property oxtiparrow3
-         * @type {String}
-         * @default 'mod_hint_arrow3'
-         */
-        oxtiparrow2:'mod_hint_arrow3',
-        /**
-         * 提示的zindex
-         * @property oxtipindex
-         * @type {Integer}
-         * @default 200
-         */
-        oxtipindex:200,
-        /**
-         * 对于可见的提示，是否不重新计算位置
-         * @property skipVisibleTip
-         * @type {Boolean}
-         * @default false
-         */
-        skipVisibleTip:false,
-        /**
-         * 提示容器相对于触发元素的边距
-         * @property oxtipmargin
-         * @type {Integer}
-         * @default null 取触发元素的高度
-         */
-        oxtipmargin:null
-    };
-
-    $(function(){
-        $('[data-oxtipid]').oxtip();
-    })
-
-})(jQuery);
-
+function(){return u.clearCache()};d.compile=function(a,b){return u.compile(a,b)};d.compilePartial=function(a,b,c){return u.compilePartial(a,b,c)};d.compileTokens=function(a,b){return u.compileTokens(a,b)};d.render=function(a,b,c){return u.render(a,b,c)};d.to_html=function(a,b,c,g){a=d.render(a,b,c);if("function"===typeof g)g(a);else return a}});(function(d){d(document);var m=d(window),n={winWidth:m.width(),winHeight:m.height(),init:function(){m.bind("resize.oxtip",function(d){n.winWidth=m.width();n.winHeight=m.height()})}};n.init();d.fn.oxtip=function(h){var p=function(h,v){this.$trigger=h;this.data=h.data();this.opts=d.extend({},v,this.data||{});this.$tip=d(this.data.oxtipid);this.$arrow=this.$tip.find(this.opts.oxtiparrow);this.autoHideTimer=this.offset=this.offset0=null;this._init()};p.prototype={_init:function(){0!==this.$tip.length&&
+(this._initItems(),this._initEvt())},_initEvt:function(){var d=this;this.$trigger.bind(this.opts.oxtiptrigger,function(h){d._onTrigger();return!1});this.opts.oxtipautohide&&(this.$trigger.bind("mouseleave.oxtip",function(h){d.hide()}),this.$tip.bind("mouseleave.oxtip",function(h){d.hide()}).bind("mouseenter.oxtip",function(h){clearTimeout(d.autoHideTimer)}));m.bind("resize.oxtip",function(h){d._onResize()})},_onTrigger:function(){this.isTipVisible()&&this.opts.skipVisibleTip||this.show()},_onResize:function(){this.offset=
+this.offset0=null;this.isTipVisible()&&this.updateOffset()},updateOffset:function(){this.getTipOffset();this.$tip.css(this.offset);this.$arrow.css(this.arrowOffset)},hide:function(){clearTimeout(this.autoHideTimer);var d=this;this.autoHideTimer=setTimeout(function(){d.$tip.hide()},this.opts.oxtipautohidedelay)},show:function(){clearTimeout(this.autoHideTimer);this.updateOffset();this.$tip.show()},isTipVisible:function(){return!this.$tip.is(":hidden")},getTriggerOffset:function(){return null!==this.offset0?
+this.offset0:this.offset0=this.$trigger.offset()},getTipOffset:function(){if(null!==this.offset)return this.offset;this.getTriggerOffset();this.offset={position:"absolute",zIndex:this.opts.oxtipindex};this.arrowOffset={};this.isBeyondRight()&&this.isBeyondLeft()?(this.offset.left=this.offset0.left-this.tipWidth/2+this.triggerWidth/2,this.arrowOffset.left=this.tipWidth/2-this.arrowWidth/2):this.isBeyondRight()?(this.offset.left=this.offset0.left-this.tipWidth+this.triggerWidth,this.arrowOffset.left=
+this.tipWidth-this.triggerWidth/2):(this.offset.left=this.offset0.left,this.arrowOffset.left=this.triggerWidth/2);this.arrowOffset.left+this.arrowWidth>this.tipWidth?this.arrowOffset.left=this.tipWidth-this.arrowWidth:0>this.arrowOffset.left&&(this.arrowOffset.left=0);this.$arrow.removeClass(this.opts.oxtiparrow1+" "+this.opts.oxtiparrow2).addClass(this.opts.oxtiparrow1);this.offset.top=this.offset0.top+(this.opts.oxtipmargin||this.triggerHeight)+this.arrowHeight;this.isBeyondBottom()&&(this.offset.top=
+this.offset0.top-this.tipHeight-this.arrowHeight,this.$arrow.removeClass(this.opts.oxtiparrow1).addClass(this.opts.oxtiparrow2));return this.offset},isBeyondRight:function(){return this.tipWidth+this.offset0.left>n.winWidth?!0:!1},isBeyondLeft:function(){return 0>this.offset0.left-this.tipWidth?!0:!1},isBeyondTop:function(){return 0>this.offset0.top-this.tipHeight?!0:!1},isBeyondBottom:function(){return this.offset0.top+this.tipHeight>n.winHeight?!0:!1},_initItems:function(){this.arrowWidth=this.$arrow.width();
+this.arrowHeight=this.$arrow.height();this.triggerHeight=this.$trigger.height();this.triggerWidth=this.$trigger.width();this.tipHeight=this.$tip.height();this.tipWidth=this.$tip.width()},_dispose:function(){this.$trigger.unbind(".oxtip");m.unbind(".oxtip");this.$tip.unbind(".oxtip");this.offset=this.offset0=null;return this},_update:function(d,h){this.opts=d;h&&this._dispose()._init()}};var q="string"!==typeof h?d.extend(!0,{},d.fn.oxtip.defaults,h||{}):d.fn.oxtip.defaults,w=arguments;return this.each(function(){var n=
+d(this),m=n.data("oxtip");m?m[h]?m[h].apply(m,Array.prototype.slice.call(w,1)):"object"!==typeof h&&h?console.log("Method "+h+" does not exist in jQuery.fn.oxtip"):m._update.apply(m,w):n.data("oxtip",new p(n,q))})};d.fn.oxtip.defaults={oxtiptrigger:"mouseenter.oxtip",oxtipautohide:!0,oxtipautohidedelay:300,oxtiparrow:">i",oxtiparrow1:"mod_hint_arrow1",oxtiparrow2:"mod_hint_arrow3",oxtipindex:200,skipVisibleTip:!1,oxtipmargin:null};d(function(){d("[data-oxtipid]").oxtip()})})(jQuery);
 /* E Mustache & oxtip */
 /* S J */
 var J=function(e){return function(t){var n=typeof t;if(n==="undefined"){return J}if(n==="string"){return J[t]}if(n==="function"){var r={_:{}};t.call(J,e,r._,r);if(!r.id){alert("A J module require a public id property!");return}if(J[r.id]){alert('A J module with id "'+r.id+'" exists!');return}J[r.id]=r;r=null}}}(jQuery);(function(e){var t={},n={};t.onLoaded=function(){for(var e in J){if(e==="init"||e==="onLoad"){continue}e=J[e];if(t.isFunc(e._onLoad)){e._onLoad.call(e);delete e._onLoad}if(e._){t.loadSub(e._);delete e._}}};t.initEvents=function(n){e(document).ready(t.onLoaded)};t.isFunc=function(e){return e&&typeof e==="function"};t.initSub=function(e){for(var n in e){n=e[n];if(!n){continue}if(t.isFunc(n._init)){n._init.call(n);delete n._init}for(var r in n){r=n[r];if(!r)continue;if(t.isFunc(r._init)){r._init.call(r);delete r._init}}}};t.loadSub=function(e){for(var n in e){n=e[n];if(!n){continue}if(t.isFunc(n._onLoad)){n._onLoad.call(n);delete n._onLoad}for(var r in n){r=n[r];if(!r)continue;if(t.isFunc(r._onLoad)){r._onLoad.call(r);delete r._onLoad}}}};n.init=function(n){J.opts=t.opts=n=e.extend(n||{},J.opts||{});for(var r in J){if(r==="init"||r==="onLoad"){continue}r=J[r];if(t.isFunc(r._init)){r._init.call(r);delete r._init}if(r._){t.initSub(r._)}}t.initEvents()};n.onLoad=t.onLoaded;for(var r in n){if(!r){continue}J[r]=n[r]}})(window["jQuery"]);
@@ -568,6 +163,124 @@ J(function($,p,pub){
 });
 /* E 数据 */
 
+/* S CoreUI */
+J(function($,p,pub){
+    pub.id='ui';
+    var coreTpl = J.heredoc(function(){/*
+        <div id="xdataWrap" class="xdata_wrap">
+            <div id="xdataUI" class="data_ui">
+                <div class="data_tab">
+                    <ul>
+                        <li><a href="javascript:;" class="on">点击量</a></li>
+                        <li><a href="javascript:;">下单量</a></li>
+                        <li><a href="javascript:;">转化率</a></li>
+                    </ul>
+                </div>
+
+                <div class="data_show">
+                    <div class="data_time">
+                        <input type="date" /><span class="c_tx3">-</span><input type="date" />
+                    </div>
+
+                    <div class="data_total">
+                        <div id="js_total" class="data_total_inner">
+                            
+                        </div>
+                    </div>
+
+                    <div class="data_rank">
+                        <div class="data_rank_btn">
+                            <a href="javascript:;">显示热区图</a>
+                            <a href="javascript:;">新增统计单元</a>
+                        </div>
+
+                        <div class="data_rank_list">
+                            <h3>自定义单元</h3>
+                            <ul>
+                                <li><a href="javascript:;">天黑黑</a></li>
+                                <li><a href="javascript:;">三星</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="data_rank_list">
+                            <h3>按ytag排行</h3>
+                            <ol>
+                                <li><a href="javascript:;">天黑黑</a></li>
+                                <li><a href="javascript:;">三星</a></li>
+                                <li><a href="javascript:;">中秋月饼</a></li>
+                                <li><a href="javascript:;">金品小电京九狂欢月</a></li>
+                                <li><a href="javascript:;">长虹42寸安卓电视用劵后2599元 !</a></li>
+                                <li><a href="javascript:;">超薄移动电源</a></li>
+                                <li><a href="javascript:;">超便捷！一转二，带开关更安全</a></li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="xdataPop" class="data_pop">
+                <div class="data_time">
+                    <input type="date" /><span class="c_tx3">-</span><input type="date" />
+                </div>
+                <div class="data_pop_con">
+                    <div id="js_pop"></div>
+                </div>
+            </div>
+        </div>
+    */});
+
+    p.main={
+        visible:true,
+        $startUp:null,
+        $ui:null,
+        tpl0:'<div id="xdataStartup" class="xdata_startup xdata_show"><strong class="xdata_c1">C</strong>lick<strong class="xdata_c2">S</strong>tream<span class="xdata_loading"></span></div>',
+        _init:function(){
+            J.$body.append(this.tpl0);
+            this.$startUp = $('#xdataStartup');
+            this._initEvts();
+        },
+        _initEvts:function(){
+            J.$win.bind(J.data.EVT.InitKeyData,function(e,err,data){
+                if(err){
+                    p.main.showError(err);
+                    return;
+                }
+            }).bind(J.data.EVT.InitClickData,function(e,err,data){
+                if (err) {
+                    p.main.showError(err);
+                    return;
+                };
+                //这里主数据和点击数据已经拿到
+                p.main.onDataReady();
+            });
+        },
+        onDataReady:function(){
+            this.$startUp.removeClass('xdata_show').onTransitioned(function(){
+                J.$body.append(coreTpl);
+                p.main.$ui = $('#xdataWrap');
+                $('#xdataClose').bind('click',function(e){
+                    p.main[p.main.visible?'hide':'show'].call(p.main);
+                    return false;
+                });
+                p.main.$startUp.onTransitioned(false);
+            });
+        },
+        showError:function(txt){
+            this.$startUp.html('<span class="xdata_err">'+txt.toString()+'</span>');
+        },
+        show:function(){
+            this.$ui.addClass('xdata_show');
+            this.visible=true;
+        },
+        hide:function(){
+            this.$ui.removeClass('xdata_show');
+            this.visible=false;
+        }
+    };
+
+});
+/* E CoreUI */
+
 /* S YTAG */
 J(function($,p,pub){
     pub.id="ytag";
@@ -666,80 +379,6 @@ J(function($,p,pub){
 });
 /* E YTAG */
 
-/* S 菜单 */
-J(function($,p,pub){
-    pub.id="menu";
-    var $body = J.$body;
-    //menu
-    p.menu={
-        visible:true,
-        $d:null,
-        tpl0:'<div id="xdataMenu" class="xdata_menu xdata_menu_rock"><strong class="xdata_c1">C</strong>lick<strong class="xdata_c2">S</strong>tream<span class="xdata_loading"></span></div>',
-        tpl1:J.heredoc(function(){/*
-            <a id="xdataMenuClose" class="xdata_menu_close" href="javascript:;">+</a>
-            <div class="xdata_logo">CLICKSTREAM&nbsp;<em>v2.0</em></div>
-            <ul id="xdataMenuList" class="xdata_menulist">
-                <li><a href="javascript:;" class="xdata_lnkA" rel="1"><strong class="xdata_c1">热</strong>区数据</a></li>
-                <li><a href="javascript:;" class="xdata_lnkA" rel="2"><strong class="xdata_c2">模</strong>块数据</a></li>
-                <li><a href="javascript:;" class="xdata_lnkA" rel="3"><strong class="xdata_c1">下单</strong>前10</a></li>
-                <li><a href="javascript:;" class="xdata_lnkA" rel="4"><strong class="xdata_c2">点击</strong>前10</a></li>
-                <li><a href="javascript:;" class="xdata_lnkA" rel="5"><strong class="xdata_c1">转化率</strong>前10</a></li>
-            </ul>
-        */}),
-        _init:function(){
-            $body.append(this.tpl0);
-            this.$d = $('#xdataMenu');
-            this._initEvts();
-        },
-        _initEvts:function(){
-            J.$win.bind(J.data.EVT.InitKeyData,function(e,err,data){
-                if(err){
-                    p.menu.showError(err);
-                    return;
-                }
-            }).bind(J.data.EVT.InitClickData,function(e,err,data){
-                if (err) {
-                    p.menu.showError(err);
-                    return;
-                };
-                //这里主数据和点击数据已经拿到
-                p.menu.onDataReady();
-            });
-        },
-        onDataReady:function(){
-            this.$d.removeClass('xdata_menu_rock').onTransitioned(function(){
-                this.innerHTML = p.menu.tpl1;
-                $('#xdataMenuList .xdata_lnkA').bind('click.xdata',function(e){
-                    $body.trigger('onXDataMenuClick',[{
-                        rel:this.rel
-                    }]);
-                });
-                $('#xdataMenuClose').bind('click',function(e){
-                    p.menu[p.menu.visible?'hide':'show'].call(p.menu);
-                    return false;
-                });
-                p.menu.$d.onTransitioned(false).addClass('xdata_menu_rock');
-            });
-        },
-        showError:function(txt){
-            this.$d.html('<span class="xdata_err">'+txt.toString()+'</span>');
-        },
-        show:function(){
-            this.$d.addClass('xdata_menu_rock');
-            this.visible=true;
-        },
-        hide:function(){
-            this.$d.removeClass('xdata_menu_rock');
-            this.visible=false;
-        }
-    };
-});
-/* E 菜单 */
-
-/* S SingleYTag */
-
-/* E SingleYTag */
-
 /* S 热区 */
 J(function($,p,pub){
     pub.id="heatmap";
@@ -768,8 +407,6 @@ J(function($,p,pub){
             canvasObj.style.top=offset.top+'px';
         },
         getData:function(){
-
-
 
             //max-坐标的最大点击数
             //data-坐标点击数据。

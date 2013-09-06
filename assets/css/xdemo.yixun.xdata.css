@@ -37,23 +37,7 @@
     from {transform: rotate(0deg);}
     to {transform: rotate(359deg);}
 }
-.xdata_tip{border-color:#999;background-color: #333;color:#999;}
-.xdata_logo{
-    -webkit-transform:rotate(90deg);
-    text-transform: uppercase;
-    writing-mode:tb-rl;
-    width:78px;
-    text-align: center;
-    position: absolute;
-    top: 50%;
-    left: -50%;
-    margin-left: 18px;
-    margin-top: -34px;
-    color:#aaa;
-}
-.xdata_logo em{color:#999;color:#aaa;}
-.xdata_menu_rock .xdata_logo{display: none;}
-.xdata_menu{
+.xdata_bootup{
     background: #333;
     width:90px;
     border:1px solid #efefef;
@@ -66,20 +50,12 @@
     text-align: center;
     transition:all .4s ease-out;
  }
-    .xdata_menu li{height:29px;line-height: 29px;}
-    .xdata_menu .xdata_loading{position: absolute;top:0;left:50%;margin-left: -10px;}
-    .xdata_menu_rock{
+    .xdata_bootup .xdata_loading{position: absolute;top:0;left:50%;margin-left: -10px;}
+    .xdata_show{
         right:0;
         opacity: 1;
     }
-    .xdata_menulist a{
-        width:90px;
-        height: 29px;
-        font: 700 12px/29px Arial;
-        color: #FFF;
-        display: inline-block;
-    }
-    .xdata_menu_close{
+    .xdata_close{
         position: absolute;
         left: -5px;
         top: -5px;
@@ -93,10 +69,64 @@
         visibility: hidden;
         -webkit-transform:rotate(0);
     }
-    .xdata_menu_close:hover{text-decoration: none;}
-    .xdata_menu:hover .xdata_menu_close{
+    .xdata_close:hover{text-decoration: none;}
+    .data_ui:hover .xdata_close{
         visibility: visible;
     }
-    .xdata_menu_rock .xdata_menu_close{
+    .xdata_show .xdata_close{
         -webkit-transform:rotate(45deg);
     }
+
+/* xdata ui by feeling 
+===================================*/
+.data_ui{overflow:auto; position:absolute; right:0; top:0; width:400px; height:100%; border-left:1px solid #CCC; background-color:#FFF; box-shadow:-2px 0 2px rgba(0,0,0,0.1); font-family:"microsoft yahei";}
+
+/*===== 顶部选项卡 =====*/
+.data_tab{}
+    .data_tab ul{display:-webkit-box;}
+    .data_tab li{-webkit-box-flex:1;}
+    .data_tab li a{display:block; padding:10px 0; background-color:#F5F5F5; text-align:center;}
+    .data_tab li a.on{background-color:#FFF;}
+
+
+/*===== 单个选项卡 =====*/
+.data_show{padding:0 10px;}
+
+    /*===== 时间切换 =====*/
+    .data_time{margin:10px 0; text-align:center;}
+        .data_time input{width:120px;}
+        .data_time span{margin:0 5px;}
+
+
+    /*===== 数据趋势 =====*/
+    .data_total{padding:10px 0; text-align:center;}
+        .data_total_inner{margin:auto; width:90%; height:200px;}
+
+
+    /*===== 排行 =====*/
+    .data_rank{border-top:1px solid #CCC;}
+        .data_rank_btn{padding:10px 0; text-align:right;}
+        .data_rank_btn a{margin:0 10px;}
+
+        .data_rank_list{}
+        .data_rank_list h3{padding:10px; background-color:#E7E7E7;}
+        .data_rank_list ol{ list-style-type:decimal; list-style-position:inside;}
+        .data_rank_list a{display:block; padding:10px;}
+        .data_rank_list a:hover{background-color:#F7F7F7;}
+
+
+    /*===== 详情 =====*/
+        .data_pop{position:absolute; right:401px; top:405px; padding:20px; width:600px; background-color:#FFF; box-shadow:0 0 5px rgba(0,0,0,0.4);}
+        .data_pop:after{
+            overflow:hidden;
+            position:absolute;
+            content:" ";
+            right:-20px;
+            top:20px;
+            width:0;
+            height:0;
+            border-width:10px;
+            border-color:transparent transparent transparent #666;
+            border-style:dashed dashed dashed solid;
+            font-size:0;
+        }
