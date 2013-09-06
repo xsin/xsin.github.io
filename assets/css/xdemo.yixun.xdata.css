@@ -42,11 +42,11 @@
     width:90px;
     border:1px solid #efefef;
     position: fixed;
-    right:-88px;
-    bottom: 120px;
+    right:-105px;
+    top: 0;
     padding:5px;
     z-index: 10000;
-    opacity: 0.8;
+    opacity: 0.5;
     text-align: center;
     transition:all .4s ease-out;
  }
@@ -77,6 +77,14 @@
         -webkit-transform:rotate(45deg);
     }
 
+.xdata_wrap{
+    position: fixed;
+    top:0;
+    right:0;
+    bottom:0;
+    z-index: 10001;
+}
+
 /* xdata ui by feeling 
 ===================================*/
 .data_ui{overflow:auto; position:absolute; right:0; top:0; width:400px; height:100%; border-left:1px solid #CCC; background-color:#FFF; box-shadow:-2px 0 2px rgba(0,0,0,0.1); font-family:"microsoft yahei";}
@@ -85,7 +93,7 @@
 .data_tab{}
     .data_tab ul{display:-webkit-box;}
     .data_tab li{-webkit-box-flex:1;}
-    .data_tab li a{display:block; padding:10px 0; background-color:#F5F5F5; text-align:center;}
+    .data_tab li a{display:block; padding:10px 0; background-color:#efefef; text-align:center;}
     .data_tab li a.on{background-color:#FFF;}
 
 
