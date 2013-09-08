@@ -61,38 +61,50 @@
         right:0;
         opacity: 1;
     }
-    .xdata_close{
-        position: absolute;
-        left: -5px;
-        top: -5px;
-        width: 18px;
-        height: 18px;
-        font: 16px/18px Arial;
-        text-align: center;
-        color: #fdfdfd;
-        background: #333;
-        border-radius: 50%;
-        visibility: hidden;
-        -webkit-transform:rotate(0);
-    }
-    .xdata_close:hover{text-decoration: none;}
-    .data_ui:hover .xdata_close{
-        visibility: visible;
-    }
-    .xdata_show .xdata_close{
-        -webkit-transform:rotate(45deg);
-    }
 
 .xdata_wrap{
     position: fixed;
     top:0;
     right:0;
     bottom:0;
+    width:401px;
     z-index: 10001;
-}
-.xdata_keychart{
-    display: none;
-}
+    transition:all .5s ease-out;
+ }
+     .xdata_wrap_hide{
+        right:-387px;
+     }
+    .xdata_close{
+        position: absolute;
+        left: -10px;
+        top: 0;
+        width: 24px;
+        height: 24px;
+        font: 20px/24px Arial;
+        text-align: center;
+        color: #fdfdfd;
+        background: #333;
+        border-radius: 50%;
+        visibility: hidden;
+        z-index: 5;
+        -webkit-transform:rotate(45deg);
+    }
+    .xdata_close:hover{text-decoration: none;}
+    .xdata_wrap:hover .xdata_close{
+        visibility: visible;
+    }
+    .xdata_wrap_hide .xdata_close{
+        -webkit-transform:rotate(0);
+        visibility: visible;
+    }
+    .xdata_wrap_hide .data_pop{display: none;}
+    .xdata_keychart{
+        display: none;
+    }
+    /* 排行榜 */
+    .xdata_rank{
+        display: none;
+    }
 
 /* xdata ui by feeling 
 ===================================*/
@@ -127,10 +139,19 @@
 
         .data_rank_list{}
         .data_rank_list h3{padding:10px; background-color:#E7E7E7;}
-        .data_rank_list ol{ list-style-type:decimal; list-style-position:inside;}
-        .data_rank_list a{display:block; padding:10px;}
-        .data_rank_list a:hover{background-color:#F7F7F7;}
-
+        .data_rank_list ol{ list-style-type:decimal; list-style-position:inside;padding-top:10px;}
+        .data_rank_list li{position: relative;}
+        .data_rank_list li:hover{background-color:#F7F7F7;}
+        .data_rank_list a{display:inline-block; padding:10px 5px;height:18px;max-width:250px;text-overflow:ellipsis;}
+        .data_rank_list sup{
+            display: inline-block;
+            background: #2f7ed8;
+            color: #fdfdfd;
+            padding: 1px 3px;
+            top: -1px;
+            position: relative;
+            border-radius: 4px;
+        }
 
     /*===== 详情 =====*/
         .data_pop{position:absolute; right:401px; top:405px; padding:20px; width:600px; background-color:#FFF; box-shadow:0 0 5px rgba(0,0,0,0.4);}

@@ -387,7 +387,13 @@ J(function($,p,pub){
         });
     };
     //获取日期数据
-    pub.getDateTimeStr=function(dObj,ignoreHMS){
+    pub.getDateTimeStr=function(dObj,cfg){
+        cfg=cfg||{};
+        cfg.len=cfg.len||19;
+        cfg.dayDiff=cfg.dayDiff||0;
+        if(cfg.dayDiff!==0){
+            dObj.setDate(dObj.getDate()+cfg.dayDiff);
+        };
         var o =[dObj.getFullYear()+'-',(dObj.getMonth()+1)],
         format = function(i){
             return (i<10?('0'+i):i);
@@ -395,7 +401,7 @@ J(function($,p,pub){
         o[1]=format(o[1])+'-';
         o.push(format(dObj.getDate()));
 
-        if(ignoreHMS){
+        if(cfg.ignoreHMS){
             o.push(" 00:00:00");
         }else{
             o.push(' ');
@@ -405,14 +411,14 @@ J(function($,p,pub){
             o.push(format(dObj.getSeconds()));
         }
 
-        return o.join('');
+        return o.join('').substr(0,cfg.len);
 
     };
     //获取主数据
     pub.getKeyData = function(_params,cbk){
         _params = $.extend({},{
             uid:uid, 
-            start_date:pub.getDateTimeStr(today,true), 
+            start_date:pub.getDateTimeStr(today,{ignoreHMS:true}), 
             end_date:pub.getDateTimeStr(today), 
             date_type:"today", 
             page_id:pid, 
@@ -425,7 +431,7 @@ J(function($,p,pub){
     pub.getClickData = function(_params,cbk){
         _params = $.extend({},{
             uid:uid, 
-            start_date:pub.getDateTimeStr(today,true), 
+            start_date:pub.getDateTimeStr(today,{ignoreHMS:true}), 
             end_date:pub.getDateTimeStr(today), 
             date_type:"today", 
             page_id:pid, 
@@ -436,7 +442,7 @@ J(function($,p,pub){
     };
     //获取单个ytag的点击数据
     pub.getClickDataById = function(id){
-        var obj = null
+        var obj = null;
         for(var c in pub['InitClickData'].data){
             obj = pub['InitClickData'].data[c];
             if(obj.page_tag===id){
@@ -449,7 +455,7 @@ J(function($,p,pub){
     pub.getRangeClickData = function(_params,cbk){
         _params = $.extend({},{
             uid:uid, 
-            start_date:pub.getDateTimeStr(today,true), 
+            start_date:pub.getDateTimeStr(today,{ignoreHMS:true}), 
             end_date:pub.getDateTimeStr(today), 
             date_type:"today", 
             page_id:pid, 
@@ -488,6 +494,7 @@ J(function($,p,pub){
     pub.id='ui';
     var coreTpl = J.heredoc(function(){/*
         <div id="xdataWrap" class="xdata_wrap">
+            <a id="xdataClose" href="javascript:;" class="xdata_close">+</a>
             <div id="xdataUI" class="data_ui">
                 <div class="data_tab">
                     <ul id="xdataType">
@@ -499,7 +506,7 @@ J(function($,p,pub){
 
                 <div class="data_show">
                     <div class="data_time">
-                        <input type="date" /><span class="c_tx3">-</span><input type="date" />
+                        <input class="xdata_sdate" id="xdataKeyChartDate1" type="date"/><span class="c_tx3">-</span><input class="xdata_edate" id="xdataKeyChartDate2" type="date" />
                     </div>
 
                     <div id="xdataKeyCharts" class="data_total">
@@ -522,17 +529,11 @@ J(function($,p,pub){
                             </ul>
                         </div>
                         
-                        <div class="data_rank_list">
+                        <div id="xdataRankList" class="data_rank_list">
                             <h3>按ytag排行</h3>
-                            <ol>
-                                <li><a href="javascript:;">天黑黑</a></li>
-                                <li><a href="javascript:;">三星</a></li>
-                                <li><a href="javascript:;">中秋月饼</a></li>
-                                <li><a href="javascript:;">金品小电京九狂欢月</a></li>
-                                <li><a href="javascript:;">长虹42寸安卓电视用劵后2599元 !</a></li>
-                                <li><a href="javascript:;">超薄移动电源</a></li>
-                                <li><a href="javascript:;">超便捷！一转二，带开关更安全</a></li>
-                            </ol>
+                            <div id="xdataRank1" class="xdata_rank xdata_visible"></div>
+                            <div id="xdataRank2" class="xdata_rank"></div>
+                            <div id="xdataRank3" class="xdata_rank"></div>
                         </div>
                     </div>
                 </div>
@@ -540,7 +541,7 @@ J(function($,p,pub){
 
             <div id="xdataPop" class="data_pop">
                 <div class="data_time">
-                    <input type="date" /><span class="c_tx3">-</span><input type="date" />
+                    <input class="xdata_sdate" type="date" /><span class="c_tx3">-</span><input class="xdata_edate" type="date" />
                 </div>
                 <div class="data_pop_con">
                     <div id="js_pop"></div>
@@ -553,7 +554,7 @@ J(function($,p,pub){
         'DataTypeChange':'onXDataTypeChange',
         'UIReady':'onXDataUIReady'
     };
-
+    //数据类型切换
     p.dataType = {
         value:"1",
         _init:function(){
@@ -570,7 +571,7 @@ J(function($,p,pub){
         }
     };
 
-    //key chart
+    //概要图表
     p.keyChart = {
         _init:function(){
             J.$win.bind(EVT.UIReady,function(e){
@@ -585,7 +586,7 @@ J(function($,p,pub){
                 niceData = this.parseData(rawData,dataType),
                 baseOpts = {
                 title: {
-                    text: rawData.timespan
+                    text: ' '
                 },
                 xAxis: {
                     type: 'text'//datetime
@@ -673,9 +674,10 @@ J(function($,p,pub){
             return r;
         }
     };
-
+    //主UI框架
     p.main={
         visible:true,
+        autoHideTimer:null,
         $startUp:null,
         $ui:null,
         tpl0:'<div id="xdataBootup" class="xdata_bootup xdata_show"><strong class="xdata_c1">C</strong>lick<strong class="xdata_c2">S</strong>tream<span class="xdata_loading"></span></div>',
@@ -705,28 +707,149 @@ J(function($,p,pub){
             });
         },
         render:function(){
+            p.main.$startUp.onTransitioned(false);
             J.$body.append(coreTpl);
             p.main.$ui = $('#xdataWrap');
             $('#xdataClose').bind('click',function(e){
                 p.main[p.main.visible?'hide':'show'].call(p.main);
                 return false;
             });
-            p.main.$startUp.onTransitioned(false);
+            //日期控件设置
+            var today=new Date();
+            p.main.$ui.find('.xdata_sdate').val(today.toISOString().substring(0, 10))
+                .end()
+                .find('.xdata_edate').val(J.data.getDateTimeStr(today,{len:10,dayDiff:1}))
+                .end()
+                .bind('mouseenter',function(e){
+                    clearTimeout(p.main.autoHideTimer);
+                })/*.bind('mouseleave',function(e){
+                    p.main.autoHide();
+                })*/;
+            //autohide after UIReady
+            this.autoHide();
             J.$win.trigger(EVT.UIReady);
         },
         showError:function(txt){
             this.$startUp.html('<span class="xdata_err">'+txt.toString()+'</span>');
         },
         show:function(){
-            this.$ui.addClass('xdata_show');
+            this.$ui.removeClass('xdata_wrap_hide');
             this.visible=true;
         },
         hide:function(){
-            this.$ui.removeClass('xdata_show');
+            this.$ui.addClass('xdata_wrap_hide');
             this.visible=false;
+        },
+        autoHide:function(){
+            clearTimeout(this.autoHideTimer);
+            this.autoHideTimer = setTimeout(function(){
+                p.main.hide();
+            },2500);
         }
     };
-
+    //排行榜
+    p.rank = {
+        tpl:J.heredoc(function(){/*
+            {{#empty}}
+            <div class="xdata_alert">无数据</div>
+            {{/empty}}
+            {{^empty}}
+            <ol>
+            {{#items}}
+            <li><a href="javascript:;" data-ytag="{{ytagid}}" data-href="{{href}}" title="{{title}}">{{text}}</a><sup>{{val}}</sup></li>
+            {{/items}}
+            </ol>
+            {{/empty}}
+        */}),
+        _init:function(){
+            J.$win.bind(EVT.UIReady,function(e){
+                p.rank.render(1);
+            }).bind(EVT.DataTypeChange,function(e,t){
+                p.rank.render(parseInt(t));
+            });
+        },
+        render:function(dataType){
+            if(!this.$objs){
+                this.$objs=$('#xdataRankList').find('.xdata_rank');
+            }
+            var $obj = this.$objs.removeClass('xdata_visible').eq(dataType-1).addClass('xdata_visible');
+            if(!$obj[0].getAttribute('data-xdata')){
+                $obj[0].innerHTML = Mustache.to_html(this.tpl, this.getData(dataType));
+                $obj[0].setAttribute('data-xdata','1');
+            }
+        },
+        getData:function(dataType,topCnt){
+            var rawData = J.data['InitClickData'],
+                niceData = this.parseData(rawData,dataType,topCnt);
+            return niceData;
+        },
+        parseData:function(d,dataType,topCnt){
+            d = d.data;
+            var items = [],tempTag;
+            for(var c in d){
+                if(typeof(d[c])!=='object')
+                {
+                    continue;
+                }
+                tempTag = J.ytag.get(d[c].page_tag);
+                if(!tempTag){
+                    continue;
+                }
+                $.extend(d[c],tempTag);
+                items.push(d[c]);
+            };//for
+            items=this.orderDataDescBy(items,dataType);
+            topCnt = topCnt||10;
+            var len = items.length,
+                r = {empty:false,items:[]};
+            
+            len = len>=topCnt?topCnt:len;
+            if(len==0){
+                r.empty=true;
+                return r;
+            };
+            for(var i=0;i<len;i++){
+                switch(dataType){
+                    case 1:
+                        items[i].val = items[i].click_num;
+                    break;
+                    case 2:
+                        items[i].val = items[i].order_num;
+                    break;
+                    case 3:
+                        items[i].val = items[i].click_trans_rate;
+                    break;
+                };//switch
+                r.items.push(items[i]);
+            };
+            return r;
+        },
+        //降序排列数据
+        orderDataDescBy:function(arrData,dataType){
+            //new a copy of arrData
+            arrData = arrData.slice(0);
+            switch(dataType){
+                case 1:
+                    //do nothing，默认是按点击数排序的
+                break;
+                case 2:
+                    //按下单量排序
+                    arrData.sort(function(a,b){
+                        return (b.order_num-a.order_num);
+                    });
+                break;
+                case 3:
+                    //按转化率排序
+                    //按下单量排序
+                    arrData.sort(function(a,b){
+                        return (parseFloat(b.click_trans_rate)-parseFloat(a.click_trans_rate));
+                    });
+                    console.log(arrData);
+                break;
+            };
+            return arrData;
+        }
+    };
 });
 /* E CoreUI */
 
@@ -734,25 +857,7 @@ J(function($,p,pub){
 J(function($,p,pub){
     pub.id="ytag";
     var cache = {},
-    $ytags,
-    tipTimer={},
-    tipTpl = J.heredoc(function(){/*
-        <div id="xdataTip{{ytagid}}" class="mod_hint xdata_tip" style="width: 680px; position: absolute; z-index: 200; left: 0; top: 0; display: none;">
-            <div class="mod_hint_inner">
-                <div class="xdata_pop">
-                    <div class="xdata_today">
-                        <span class="xdata_lbl1">点击数：</span><span class="xdata_lbl2">{{click_num}}</span>
-                        <span class="xdata_lbl1">下单数：</span><span class="xdata_lbl2">{{order_num}}</span>
-                        <span class="xdata_lbl1">点击转化率：</span><span class="xdata_lbl2">{{click_trans_rate}}</span>
-                    </div>
-                    <div class="xdata_chart">
-                        <img src="http://i.stack.imgur.com/lLqWD.png"/>
-                    </div>
-                </div>
-            </div>
-            <i class="mod_hint_arrow1" style="left: 88px;"></i>
-        </div>
-    */});
+    $ytags;
     p.main = {
         addToCache:function($o){
             if($o.length===0){
@@ -764,23 +869,17 @@ J(function($,p,pub){
                     ytagid:ytag,
                     $dom:$o,
                     x:off.left,
-                    y:off.top
-                }; 
+                    y:off.top,
+                    title:$.trim($o[0].title),
+                    text:$.trim($o.text()),
+                    href:$o[0].href
+                };
+            data.text=data.text.length===0?(data.title.length===0?'[!!无标题!!]':data.title):data.text;
             cache[ytag] = data;
-            $o[0].setAttribute('data-oxtipid','#xdataTip'+data.ytagid);
             return data;
         },
         _init:function(){
-            return;
-            $ytags = $('a[ytag]').bind('mouseenter.xdata',function(e){
-                var ytagid = this.getAttribute('ytag'),
-                    ytagData = J.data.getClickDataById(ytagid);
-                ytagData.ytagid = ytagid;
-                pub.showTip(ytagData);
-                return false;
-            }).bind('mouseleave.xdata',function(e){
-                pub.hideTip(this.getAttribute('ytag'));
-            });
+            $ytags = $('[ytag]');
             pub.rockAndRollAll();
         }
     };
@@ -796,36 +895,6 @@ J(function($,p,pub){
         ytag = cache[ytag]||p.main.addToCache($('[ytag="'+ytag+'"]'));
         return ytag;
     };
-    //show tip
-    pub.showTip = function(obj){
-        var tipId = '#xdataTip'+obj.ytagid;
-            $d = $(tipId);
-        if($d.length===1){
-            pub.get(obj.ytagid).$dom.oxtip('show');
-            return;
-        }
-        var html = Mustache.to_html(tipTpl, obj);
-        J.$body.append(html);
-        pub.get(obj.ytagid).$dom.oxtip({
-            oxtipautohide:false,
-            oxtiptrigger:'null.xdata',
-            oxtipindex:10001
-        }).oxtip('show');
-        
-        $(tipId).bind('mouseenter.xdata',function(e){
-            clearTimeout(tipTimer[this.id.replace('xdataTip','')]);
-        }).bind('mouseleave.xdata',function(e){
-            pub.hideTip(this.id.replace('xdataTip',''));
-        });
-    };
-    //hideTip
-    pub.hideTip = function(id){
-        clearTimeout(tipTimer[id]);
-        tipTimer[id] = setTimeout(function(){
-            pub.get(id).$dom.oxtip('hide');
-        },100);
-    };
-
 });
 /* E YTAG */
 
