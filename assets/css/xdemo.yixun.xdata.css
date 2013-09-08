@@ -4,6 +4,12 @@
 .xdata_c2{
     color:#1d7ad9;
 }
+.xdata_hidden{
+    display: none !important;
+}
+.xdata_visible{
+    display: block !important;
+}
 .xdata_loading {
     display: inline-block;
     height:20px;
@@ -83,6 +89,9 @@
     right:0;
     bottom:0;
     z-index: 10001;
+}
+.xdata_keychart{
+    display: none;
 }
 
 /* xdata ui by feeling 

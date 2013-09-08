@@ -502,10 +502,10 @@ J(function($,p,pub){
                         <input type="date" /><span class="c_tx3">-</span><input type="date" />
                     </div>
 
-                    <div class="data_total">
-                        <div id="js_total" class="data_total_inner">
-                            
-                        </div>
+                    <div id="xdataKeyCharts" class="data_total">
+                        <div id="xdataKeyChart1" class="data_total_inner xdata_keychart xdata_visible"></div>
+                        <div id="xdataKeyChart2" class="data_total_inner xdata_keychart"></div>
+                        <div id="xdataKeyChart3" class="data_total_inner xdata_keychart"></div>
                     </div>
 
                     <div class="data_rank">
@@ -550,12 +550,18 @@ J(function($,p,pub){
     */});
 
     var EVT={
-        'DataTypeChange':'onXDataTypeChange'
+        'DataTypeChange':'onXDataTypeChange',
+        'UIReady':'onXDataUIReady'
     };
 
     p.dataType = {
         value:"1",
-        init:function(){
+        _init:function(){
+            J.$win.bind(EVT.UIReady,function(e){
+                p.dataType._initEvts();
+            });
+        },
+        _initEvts:function(){
             this.$items = $('#xdataType a').bind('click',function(e){
                 p.dataType.$items.removeClass('on');
                 this.className='on';
@@ -566,56 +572,104 @@ J(function($,p,pub){
 
     //key chart
     p.keyChart = {
-        render:function(){
-            var rawData = J.data['InitKeyData'],
-                niceData = this.parseData(rawData),
-                chartData = {
-                    title: {
-                        text: rawData.timespan
-                    },
-                    xAxis: {
-                        type: 'text'//datetime
-                    },
-                    yAxis: {
-                        title: {
-                            text: null
-                        }
-                    },
-                    tooltip: {
-                        crosshairs: true,
-                        shared: true,
-                        valueSuffix: ''
-                    },
-                    legend: {
-                    },
-                    series: [{
-                        name: '点击量',
-                        data: niceData,
-                        zIndex: 1,
-                        marker: {
-                            fillColor: 'white',
-                            lineWidth: 2,
-                            lineColor: Highcharts.getOptions().colors[0]
-                        }
-                    }]
-                };
-            $('#js_total').highcharts(chartData);
+        _init:function(){
+            J.$win.bind(EVT.UIReady,function(e){
+                p.keyChart.render(1);
+            }).bind(EVT.DataTypeChange,function(e,t){
+                p.keyChart.render(parseInt(t));
+            });
         },
-        parseData:function(d){
+        getChartOption:function(dataType){
+            dataType = parseInt(dataType);
+            var rawData = J.data['InitKeyData'],
+                niceData = this.parseData(rawData,dataType),
+                baseOpts = {
+                title: {
+                    text: rawData.timespan
+                },
+                xAxis: {
+                    type: 'text'//datetime
+                },
+                yAxis: {
+                    title: {
+                        text: null
+                    }
+                },
+                tooltip: {
+                    crosshairs: true,
+                    shared: true,
+                    valueSuffix: ''
+                },
+                legend: {
+                },
+                series: [{
+                    name: '点击量',
+                    data: niceData,
+                    zIndex: 1,
+                    marker: {
+                        fillColor: 'white',
+                        lineWidth: 2,
+                        lineColor: Highcharts.getOptions().colors[dataType-1]
+                    }
+                }]
+            };
+            switch(dataType){
+                case 1:
+                break;
+                case 2:
+                    baseOpts.series[0].name='下单量';
+                break;
+                case 3:
+                    baseOpts.series[0].name='转化率';
+                break;
+            };//switch
+            return baseOpts;
+        },
+        render:function(dataType){
+            if(!this.$charts){
+                this.$charts=$('#xdataKeyCharts').find('.xdata_keychart');
+            }
+            var $chart = this.$charts.removeClass('xdata_visible').eq(dataType-1).addClass('xdata_visible');
+            if(!$chart[0].getAttribute('data-hightcharts')){
+                $chart.highcharts(this.getChartOption(dataType));
+                $chart[0].setAttribute('data-hightcharts','1');
+            }
+        },
+        parseData:function(d,dataType){
             d = d.data.today;//144个点，说明是10分钟一个点，我们转换成一个小时一个点
-            var len = d.length;
-            var r =[],dataByHour=null,hour=1;
+            var len = d.length,
+                r =[],
+                dataByHour=null,
+                tempClickNum=0,
+                tempOrderNum=0,
+                hour=1;
             for(var i=1;i<=len;i++){
                 dataByHour=dataByHour||[hour,0];
                 if(i%6===0){
+                    if(dataType===3){
+                        dataByHour[1]=tempClickNum>0?(tempOrderNum*100/tempClickNum).toFixed(2):0;
+                        dataByHour[1] = parseFloat(dataByHour[1]);
+                    };
                     r.push(dataByHour);
                     hour++;
                     dataByHour=null;
-                }else{
-                    dataByHour[1]+=d[i].click_num;
-                }
+                    tempClickNum=0;
+                    tempOrderNum=0;
+                    continue;
+                };
+                switch(dataType){
+                    case 1:
+                        dataByHour[1]+=d[i].click_num;
+                    break;
+                    case 2:
+                        dataByHour[1]+=d[i].order_num;
+                    break;
+                    case 3:
+                        tempClickNum+=d[i].click_num;
+                        tempOrderNum+=d[i].order_num;
+                    break;
+                };//switch
             };
-            console.log(r);
             return r;
         }
     };
@@ -641,25 +695,24 @@ J(function($,p,pub){
                     p.main.showError(err);
                     return;
                 };
-                
-                p.dataType.init();
                 //这里主数据和点击数据已经拿到
                 p.main.onDataReady();
             });
         },
         onDataReady:function(){
             this.$startUp.removeClass('xdata_show').onTransitioned(function(){
-                J.$body.append(coreTpl);
-                p.main.$ui = $('#xdataWrap');
-                $('#xdataClose').bind('click',function(e){
-                    p.main[p.main.visible?'hide':'show'].call(p.main);
-                    return false;
-                });
-                p.main.$startUp.onTransitioned(false);
-
-                p.keyChart.render();
-
+                p.main.render();
             });
+        },
+        render:function(){
+            J.$body.append(coreTpl);
+            p.main.$ui = $('#xdataWrap');
+            $('#xdataClose').bind('click',function(e){
+                p.main[p.main.visible?'hide':'show'].call(p.main);
+                return false;
+            });
+            p.main.$startUp.onTransitioned(false);
+            J.$win.trigger(EVT.UIReady);
         },
         showError:function(txt){
             this.$startUp.html('<span class="xdata_err">'+txt.toString()+'</span>');
