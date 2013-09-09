@@ -43,6 +43,9 @@
     from {transform: rotate(0deg);}
     to {transform: rotate(359deg);}
 }
+.xdata_tagcover{position:absolute;z-index:10000;color:#fff;}
+.xdata_tagcover_bg{position: absolute;z-index: 1;top:0;left:0;right:0;bottom:0;background-color: #000;opacity: 0.6;}
+.xdata_tagcover_bd{position: relative;z-index: 2;padding:10px;text-align: center;}
 .xdata_bootup{
     background: #333;
     width:90px;
@@ -105,6 +108,10 @@
     .xdata_rank{
         display: none;
     }
+    /* 自定义单元 */
+    .xdata_mods ul{padding-top: 10px;}
+    .xdata_mods li{width:50%;float:left;display: inline;}
+    .xdata_mods a {padding: 5px;}
 
 /* xdata ui by feeling 
 ===================================*/

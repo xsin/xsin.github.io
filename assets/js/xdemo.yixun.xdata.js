@@ -523,10 +523,7 @@ J(function($,p,pub){
 
                         <div class="data_rank_list">
                             <h3>自定义单元</h3>
-                            <ul>
-                                <li><a href="javascript:;">天黑黑</a></li>
-                                <li><a href="javascript:;">三星</a></li>
-                            </ul>
+                            <div id="xdataMods" class="xdata_mods"></div>
                         </div>
                         
                         <div id="xdataRankList" class="data_rank_list">
@@ -539,12 +536,12 @@ J(function($,p,pub){
                 </div>
             </div>
 
-            <div id="xdataPop" class="data_pop">
+            <div id="xdataPop" class="data_pop xdata_hidden">
                 <div class="data_time">
                     <input class="xdata_sdate" type="date" /><span class="c_tx3">-</span><input class="xdata_edate" type="date" />
                 </div>
                 <div class="data_pop_con">
-                    <div id="js_pop"></div>
+                    <div id="xdataModChart"></div>
                 </div>
             </div>
         </div>
@@ -672,6 +669,47 @@ J(function($,p,pub){
                 };//switch
             };
             return r;
+        }
+    };
+    //_ytag组-模块
+    p.ytagGroup={
+        tpl:J.heredoc(function(){/*
+            {{#empty}}
+            <div class="xdata_alert">无数据</div>
+            {{/empty}}
+            {{^empty}}
+            <ul class="clearfix">
+            {{#items}}
+            <li><a href="javascript:;" data-ytag="{{_ytag}}" data-ytagattr="_ytag">{{selector}}</a></li>
+            {{/items}}
+            </ul>
+            {{/empty}}
+        */}),
+        _init:function(){
+            J.$win.bind(EVT.UIReady,function(e){
+                p.ytagGroup.rockAndRoll();
+            });
+        },
+        rockAndRoll:function(){
+            this.$d = $('#xdataMods');
+            this.$groups = $('[_ytag]');
+            this.data=[];
+            var tempObj = null;
+            this.$groups.each(function(i,o){
+                tempObj = {_ytag:o.getAttribute('_ytag')};
+                tempObj.selector='[_ytag="'+tempObj._ytag+'"]';
+                tempObj.ytags=[];
+                o=$(o);
+                o.find('[ytag]').each(function(i1,o1){
+                    tempObj.ytags.push(o1.getAttribute('ytag'));
+                });
+                p.ytagGroup.data.push(tempObj);
+            });
+            this.render();
+
+        },
+        render:function(){
+            this.$d[0].innerHTML = Mustache.to_html(this.tpl,{empty:(this.data.length==0),items:this.data});
         }
     };
     //主UI框架
@@ -859,28 +897,89 @@ J(function($,p,pub){
     var cache = {},
     $ytags;
     p.main = {
-        addToCache:function($o){
+        coverTpl:J.heredoc(function(){/*
+            <div id="xdataCover{{id}}" class="xdata_tagcover">
+                <div class="xdata_tagcover_bg"></div>
+                <div class="xdata_tagcover_bd">{{coverTip}}</div>
+            </div>
+        */}),
+        $cover:null,
+        addToCache:function($o,attrName){
             if($o.length===0){
                 return null;
             }
-            var off = $o.offset(),
-                ytag = $o[0].getAttribute('ytag'),
+            attrName = attrName||'ytag';
+            var $parent = $o.parent(),
+                off = $o.offset(),
+                ytag = $o[0].getAttribute(attrName),
                 data = {
+                    id:(attrName+ytag),
+                    ytagAttr:attrName,
                     ytagid:ytag,
                     $dom:$o,
-                    x:off.left,
-                    y:off.top,
+                    left:off.left,
+                    top:off.top,
                     title:$.trim($o[0].title),
                     text:$.trim($o.text()),
-                    href:$o[0].href
+                    href:$o[0].href,
+                    selector:('[$="'+ytag+'"]').replace('$',attrName),
+                    width:$o.outerWidth(),
+                    height:$o.outerHeight(),
+                    parentWidth:$parent.outerWidth(),
+                    parentHeight:$parent.outerHeight()
                 };
             data.text=data.text.length===0?(data.title.length===0?'[!!无标题!!]':data.title):data.text;
-            cache[ytag] = data;
+            cache[data.id] = data;
             return data;
         },
         _init:function(){
+            $('[data-ytag]').live('click',function(e){
+                var ytagData = J.ytag.get(this.getAttribute('data-ytag'),this.getAttribute('data-ytagattr'));
+                $('html,body').stop().animate({
+                    scrollTop:ytagData.top
+                },'fast',function(){
+                    p.main.showCover(ytagData);
+                });
+            });
             $ytags = $('[ytag]');
             pub.rockAndRollAll();
+        },
+        showCover:function(tagData){
+            if(this.$cover){
+                this.$cover.addClass('xdata_hidden');
+            }
+            var coverId = '#xdataCover'+tagData.id,
+                $cover= $(coverId),
+                cssProps={
+                    position:'fixed',
+                    top:0,
+                    left:0,
+                    right:401,
+                    width:'auto',
+                    height:'auto',
+                    color:'red'
+                },
+                isHidden = tagData.$dom.is(':hidden');
+            tagData.coverTip = tagData.selector+(isHidden?'当前处于隐藏状态...':'');
+            if(isHidden){
+                pub.removeFromCache(tagData.ytagid,tagData.ytagAttr);
+            }
+
+            if($cover.length===1){
+                this.$cover=$cover.removeClass('xdata_hidden');
+                if(isHidden){
+                    this.$cover.css(cssProps).find('.xdata_tagcover_bd').html(tagData.coverTip);
+                }
+                return;
+            };
+            J.$body.append(Mustache.to_html(this.coverTpl,tagData));
+            cssProps = isHidden?cssProps:({
+                top:tagData.top,
+                left:tagData.left,
+                width:(tagData.width>tagData.parentWidth?tagData.parentWidth:tagData.width),
+                height:(tagData.height>tagData.parentHeight?tagData.parentHeight:tagData.height)
+            });
+            this.$cover = $(coverId).css(cssProps);
         }
     };
     //caculate all ytag's data
@@ -891,9 +990,14 @@ J(function($,p,pub){
     };
 
     //get a ytag's data
-    pub.get=function(ytag){
-        ytag = cache[ytag]||p.main.addToCache($('[ytag="'+ytag+'"]'));
+    pub.get=function(ytag,attrName){
+        attrName = attrName||'ytag';
+        ytag = cache[(attrName+ytag)]||p.main.addToCache($( ('[$="'+ytag+'"]').replace('$',attrName) ),attrName);
         return ytag;
+    };
+    pub.removeFromCache=function(ytag,attrName){
+        attrName = attrName||'ytag';
+        cache[(attrName+ytag)]=null;
     };
 });
 /* E YTAG */
