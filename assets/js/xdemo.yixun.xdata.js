@@ -373,10 +373,10 @@ J(function($,p,pub){
     var clickStreamData = function(_type,_params,_cbk){
         if (!isParamsReady) {
             _cbk('获取统计参数失败！');
-            return;
+            return null;
         };
-        $.ajax({
-            type: "GET",
+        var jqXHR=$.ajax({
+            type: "POST",
             url: 'http://statistic.yixun.com/json.php?mod=stat&act='+_type,
             data: _params,
             dataType: 'json'
@@ -385,6 +385,7 @@ J(function($,p,pub){
         }).done(function(data,txtStatus,jqXHR){
             _cbk(null,data);
         });
+        return jqXHR;
     };
     //获取日期数据
     pub.getDateTimeStr=function(dObj,cfg){
@@ -463,7 +464,7 @@ J(function($,p,pub){
             areasInfo:areaid,
             page_tag_ids:"-1"
         },_params||{});
-        clickStreamData('DragClickData',_params,cbk);
+        return clickStreamData('DragClickData',_params,cbk);
     };
 
     pub.EVT = {
@@ -536,12 +537,12 @@ J(function($,p,pub){
                 </div>
             </div>
 
-            <div id="xdataPop" class="data_pop xdata_hidden">
+            <div id="xdataPop1" class="data_pop xdata_hidden">
                 <div class="data_time">
-                    <input class="xdata_sdate" type="date" /><span class="c_tx3">-</span><input class="xdata_edate" type="date" />
+                    <input id="xdataPop1Date1" class="xdata_sdate1" type="date" /><span class="c_tx3">-</span><input id="xdataPop1Date2" class="xdata_edate" type="date" />
                 </div>
                 <div class="data_pop_con">
-                    <div id="xdataModChart"></div>
+                    <div id="xdataYTagChart" class="xdata_ytagchart"><img class="xdata_loading1" src="http://static.gtimg.com/icson/img/common/loading.gif"/></div>
                 </div>
             </div>
         </div>
@@ -680,7 +681,7 @@ J(function($,p,pub){
             {{^empty}}
             <ul class="clearfix">
             {{#items}}
-            <li><a href="javascript:;" data-ytag="{{_ytag}}" data-ytagattr="_ytag">{{selector}}</a></li>
+            <li><a id="xdataLnk{{id}}" href="javascript:;" data-ytag="{{_ytag}}" data-ytagattr="_ytag">{{selector}}</a></li>
             {{/items}}
             </ul>
             {{/empty}}
@@ -698,11 +699,6 @@ J(function($,p,pub){
             this.$groups.each(function(i,o){
                 tempObj = {_ytag:o.getAttribute('_ytag')};
                 tempObj.selector='[_ytag="'+tempObj._ytag+'"]';
-                tempObj.ytags=[];
-                o=$(o);
-                o.find('[ytag]').each(function(i1,o1){
-                    tempObj.ytags.push(o1.getAttribute('ytag'));
-                });
                 p.ytagGroup.data.push(tempObj);
             });
             this.render();
@@ -758,6 +754,8 @@ J(function($,p,pub){
                 .end()
                 .find('.xdata_edate').val(J.data.getDateTimeStr(today,{len:10,dayDiff:1}))
                 .end()
+                .find('.xdata_sdate1').val(J.data.getDateTimeStr(new Date(),{len:10,dayDiff:-7}))
+                .end()
                 .bind('mouseenter',function(e){
                     clearTimeout(p.main.autoHideTimer);
                 })/*.bind('mouseleave',function(e){
@@ -794,7 +792,7 @@ J(function($,p,pub){
             {{^empty}}
             <ol>
             {{#items}}
-            <li><a href="javascript:;" data-ytag="{{ytagid}}" data-href="{{href}}" title="{{title}}">{{text}}</a><sup>{{val}}</sup></li>
+            <li><a id="xdataLnk{{id}}" href="javascript:;" data-ytag="{{ytagid}}" data-href="{{href}}" title="{{title}}">{{text}}</a><sup>{{val}}</sup></li>
             {{/items}}
             </ol>
             {{/empty}}
@@ -888,6 +886,198 @@ J(function($,p,pub){
             return arrData;
         }
     };
+    //ytag chart
+    p.ytagChart = {
+        $d:null,
+        $chart:null,
+        chart:null,
+        isLoading:false,
+        hasAjaxError:false,
+        data:[],
+        dataType:1,
+        jqXHR:null,
+        _init:function(){
+            J.$win.bind(EVT.UIReady,function(e){
+                p.ytagChart.$d = $('#xdataPop1');
+                p.ytagChart.$chart = $('#xdataYTagChart');
+            }).bind(EVT.DataTypeChange,function(e,t){
+                p.ytagChart.dataType=parseInt(t);
+            });
+        },
+        show:function(tagData,$trigger){
+
+            if(this.isLoading&&this.jqXHR&& this.jqXHR.readyState != 4){
+                this.jqXHR.abort();
+                this.isLoading=false;
+            }
+
+            this.$d.removeClass('xdata_hidden');
+            var top = 0;
+            if($trigger){
+                top = $trigger.offset().top-p.main.$ui.offset().top-10;
+            }
+            this.$d.css({
+                bottom:top
+            });
+            this.loadData(tagData);
+        },
+        showTip:function(txt){
+            txt = txt || '<img class="xdata_loading1" src="http://static.gtimg.com/icson/img/common/loading.gif"/>';
+            p.ytagChart.$chart.html(txt);
+        },
+        loadData:function(tagData){
+            var me = this,
+                dates=[],
+                tempDate = null,
+                sdate = document.getElementById('xdataPop1Date1').value,
+                edate = document.getElementById('xdataPop1Date2').value;
+
+            if(sdate==''||edate==''){
+                alert('开始时间和结束时间不能为空！');
+                return;
+            };
+
+            sdate = new Date(sdate);
+            edate = new Date(edate);
+            if(sdate>edate){
+                tempDate = sdate;
+                sdate=edate;
+                edate=tempDate;
+            };
+
+            while(sdate<edate){
+                dates.push(new Date(sdate.getFullYear(),sdate.getMonth(),sdate.getDate()));
+                sdate.setDate(sdate.getDate()+1);
+            };//while
+
+            this.showTip();
+            this.isLoading=true;
+            this.hasAjaxError=false;
+            //TODO:需要开发提供一个取多天数据的接口
+            this.data=[];
+            this.getDataByDates(tagData.ytags,dates,function(err,d){
+                if(err){
+                    me.showTip('<div class="xdata_error">'+err.toString()+'</div>');
+                    return;
+                }
+                me.render(d);
+            });
+        },
+        parseData:function(d,dataType){
+            var len = d.length,
+                r =[],
+                dataByTime=null;
+            for(var i=0;i<len;i++){
+                dataByTime=[d[i].t,0];
+                switch(dataType){
+                    case 1:
+                        dataByTime[1]=d[i].d.data.data[0].click_num;
+                    break;
+                    case 2:
+                        dataByTime[1]=d[i].d.data.data[0].order_num;
+                    break;
+                    case 3:
+                        dataByTime[1]=parseFloat(d[i].d.data.data[0].click_trans_rate);
+                    break;
+                };//switch
+                r.push(dataByTime);
+            };
+            return r;
+        },
+        getChartOption:function(rawData,dataType){
+            dataType = parseInt(dataType);
+            var niceData = this.parseData(rawData,dataType),
+                baseOpts = {
+                chart:{
+                    height:300
+                },
+                title: {
+                    text: ' '
+                },
+                xAxis: {
+                    type: 'datetime'//datetime
+                },
+                yAxis: {
+                    title: {
+                        text: null
+                    }
+                },
+                tooltip: {
+                    crosshairs: true,
+                    shared: true,
+                    valueSuffix: ''
+                },
+                legend: {
+                },
+                series: [{
+                    name: '点击量',
+                    data: niceData,
+                    zIndex: 1,
+                    marker: {
+                        fillColor: 'white',
+                        lineWidth: 2,
+                        lineColor: Highcharts.getOptions().colors[dataType-1]
+                    }
+                }]
+            };
+            switch(dataType){
+                case 1:
+                break;
+                case 2:
+                    baseOpts.series[0].name='下单量';
+                break;
+                case 3:
+                    baseOpts.series[0].name='转化率';
+                break;
+            };//switch
+            return baseOpts;
+        },
+        render:function(data){
+            var chartOpts = this.getChartOption(data,this.dataType);
+            if(!this.chart){
+                this.$chart.highcharts(chartOpts);
+                this.chart=this.$chart.highcharts();
+                return;
+            };
+            this.chart.series[0].update(chartOpts.series[0]);
+        },
+        getDataByDates:function(tagids,dates,cbk){
+            if(dates.length==0){
+                cbk(null,this.data);
+                this.isLoading=false;
+                this.jqXHR=null;
+                return;
+            }
+            var date = dates.splice(0,1)[0],
+                timeStamp = date.getTime(),
+                sdate = J.data.getDateTimeStr(date),
+                edate = J.data.getDateTimeStr(date,{dayDiff:1}),
+                _params = {
+                    date_type:'custom',
+                    start_date:sdate,
+                    end_date:edate,
+                    page_tag_ids:tagids.join(',')
+                },
+                me = this;
+
+            this.jqXHR=J.data.getRangeClickData(_params,function(err,d){
+                if(err){
+                    me.hasAjaxError=true;
+                    cbk(err);
+                    return;
+                }
+                me.data.push({
+                    t:timeStamp,
+                    d:d
+                });
+                //递归
+                me.getDataByDates(tagids,dates,cbk);
+            });
+        }
+    };
+    pub.showYTagChart = function(tagData,$trigger){
+        p.ytagChart.show(tagData,$trigger);
+    };
 });
 /* E CoreUI */
 
@@ -904,6 +1094,7 @@ J(function($,p,pub){
             </div>
         */}),
         $cover:null,
+        $ytagTrigger:null,
         addToCache:function($o,attrName){
             if($o.length===0){
                 return null;
@@ -929,20 +1120,45 @@ J(function($,p,pub){
                     parentHeight:$parent.outerHeight()
                 };
             data.text=data.text.length===0?(data.title.length===0?'[!!无标题!!]':data.title):data.text;
+            data.ytags=this.getRelatedYTags($o,ytag,attrName);
             cache[data.id] = data;
             return data;
         },
+        getRelatedYTags:function($tag,ytag,attrName){
+            var tags = [];
+            if (attrName==='_ytag') {
+                $tag.find('[ytag]').each(function(i1,o1){
+                    tags.push(o1.getAttribute('ytag'));
+                });
+            }else{
+                tags.push(ytag);
+            };
+            return tags;
+        },
         _init:function(){
             $('[data-ytag]').live('click',function(e){
-                var ytagData = J.ytag.get(this.getAttribute('data-ytag'),this.getAttribute('data-ytagattr'));
-                $('html,body').stop().animate({
-                    scrollTop:ytagData.top
-                },'fast',function(){
-                    p.main.showCover(ytagData);
-                });
+                p.main.onClickYTagTrigger(this);
             });
             $ytags = $('[ytag]');
             pub.rockAndRollAll();
+        },
+        onClickYTagTrigger:function(elmTrigger){
+            var clOn = 'xdata_ytagtrigger_on';
+            if(this.$ytagTrigger){
+                if(this.$ytagTrigger[0].id===elmTrigger.id){
+                    return;
+                };
+                this.$ytagTrigger.removeClass(clOn);
+            }
+            this.$ytagTrigger = $(elmTrigger).addClass(clOn);
+
+            var ytagData = J.ytag.get(elmTrigger.getAttribute('data-ytag'),elmTrigger.getAttribute('data-ytagattr'));
+            $('body').stop().animate({
+                scrollTop:ytagData.top
+            },'fast',function(){
+                p.main.showCover(ytagData);
+                J.ui.showYTagChart(ytagData,p.main.$ytagTrigger);
+            });
         },
         showCover:function(tagData){
             if(this.$cover){

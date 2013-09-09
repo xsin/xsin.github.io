@@ -14,7 +14,7 @@
     display: inline-block;
     height:20px;
     width:20px;
-    margin:0px auto;
+    margin:0 auto;
     position:relative;
     -webkit-animation: xdataRotation .6s infinite linear;
     -moz-animation: xdataRotation .6s infinite linear;
@@ -46,6 +46,7 @@
 .xdata_tagcover{position:absolute;z-index:10000;color:#fff;}
 .xdata_tagcover_bg{position: absolute;z-index: 1;top:0;left:0;right:0;bottom:0;background-color: #000;opacity: 0.6;}
 .xdata_tagcover_bd{position: relative;z-index: 2;padding:10px;text-align: center;}
+.xdata_ytagtrigger_on{background-color: #efefef;font-weight: bold;}
 .xdata_bootup{
     background: #333;
     width:90px;
@@ -107,11 +108,16 @@
     /* 排行榜 */
     .xdata_rank{
         display: none;
+        max-height: 400px;
+        overflow: auto;
     }
     /* 自定义单元 */
+    .xdata_mods{max-height: 400px;overflow: auto;}
     .xdata_mods ul{padding-top: 10px;}
-    .xdata_mods li{width:50%;float:left;display: inline;}
     .xdata_mods a {padding: 5px;}
+
+.xdata_ytagchart .xdata_loading,.xdata_ytagchart .xdata_loading1{display: block;margin:10px auto;}
+
 
 /* xdata ui by feeling 
 ===================================*/
@@ -161,13 +167,13 @@
         }
 
     /*===== 详情 =====*/
-        .data_pop{position:absolute; right:401px; top:405px; padding:20px; width:600px; background-color:#FFF; box-shadow:0 0 5px rgba(0,0,0,0.4);}
+        .data_pop{position:absolute; right:401px; bottom:405px; padding:20px; width:600px; background-color:#FFF; box-shadow:0 0 5px rgba(0,0,0,0.4);transition:all .2s ease-out;}
         .data_pop:after{
             overflow:hidden;
             position:absolute;
             content:" ";
             right:-20px;
-            top:20px;
+            bottom:20px;
             width:0;
             height:0;
             border-width:10px;
