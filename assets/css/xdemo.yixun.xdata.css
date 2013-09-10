@@ -1,3 +1,68 @@
+/* ico & btn
+--------------------------------------*/
+.xdata_icon{position: relative;z-index: 1;display: inline-block;font-family: "Lucida Grande",tahoma,arial;}
+.xdata_icon b{display: inline-block;padding-left:24px;height: 18px;line-height: 18px;}
+.xdata_icon:before,.xdata_icon:after,.xdata_icon b:before,.xdata_icon b:after{
+    content: "";
+    position: absolute;
+    top: 50%;
+    left:0;
+}
+.xdata_icon_retweet:before,
+.xdata_icon_retweet b:before {
+    border-style:solid;
+    border-color:transparent;
+    background:transparent;
+}
+.xdata_icon_retweet:before {
+    z-index:-1;
+    left:12px;
+    margin-top:2px;
+    border-width:5px 5px 0;
+    border-left-color:#fff;
+    border-top-color:#c55500;
+}
+.xdata_icon_retweet b:before {
+    left:-1px;
+    margin-top:-6px;
+    border-width:0 5px 5px;
+    border-right-color:#fff;
+    border-bottom-color:#c55500;
+}
+.xdata_icon_retweet b:after {
+    z-index:-2;
+    left:3px;
+    width:10px;
+    height:5px;
+    margin-top:-5px;
+    border:3px solid #c55500;
+    background:transparent;
+}
+.xdata_icon_retweet:hover b{color:#730800;}
+.xdata_icon_retweet:hover:before {
+    border-top-color:#730800;
+}
+.xdata_icon_retweet b:hover:before{
+    border-bottom-color:#730800;
+    background:transparent;
+}
+.xdata_icon_retweet b:hover:after{
+    border-color:#730800;
+}
+
+.xdata_btn{font-family: "Lucida Grande",tahoma,arial,\5b8b\4f53;}
+.xdata_btn_retweet{
+    padding: 2px 4px;
+    border: 1px solid #bbb;
+    display: inline-block;
+}
+.xdata_error,.xdata_warning{text-align: center;}
+.xdata_error{
+    color:#d70000;
+}
+.xdata_warning{
+    color:#ff7300;
+}
 .xdata_c1{
     color:#F70;
 }
@@ -116,8 +181,11 @@
     .xdata_mods ul{padding-top: 10px;}
     .xdata_mods a {padding: 5px;}
 
-.xdata_ytagchart .xdata_loading,.xdata_ytagchart .xdata_loading1{display: block;margin:10px auto;}
+.xdata_ytagchart .xdata_loading,.xdata_ytagcharttip .xdata_loading1{display: block;margin:10px auto;}
 
+.xdata_keycharttip,.xdata_keycharttip_bg{position: absolute;top:0;left:0;bottom: 0;right:0;}
+.xdata_keycharttip_bg{z-index: 1;background-color: #000;opacity: 0.5;}
+.xdata_keycharttip_bd{position: absolute;z-index: 2;left:0;top:30%;right:0;text-align: center;}
 
 /* xdata ui by feeling 
 ===================================*/
@@ -141,7 +209,7 @@
 
 
     /*===== 数据趋势 =====*/
-    .data_total{padding:10px 0; text-align:center;}
+    .data_total{padding:10px 0; text-align:center;position: relative;}
         .data_total_inner{margin:auto; width:90%; height:200px;}
 
 
@@ -167,7 +235,7 @@
         }
 
     /*===== 详情 =====*/
-        .data_pop{position:absolute; right:401px; bottom:405px; padding:20px; width:600px; background-color:#FFF; box-shadow:0 0 5px rgba(0,0,0,0.4);transition:all .2s ease-out;}
+        .data_pop{position:fixed; right:401px; bottom:0; padding:20px; width:600px; background-color:#FFF; box-shadow:0 0 5px rgba(0,0,0,0.4);transition:all .2s ease-out;}
         .data_pop:after{
             overflow:hidden;
             position:absolute;

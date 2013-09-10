@@ -351,7 +351,11 @@ J.log = function(obj){(window['console']||{log:function(x){alert(x);}}).log(obj)
 J.$win = $(window);
 J.$body=$('body');
 /* E J */
-
+Highcharts.setOptions({
+    global: {
+        useUTC: false
+    }
+});
 /* S 数据 */
 J(function($,p,pub){
     pub.id="data";
@@ -426,7 +430,7 @@ J(function($,p,pub){
             warehouse_id:wsid, 
             areasInfo:areaid
         },_params||{});
-        clickStreamData('PageKeyData',_params,cbk);
+        return clickStreamData('PageKeyData',_params,cbk);
     };
     //获取点击数据
     pub.getClickData = function(_params,cbk){
@@ -439,13 +443,13 @@ J(function($,p,pub){
             warehouse_id:wsid, 
             areasInfo:areaid
         },_params||{});
-        clickStreamData('PageClickData',_params,cbk);
+        return clickStreamData('PageClickData',_params,cbk);
     };
     //获取单个ytag的点击数据
     pub.getClickDataById = function(id){
         var obj = null;
-        for(var c in pub['InitClickData'].data){
-            obj = pub['InitClickData'].data[c];
+        for(var c in pub['CurrentClickData'].data){
+            obj = pub['CurrentClickData'].data[c];
             if(obj.page_tag===id){
                 break;
             }
@@ -466,27 +470,63 @@ J(function($,p,pub){
         },_params||{});
         return clickStreamData('DragClickData',_params,cbk);
     };
-
-    pub.EVT = {
-        'InitKeyData':'onXDataInitKeyData',
-        'InitClickData':'onXDataInitClickData'
-    };
-
-    pub.init = function(){
-        //获取主数据和点击数据
-        pub.getKeyData(null,function(err,data){
-            pub["InitKeyData"] = data;
-            J.$win.trigger(pub.EVT.InitKeyData,[err,data]);
-            if(!err){
-                pub.getClickData(null,function(err1,data1){
-                    pub['InitClickData']=data1;
-                    J.$win.trigger(pub.EVT.InitClickData,[err1,data1]);
-                });
+    /**
+     * 获取主数据和点击数据
+     * @params {Object} _params 为null时表示是第一次数据加载
+     * @params {Function} cbk 回调函数
+     */
+    pub.getKeyAndClickData = function(_params,cbk){
+        //获取当天主数据和点击数据
+        pub['jqXHRKeyData']=pub.getKeyData(_params,function(err,data){
+            pub["CurrentKeyData"] = data;
+            pub['jqXHRKeyData'] = null;
+            if(_params===null){
+                J.$win.trigger(pub.EVT.InitKeyData,[err,data]);
             }
+            if(err){
+                cbk&&cbk(err);
+                return;
+            }
+            pub['jqXHRClickData']=pub.getClickData(_params,function(err1,data1){
+                pub['CurrentClickData']=data1;
+                pub['jqXHRClickData']=null;
+                if(_params===null){
+                    J.$win.trigger(pub.EVT.InitClickData,[err1,data1]);
+                }else{
+                    J.$win.trigger(pub.EVT.ClickDataChange,[err1,data1]);
+                }
+                if(err1){
+                    cbk&&cbk(err1);
+                    return;
+                }
+                cbk&&cbk(null,data,data1);
+            });
         });
     };
-
-
+    /**
+     * 停止主数据和点击数据的ajax请求
+     */
+    pub.abortKeyAndClickDataRequest = function(){
+        var jqXHR = pub['jqXHRKeyData'];
+        if(jqXHR&&jqXHR.readyState != 4){
+            jqXHR.abort();
+        };
+        jqXHR = pub['jqXHRClickData'];
+        if(jqXHR&&jqXHR.readyState != 4){
+            jqXHR.abort();
+        };
+    };
+    pub.EVT = {
+        'InitKeyData':'onXDataInitKeyData',
+        'InitClickData':'onXDataInitClickData',
+        'ClickDataChange':'onXDataClickDataChanged'
+    };
+    /**
+     * 初始化数据
+     */
+    pub.init = function(){
+        pub.getKeyAndClickData(null);
+    };
 });
 /* E 数据 */
 
@@ -507,10 +547,12 @@ J(function($,p,pub){
 
                 <div class="data_show">
                     <div class="data_time">
-                        <input class="xdata_sdate" id="xdataKeyChartDate1" type="date"/><span class="c_tx3">-</span><input class="xdata_edate" id="xdataKeyChartDate2" type="date" />
+                        <input class="xdata_date xdata_sdate" id="xdataKeyChartDate1" type="date"/><span class="c_tx3">-</span><input class="xdata_date xdata_edate" id="xdataKeyChartDate2" type="date" />
+                        <a id="xdataRetweet1" href="javascript:;" class="xdata_btn_retweet"><i class="xdata_icon xdata_icon_retweet"><b>刷新</b></i></a>
                     </div>
 
                     <div id="xdataKeyCharts" class="data_total">
+                        <div id="xdataKeyChartTip" class="xdata_keycharttip xdata_hidden"><div class="xdata_keycharttip_bg"></div><div class="xdata_keycharttip_bd"></div></div>
                         <div id="xdataKeyChart1" class="data_total_inner xdata_keychart xdata_visible"></div>
                         <div id="xdataKeyChart2" class="data_total_inner xdata_keychart"></div>
                         <div id="xdataKeyChart3" class="data_total_inner xdata_keychart"></div>
@@ -539,10 +581,12 @@ J(function($,p,pub){
 
             <div id="xdataPop1" class="data_pop xdata_hidden">
                 <div class="data_time">
-                    <input id="xdataPop1Date1" class="xdata_sdate1" type="date" /><span class="c_tx3">-</span><input id="xdataPop1Date2" class="xdata_edate" type="date" />
+                    <input id="xdataPop1Date1" class="xdata_date xdata_sdate1" type="date" /><span class="c_tx3">-</span><input id="xdataPop1Date2" class="xdata_date xdata_edate" type="date" />
+                    <a id="xdataRetweet2" href="javascript:;" class="xdata_btn_retweet"><i class="xdata_icon xdata_icon_retweet"><b>刷新</b></i></a>
                 </div>
                 <div class="data_pop_con">
-                    <div id="xdataYTagChart" class="xdata_ytagchart"><img class="xdata_loading1" src="http://static.gtimg.com/icson/img/common/loading.gif"/></div>
+                    <div id="xdataYTagChartTip" class="xdata_ytagcharttip xdata_hidden"></div>
+                    <div id="xdataYTagChart" class="xdata_ytagchart"></div>
                 </div>
             </div>
         </div>
@@ -552,6 +596,7 @@ J(function($,p,pub){
         'DataTypeChange':'onXDataTypeChange',
         'UIReady':'onXDataUIReady'
     };
+    pub.EVT=EVT;
     //数据类型切换
     p.dataType = {
         value:"1",
@@ -571,23 +616,46 @@ J(function($,p,pub){
 
     //概要图表
     p.keyChart = {
+        dataType:1,
+        dateType:'today',
+        dateRange:'',
+        isLoading:false,
+        hasAjaxError:false,
+        $tip:null,
+        cacheKeyData:{},
+        cacheClickData:{},
+        keyData:null,
+        clickData:null,
         _init:function(){
             J.$win.bind(EVT.UIReady,function(e){
-                p.keyChart.render(1);
+                p.keyChart.onXDataUIReady();
             }).bind(EVT.DataTypeChange,function(e,t){
-                p.keyChart.render(parseInt(t));
+                p.keyChart.dataType=(t=parseInt(t));
+                p.keyChart.render(t);
+            });
+        },
+        onXDataUIReady:function(){
+            p.keyChart.render(1);
+            this.$tip = $('#xdataKeyChartTip');
+            this.$tipBD=this.$tip.find('.xdata_keycharttip_bd');
+            //刷新按钮
+            $('#xdataRetweet1').bind('click',function(e){
+                if(p.keyChart.isLoading){
+                    return;
+                };
+                p.keyChart.loadData();
             });
         },
         getChartOption:function(dataType){
             dataType = parseInt(dataType);
-            var rawData = J.data['InitKeyData'],
+            var rawData = J.data['CurrentKeyData'],
                 niceData = this.parseData(rawData,dataType),
                 baseOpts = {
                 title: {
                     text: ' '
                 },
                 xAxis: {
-                    type: 'text'//datetime
+                    type: 'datetime'//datetime
                 },
                 yAxis: {
                     title: {
@@ -612,38 +680,145 @@ J(function($,p,pub){
                     }
                 }]
             };
+            rawData.total.click_num=parseInt((rawData.total.click_num+'').replace(',',''));
+            rawData.total.order_num=parseInt((rawData.total.order_num+'').replace(',',''));
+            rawData.total.click_trans_rate = rawData.total.click_num==0?0:(rawData.total.order_num*100/rawData.total.click_num).toFixed(2);
             switch(dataType){
                 case 1:
+                    baseOpts.series[0].name='点击量';
+                    baseOpts.title.text = '共'+rawData.total.click_num+'次';
                 break;
                 case 2:
                     baseOpts.series[0].name='下单量';
+                    baseOpts.title.text = '共'+rawData.total.order_num+'单';
                 break;
                 case 3:
                     baseOpts.series[0].name='转化率';
+                    baseOpts.title.text = '平均'+rawData.total.click_trans_rate+'%';
                 break;
             };//switch
             return baseOpts;
         },
-        render:function(dataType){
+        render:function(dataType,updateChart){
             if(!this.$charts){
                 this.$charts=$('#xdataKeyCharts').find('.xdata_keychart');
             }
-            var $chart = this.$charts.removeClass('xdata_visible').eq(dataType-1).addClass('xdata_visible');
+            var $chart = this.$charts.removeClass('xdata_visible').eq(dataType-1).addClass('xdata_visible'),
+                chartOpts = this.getChartOption(dataType);
             if(!$chart[0].getAttribute('data-hightcharts')){
-                $chart.highcharts(this.getChartOption(dataType));
+                $chart.highcharts(chartOpts);
                 $chart[0].setAttribute('data-hightcharts','1');
+                return;
+            };
+            var dateRange0 = $chart[0].getAttribute('data-xdatadaterange'),
+                forceUpdate = dateRange0!==this.dateRange;
+            if(!updateChart && !forceUpdate){
+                return;
+            };
+            $chart[0].setAttribute('data-xdatadaterange',this.dateRange);
+            var chart = $chart.data('xdatachart');
+            if(!chart){
+                chart=$chart.highcharts();
+                $chart.data('xdatachart',chart)
             }
+            
+            chart.series[0].update(chartOpts.series[0]);
+            chart.setTitle(chartOpts.title);
         },
-        parseData:function(d,dataType){
-            d = d.data.today;//144个点，说明是10分钟一个点，我们转换成一个小时一个点
+        showTip:function(txt){
+            if(txt===null){
+                this.$tip.addClass('xdata_hidden');
+                return;
+            };
+            txt = txt || '<span class="xdata_loading"></span>';
+            txt = txt.indexOf('<span')==0?txt:('<span class="xdata_error">'+txt+'</span>');
+            this.$tipBD.html(txt);
+            this.$tip.removeClass('xdata_hidden');
+        },
+        loadData:function(){
+
+            if(this.isLoading){
+                J.data.abortKeyAndClickDataRequest();
+                this.isLoading=false;
+            }
+
+            var me = this,
+                dates=[],
+                tempDate = null,
+                sdate = document.getElementById('xdataKeyChartDate1').value,
+                edate = document.getElementById('xdataKeyChartDate2').value,
+                cacheId = [me.dataType,sdate,edate].join('-');
+
+            this.dateRange = sdate+'-'+edate;
+
+            if(sdate==''||edate==''){
+                me.showTip('开始时间和结束时间不能为空!');
+                return;
+            };
+
+            sdate = new Date(sdate);
+            edate = new Date(edate);
+            if(sdate>edate){
+                tempDate = sdate;
+                sdate=edate;
+                edate=tempDate;
+            };
+            //结束日期往后推一天
+            edate.setDate(edate.getDate()+1);
+            while(sdate<edate){
+                dates.push(new Date(sdate.getFullYear(),sdate.getMonth(),sdate.getDate()));
+                sdate.setDate(sdate.getDate()+1);
+            };//while
+
+            if(dates.length>15){
+                me.showTip('统计时间范围超过15天！服务器亚历山大...');
+                return;
+            }
+
+            this.showTip();
+            this.isLoading=true;
+            this.hasAjaxError=false;
+            this.clickData=null;
+            this.keyData = null;
+            //从cache取数据
+            if(this.cacheKeyData[cacheId]){
+                this.keyData=this.cacheKeyData[cacheId];
+                this.clickData = this.cacheClickData[cacheId];
+                me.showTip(null);
+                me.isLoading=false;
+                me.render(me.dataType,true);
+                return;
+            }
+            //从服务器取数据
+            this.getDataByDates(dates,function(err,d1,d2){
+                me.isLoading=false;
+                if(err){
+                    me.hasAjaxError=true;
+                    me.showTip('服务器错误：'+err.toString());
+                    return;
+                }
+                me.cacheKeyData[cacheId]=d1;
+                me.cacheClickData[cacheId]=d2;
+                me.keyData=d1;
+                me.clickData = d2;
+                me.showTip(null);
+                me.render(me.dataType,true);
+            });
+        },
+        parseDataByHour:function(d,dataType){
             var len = d.length,
                 r =[],
                 dataByHour=null,
                 tempClickNum=0,
                 tempOrderNum=0,
-                hour=1;
+                tempDate=null,
+                hour=1,
+                today=new Date(),
+                yy=today.getFullYear(),
+                mm=today.getMonth(),
+                dd=today.getDate();
             for(var i=1;i<=len;i++){
-                dataByHour=dataByHour||[hour,0];
+                dataByHour=dataByHour||[new Date(yy,mm,dd,hour).getTime(),0];
                 if(i%6===0){
                     if(dataType===3){
                         dataByHour[1]=tempClickNum>0?(tempOrderNum*100/tempClickNum).toFixed(2):0;
@@ -670,7 +845,49 @@ J(function($,p,pub){
                 };//switch
             };
             return r;
-        }
+        },
+        parseData:function(d,dataType){
+            if(this.dateType=='today'){
+                d = d.data.today;//144个点，说明是10分钟一个点，我们转换成一个小时一个点
+                return this.parseDataByHour(d,dataType);
+            };
+            d = d.data;
+            var len = d.length,
+                r =[],
+                dataByTime=null,
+                tempDate = null;
+            for(var i=0;i<len;i++){
+                tempDate = new Date(d[i].s_date);
+                dataByTime=[new Date(tempDate.getFullYear(),tempDate.getMonth(),tempDate.getDate()).getTime(),0];
+                switch(dataType){
+                    case 1:
+                        dataByTime[1]=d[i].click_num;
+                    break;
+                    case 2:
+                        dataByTime[1]=d[i].order_num;
+                    break;
+                    case 3://点击转化率
+                        dataByTime[1]=d[i].click_num==0?0:parseFloat( (d[i].order_num*100/d[i].click_num).toFixed() );
+                    break;
+                };//switch
+                r.push(dataByTime);
+            };
+            return r;
+        },
+        getDataByDates:function(dates,cbk){
+            var dLen = dates.length,
+                sdate = J.data.getDateTimeStr(dates[0]),
+                edate = J.data.getDateTimeStr(dates[dLen-1]),
+                dateType = ( dLen===1 && sdate==J.data.getDateTimeStr(new Date()) )?'today':'custom',
+                _params = {
+                    date_type:dateType,
+                    start_date:sdate,
+                    end_date:edate
+                },
+                me = this;
+            this.dateType = dateType;
+            J.data.getKeyAndClickData(_params,cbk);
+        }//getDataByDates
     };
     //_ytag组-模块
     p.ytagGroup={
@@ -744,15 +961,19 @@ J(function($,p,pub){
             p.main.$startUp.onTransitioned(false);
             J.$body.append(coreTpl);
             p.main.$ui = $('#xdataWrap');
+            p.main.$uiCore = $('#xdataUI');
             $('#xdataClose').bind('click',function(e){
                 p.main[p.main.visible?'hide':'show'].call(p.main);
                 return false;
             });
             //日期控件设置
-            var today=new Date();
-            p.main.$ui.find('.xdata_sdate').val(today.toISOString().substring(0, 10))
+            var today=new Date(),
+                todayStr = today.toISOString().substring(0, 10);
+            p.main.$ui.find('.xdata_date').attr('max',todayStr)
                 .end()
-                .find('.xdata_edate').val(J.data.getDateTimeStr(today,{len:10,dayDiff:1}))
+                .find('.xdata_sdate').val(todayStr)
+                .end()
+                .find('.xdata_edate').val(todayStr)
                 .end()
                 .find('.xdata_sdate1').val(J.data.getDateTimeStr(new Date(),{len:10,dayDiff:-7}))
                 .end()
@@ -785,6 +1006,8 @@ J(function($,p,pub){
     };
     //排行榜
     p.rank = {
+        dataType:1,
+        dataChangedAt:1,
         tpl:J.heredoc(function(){/*
             {{#empty}}
             <div class="xdata_alert">无数据</div>
@@ -801,10 +1024,15 @@ J(function($,p,pub){
             J.$win.bind(EVT.UIReady,function(e){
                 p.rank.render(1);
             }).bind(EVT.DataTypeChange,function(e,t){
-                p.rank.render(parseInt(t));
+                t = parseInt(t);
+                p.rank.dataType=t;
+                p.rank.render(t);
+            }).bind(J.data.EVT.ClickDataChange,function(e,d){
+                p.rank.dataChangedAt=p.rank.dataType;
+                p.rank.render(p.rank.dataType,true);
             });
         },
-        render:function(dataType){
+        render:function(dataType,forceUpdate){
             if(!this.$objs){
                 this.$objs=$('#xdataRankList').find('.xdata_rank');
             }
@@ -812,10 +1040,14 @@ J(function($,p,pub){
             if(!$obj[0].getAttribute('data-xdata')){
                 $obj[0].innerHTML = Mustache.to_html(this.tpl, this.getData(dataType));
                 $obj[0].setAttribute('data-xdata','1');
-            }
+                return;
+            };
+            if(forceUpdate||(p.rank.dataChangedAt!=dataType)){
+                $obj[0].innerHTML = Mustache.to_html(this.tpl, this.getData(dataType));
+            };
         },
         getData:function(dataType,topCnt){
-            var rawData = J.data['InitClickData'],
+            var rawData = J.data['CurrentClickData'],
                 niceData = this.parseData(rawData,dataType,topCnt);
             return niceData;
         },
@@ -835,7 +1067,7 @@ J(function($,p,pub){
                 items.push(d[c]);
             };//for
             items=this.orderDataDescBy(items,dataType);
-            topCnt = topCnt||10;
+            topCnt = topCnt||50;
             var len = items.length,
                 r = {empty:false,items:[]};
             
@@ -880,7 +1112,6 @@ J(function($,p,pub){
                     arrData.sort(function(a,b){
                         return (parseFloat(b.click_trans_rate)-parseFloat(a.click_trans_rate));
                     });
-                    console.log(arrData);
                 break;
             };
             return arrData;
@@ -889,51 +1120,106 @@ J(function($,p,pub){
     //ytag chart
     p.ytagChart = {
         $d:null,
+        $tip:null,
         $chart:null,
+        $trigger:null,
         chart:null,
         isLoading:false,
+        isVisible:false,
         hasAjaxError:false,
         data:[],
+        tagData:null,
+        cache:{},//data cache
         dataType:1,
         jqXHR:null,
         _init:function(){
             J.$win.bind(EVT.UIReady,function(e){
                 p.ytagChart.$d = $('#xdataPop1');
                 p.ytagChart.$chart = $('#xdataYTagChart');
+                p.ytagChart.$tip = $('#xdataYTagChartTip');
+                //UICOre的scroll事件
+                p.main.$uiCore.bind('scroll.ytagChart',function(e){
+                    p.ytagChart.updatePosition();
+                });
+                //刷新按钮
+                $('#xdataRetweet2').bind('click',function(e){
+                    if(p.ytagChart.isLoading){
+                        return;
+                    };
+                    p.ytagChart.loadData(p.ytagChart.tagData);
+                });
+                //滚动条
+                $('.xdata_rank,.xdata_mods').bind('scroll.ytagChart',function(e){
+                    p.ytagChart.reset();
+                });
+
             }).bind(EVT.DataTypeChange,function(e,t){
                 p.ytagChart.dataType=parseInt(t);
+                p.ytagChart.reset();
+            }).bind('resize.ytagChart',function(e){
+                p.ytagChart.updatePosition();
             });
         },
+        reset:function(){
+            if(this.isLoading&&this.jqXHR&& this.jqXHR.readyState != 4){
+                this.jqXHR.abort();
+            };
+            this.isLoading=false;
+            this.hide();
+            this.tagData=null;
+            this.$trigger=null;
+        },
         show:function(tagData,$trigger){
+            this.tagData=tagData;
+            this.$trigger=$trigger;
+            this.$d.removeClass('xdata_hidden');
+            this.isVisible=true;
+            this.updatePosition();
+            this.loadData(tagData);
+        },
+        hide:function(){
+            this.$d.addClass('xdata_hidden');
+            this.isVisible=false;
+        },
+        updatePosition:function(){
+            if(!this.isVisible){
+                return;
+            };
+            var bottom = 0,
+                $trigger = this.$trigger;
+            if($trigger){
+                bottom = J.$win.height()-($trigger.offset().top-p.main.$ui.offset().top)-29/* 箭头的位置 */-$trigger.outerHeight()/2;
+            }
+            this.$d.css({
+                bottom:bottom
+            });
+        },
+        showTip:function(txt){
+            if(txt===null){
+                this.$tip.addClass('xdata_hidden');
+                this.$chart.removeClass('xdata_hidden');
+                return;
+            };
+            txt = txt || '<img class="xdata_loading1" src="http://static.gtimg.com/icson/img/common/loading.gif"/>';
+            this.$tip.html(txt).removeClass('xdata_hidden');
+            this.$chart.addClass('xdata_hidden');
+        },
+        loadData:function(tagData){
 
             if(this.isLoading&&this.jqXHR&& this.jqXHR.readyState != 4){
                 this.jqXHR.abort();
                 this.isLoading=false;
             }
 
-            this.$d.removeClass('xdata_hidden');
-            var top = 0;
-            if($trigger){
-                top = $trigger.offset().top-p.main.$ui.offset().top-10;
-            }
-            this.$d.css({
-                bottom:top
-            });
-            this.loadData(tagData);
-        },
-        showTip:function(txt){
-            txt = txt || '<img class="xdata_loading1" src="http://static.gtimg.com/icson/img/common/loading.gif"/>';
-            p.ytagChart.$chart.html(txt);
-        },
-        loadData:function(tagData){
             var me = this,
                 dates=[],
                 tempDate = null,
                 sdate = document.getElementById('xdataPop1Date1').value,
-                edate = document.getElementById('xdataPop1Date2').value;
+                edate = document.getElementById('xdataPop1Date2').value,
+                cacheId = [me.dataType,tagData.ytags.join('-'),sdate,edate].join('-');
 
             if(sdate==''||edate==''){
-                alert('开始时间和结束时间不能为空！');
+                me.showTip('开始时间和结束时间不能为空！');
                 return;
             };
 
@@ -944,22 +1230,42 @@ J(function($,p,pub){
                 sdate=edate;
                 edate=tempDate;
             };
-
+            //结束日期往后推一天
+            edate.setDate(edate.getDate()+1);
             while(sdate<edate){
                 dates.push(new Date(sdate.getFullYear(),sdate.getMonth(),sdate.getDate()));
                 sdate.setDate(sdate.getDate()+1);
             };//while
 
+            if(dates.length>15){
+                me.showTip('统计时间范围超过15天！服务器亚历山大...');
+                return;
+            }
+
             this.showTip();
             this.isLoading=true;
             this.hasAjaxError=false;
-            //TODO:需要开发提供一个取多天数据的接口
+            
             this.data=[];
+            //从cache取数据
+            if(this.cache[cacheId]){
+                this.data=this.cache[cacheId];
+                me.showTip(null);
+                me.isLoading=false;
+                me.render(this.data);
+                return;
+            }
+            //从服务器取数据
+            //TODO:需要开发提供一个取多天数据的接口
             this.getDataByDates(tagData.ytags,dates,function(err,d){
+                me.isLoading=false;
+                me.jqXHR=null;
                 if(err){
-                    me.showTip('<div class="xdata_error">'+err.toString()+'</div>');
+                    me.showTip('<div class="xdata_error">服务器错误：'+err.toString()+'</div>');
                     return;
                 }
+                me.cache[cacheId]=d;
+                me.showTip(null);
                 me.render(d);
             });
         },
@@ -989,7 +1295,8 @@ J(function($,p,pub){
             var niceData = this.parseData(rawData,dataType),
                 baseOpts = {
                 chart:{
-                    height:300
+                    height:250,
+                    width:600
                 },
                 title: {
                     text: ' '
@@ -1033,6 +1340,7 @@ J(function($,p,pub){
             return baseOpts;
         },
         render:function(data){
+            //this.$chart.find('.xdata_loading1').remove();
             var chartOpts = this.getChartOption(data,this.dataType);
             if(!this.chart){
                 this.$chart.highcharts(chartOpts);
@@ -1044,10 +1352,8 @@ J(function($,p,pub){
         getDataByDates:function(tagids,dates,cbk){
             if(dates.length==0){
                 cbk(null,this.data);
-                this.isLoading=false;
-                this.jqXHR=null;
                 return;
-            }
+            };
             var date = dates.splice(0,1)[0],
                 timeStamp = date.getTime(),
                 sdate = J.data.getDateTimeStr(date),
@@ -1136,11 +1442,30 @@ J(function($,p,pub){
             return tags;
         },
         _init:function(){
+            J.$win.bind(J.ui.EVT.DataTypeChange,function(e,t){
+                p.main.reset(t);
+            }).bind(J.ui.EVT.UIReady,function(e){
+                //滚动条
+                $('.xdata_rank,.xdata_mods').bind('scroll.ytag',function(e){
+                    p.main.reset();
+                });
+            });
             $('[data-ytag]').live('click',function(e){
                 p.main.onClickYTagTrigger(this);
             });
             $ytags = $('[ytag]');
             pub.rockAndRollAll();
+        },
+        reset:function(t){
+            var clOn = 'xdata_ytagtrigger_on';
+            if(this.$ytagTrigger){
+                this.$ytagTrigger.removeClass(clOn);
+            }
+            this.$ytagTrigger=null;
+            if(this.$cover){
+                this.$cover.addClass('xdata_hidden');
+            }
+            this.$cover=null;
         },
         onClickYTagTrigger:function(elmTrigger){
             var clOn = 'xdata_ytagtrigger_on';
