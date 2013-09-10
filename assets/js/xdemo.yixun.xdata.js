@@ -916,6 +916,7 @@ J(function($,p,pub){
             this.$groups.each(function(i,o){
                 tempObj = {_ytag:o.getAttribute('_ytag')};
                 tempObj.selector='[_ytag="'+tempObj._ytag+'"]';
+                tempObj.id='_ytag'+tempObj._ytag;
                 p.ytagGroup.data.push(tempObj);
             });
             this.render();
