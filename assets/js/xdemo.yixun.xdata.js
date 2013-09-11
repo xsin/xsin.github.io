@@ -370,6 +370,12 @@ J(function($,p,pub){
         uid = ck.split('yx_uid=')[1].split(';')[0];
         wsid=ck.split('wsid=')[1].split(';')[0];
         areaid=ck.split('areasInfo=')[1].split(';')[0];
+        pub.bizInfo={
+            uid:uid,
+            wsid:wsid,
+            pid:pid,
+            areaid:areaid
+        };
         isParamsReady=true;
     }catch(e){
         J.log('获取统计参数失败！'+e.toString());
@@ -445,6 +451,34 @@ J(function($,p,pub){
         },_params||{});
         return clickStreamData('PageClickData',_params,cbk);
     };
+    //根据css选择器获取该选择器下ytag的数据
+    pub.getClickDataBySelector = function(cssSelector){
+        var ids = [];
+        $(cssSelector).find('[ytag]').each(function(i,o){
+            ids.push(o.getAttribute('ytag'));
+        });
+        return pub.getClickDataByIds(ids);
+    };
+    //根据id获取多个ytag的点击数据
+    pub.getClickDataByIds = function(ids){
+        var len =0,
+            obj = null,
+            clickData = pub['CurrentClickData'].data,
+            items=[];
+        if( (len=ids.length)==0){
+            return items;
+        };
+        for(var i=0;i<len;i++){
+            for(var c in clickData){
+                obj = clickData[c];
+                if(obj.page_tag===ids[i]){
+                    items.push(obj);
+                    break;
+                }
+            };
+        };//for
+        return items;
+    };
     //获取单个ytag的点击数据
     pub.getClickDataById = function(id){
         var obj = null;
@@ -502,6 +536,74 @@ J(function($,p,pub){
                 cbk&&cbk(null,data,data1);
             });
         });
+        /**
+         * 获取自定义tag信息
+         */
+        pub.getCTags = function(rawForm){
+            rawForm=rawForm||false;
+            var key = 'xdata_ctags_'+pub.bizInfo.pid,
+                rawData = localStorage[key];
+            if(!rawData){
+                return null;
+            };
+            rawData = JSON.parse(rawData);
+            if (rawForm) {
+                return rawData;
+            };
+            var tags = [];
+            for(var c in rawData){
+                tags.push(rawData[c]);
+            };
+            return tags;
+        };
+        /**
+         * 获取自定义tag数据
+         * @params {String} id tag编号
+         */
+        pub.getCTag = function(id){
+            var d = pub.getCTags(true);
+            if (!d) {
+                return null;
+            };
+            return d[id];
+        };
+        /**
+         * 保存自定义tag数据
+         * @params {Object} tagData tag数据
+         */
+        pub.saveCTag = function(tagData){
+            var d = pub.getCTags(true)||{},
+                isNew = false;
+            if(tagData.id==''){
+                tagData.id = new Date().getTime();
+            };
+            if(!pub.getCTag(tempData.id)){
+                isNew = true;
+            };
+            d[tagData.id]=tagData;
+            var key = 'xdata_ctags_'+pub.bizInfo.pid;
+            localStorage[key]=JSON.stringify(d);
+            J.$win.trigger(pub.EVT.CTagUpdated,[(isNew?0:1),tagData]);
+            return d;
+        };
+        /**
+         * 删除自定义tag数据
+         * @params {String} id tag id
+         */
+        pub.deleteCTag = function(id){
+            var d = pub.getCTags(true);
+            if(!d){
+                return null;
+            };
+            if(!d[id]){
+                return d;
+            };
+            delete d[id];
+            var key = 'xdata_ctags_'+pub.bizInfo.pid;
+            localStorage[key]=JSON.stringify(d);
+            J.$win.trigger(pub.EVT.CTagUpdated,[-1,id]);
+            return d;
+        };
     };
     /**
      * 停止主数据和点击数据的ajax请求
@@ -519,7 +621,8 @@ J(function($,p,pub){
     pub.EVT = {
         'InitKeyData':'onXDataInitKeyData',
         'InitClickData':'onXDataInitClickData',
-        'ClickDataChange':'onXDataClickDataChanged'
+        'ClickDataChange':'onXDataClickDataChanged',
+        'CTagUpdated':'onXDataCTagUpdated'
     };
     /**
      * 初始化数据
@@ -545,48 +648,70 @@ J(function($,p,pub){
                     </ul>
                 </div>
 
-                <div class="data_show">
+                <div class="data_item">
                     <div class="data_time">
                         <input class="xdata_date xdata_sdate" id="xdataKeyChartDate1" type="date"/><span class="c_tx3">-</span><input class="xdata_date xdata_edate" id="xdataKeyChartDate2" type="date" />
                         <a id="xdataRetweet1" href="javascript:;" class="xdata_btn_retweet"><i class="xdata_icon xdata_icon_retweet"><b>刷新</b></i></a>
                     </div>
-
                     <div id="xdataKeyCharts" class="data_total">
                         <div id="xdataKeyChartTip" class="xdata_keycharttip xdata_hidden"><div class="xdata_keycharttip_bg"></div><div class="xdata_keycharttip_bd"></div></div>
                         <div id="xdataKeyChart1" class="data_total_inner xdata_keychart xdata_visible"></div>
                         <div id="xdataKeyChart2" class="data_total_inner xdata_keychart"></div>
                         <div id="xdataKeyChart3" class="data_total_inner xdata_keychart"></div>
                     </div>
-
                     <div class="data_rank">
                         <div class="data_rank_btn">
-                            <a href="javascript:;">显示热区图</a>
-                            <a href="javascript:;">新增统计单元</a>
+                            <a href="javascript:;" id="xdataBtnHeatmap" class="data_btn">显示热区图</a>
                         </div>
-
-                        <div class="data_rank_list">
-                            <h3>自定义单元</h3>
-                            <div id="xdataMods" class="xdata_mods"></div>
+                        <div class="data_rank_show">
+                            <div class="data_rank_show_hd">
+                                <h3>排行榜</h3>
+                            </div>
+                            <div id="xdataRank" class="data_rank_show_bd">
+                                <div class="data_choose">
+                                    <label><input class="xdata_ranktype" type="radio" checked="checked" value="1" name="xdata_ranktype"/>自定义</label>
+                                    <label><input class="xdata_ranktype" type="radio" value="2" name="xdata_ranktype"/>默认</label>
+                                </div>
+                                <!--自定义ytag排行榜-->
+                                <div id="xdataList1" class="data_list">
+                                    <div class="data_rank_add"><a id="xdataAddCTag" href="javascript:;">+</a></div>
+                                </div><!--/data_list-->
+                                <!--单个ytag排行榜-->
+                                <div id="xdataList2" class="data_list data_listb xdata_hidden">
+                                    <div id="xdataRank1" class="xdata_rank xdata_visible"></div>
+                                    <div id="xdataRank2" class="xdata_rank"></div>
+                                    <div id="xdataRank3" class="xdata_rank"></div>
+                                </div>
+                                <!--/单个ytag排行榜-->
+                            </div>
                         </div>
-                        
-                        <div id="xdataRankList" class="data_rank_list">
-                            <h3>按ytag排行</h3>
-                            <div id="xdataRank1" class="xdata_rank xdata_visible"></div>
-                            <div id="xdataRank2" class="xdata_rank"></div>
-                            <div id="xdataRank3" class="xdata_rank"></div>
-                        </div>
-                    </div>
+                    </div><!--/data_rank-->
                 </div>
             </div>
-
             <div id="xdataPop1" class="data_pop xdata_hidden">
                 <div class="data_time">
                     <input id="xdataPop1Date1" class="xdata_date xdata_sdate1" type="date" /><span class="c_tx3">-</span><input id="xdataPop1Date2" class="xdata_date xdata_edate" type="date" />
                     <a id="xdataRetweet2" href="javascript:;" class="xdata_btn_retweet"><i class="xdata_icon xdata_icon_retweet"><b>刷新</b></i></a>
                 </div>
-                <div class="data_pop_con">
-                    <div id="xdataYTagChartTip" class="xdata_ytagcharttip xdata_hidden"></div>
-                    <div id="xdataYTagChart" class="xdata_ytagchart"></div>
+                <div class="data_pop_item">
+                    <div class="data_total">
+                        <div id="xdataYTagChartTip" class="xdata_ytagcharttip xdata_hidden"></div>
+                        <div id="xdataYTagChart" class="data_total_inner xdata_ytagchart"></div>
+                    </div>
+                    <div class="data_pop_control">
+                        <a href="#" class="data_btn">设为版本节点</a>
+                    </div>
+                </div>
+            </div>
+            <div id="xdataPop2" class="data_pop data_pop2 xdata_hidden">
+                <div class="data_pop_add">
+                    <p><input id="xdataPop2Ipt1" type="text" placeholder="请输入模块名称" /></p>
+                    <p><input id="xdataPop2Ipt2" type="text" value="" placeholder="请输入模块的css选择器或以|分隔的ytag"/></p>
+                    <p>
+                        <a id="xdataPop2Btn1" href="javascript:;" class="data_btn">更新</a>
+                        <a id="xdataPop2Btn2" href="javascript:;" class="data_btn data_btn_bg1">删除</a>
+                    </p>
+                    <div id="xdataPop2Tip" class="xdata_pop2tip xdata_hidden"></div>
                 </div>
             </div>
         </div>
@@ -594,7 +719,8 @@ J(function($,p,pub){
 
     var EVT={
         'DataTypeChange':'onXDataTypeChange',
-        'UIReady':'onXDataUIReady'
+        'UIReady':'onXDataUIReady',
+        'Collapse':'onXDataCollapse'
     };
     pub.EVT=EVT;
     //数据类型切换
@@ -904,6 +1030,7 @@ J(function($,p,pub){
             {{/empty}}
         */}),
         _init:function(){
+            return;
             J.$win.bind(EVT.UIReady,function(e){
                 p.ytagGroup.rockAndRoll();
             });
@@ -959,13 +1086,18 @@ J(function($,p,pub){
             });
         },
         render:function(){
-            p.main.$startUp.onTransitioned(false);
+            this.$startUp.onTransitioned(false);
             J.$body.append(coreTpl);
-            p.main.$ui = $('#xdataWrap');
-            p.main.$uiCore = $('#xdataUI');
+            this.$ui = $('#xdataWrap');
+            this.$uiCore = $('#xdataUI');
+            this.$rankList = this.$uiCore.find('.data_list');
             $('#xdataClose').bind('click',function(e){
                 p.main[p.main.visible?'hide':'show'].call(p.main);
                 return false;
+            });
+            //排行榜的切换
+            $('#xdataRank .xdata_ranktype').bind('click',function(e){
+                p.main.$rankList.addClass('xdata_hidden').filter('#xdataList'+this.value).removeClass('xdata_hidden');
             });
             //日期控件设置
             var today=new Date(),
@@ -997,6 +1129,7 @@ J(function($,p,pub){
         hide:function(){
             this.$ui.addClass('xdata_wrap_hide');
             this.visible=false;
+            J.$win.trigger(EVT.Collapse);
         },
         autoHide:function(){
             clearTimeout(this.autoHideTimer);
@@ -1005,7 +1138,7 @@ J(function($,p,pub){
             },2500);
         }
     };
-    //排行榜
+    //ytag排行榜
     p.rank = {
         dataType:1,
         dataChangedAt:1,
@@ -1035,7 +1168,7 @@ J(function($,p,pub){
         },
         render:function(dataType,forceUpdate){
             if(!this.$objs){
-                this.$objs=$('#xdataRankList').find('.xdata_rank');
+                this.$objs=$('#xdataList2').find('.xdata_rank');
             }
             var $obj = this.$objs.removeClass('xdata_visible').eq(dataType-1).addClass('xdata_visible');
             if(!$obj[0].getAttribute('data-xdata')){
@@ -1118,6 +1251,248 @@ J(function($,p,pub){
             return arrData;
         }
     };
+    //自定义单元排行榜
+    p.rank2 = {
+        $d:null,
+        dataType:1,
+        tpl:J.heredoc(function(){/*
+            {{#empty}}
+            <div class="xdata_alert">无数据</div>
+            {{/empty}}
+            {{#items}}
+            <div class="data_list_item">
+                <div class="data_list_entry">
+                    <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" class="data_rank_lk">{{alias}}<span>{{val}}</span></a>
+                    <div class="data_rank_control"><a href="javascript:;" class="data_btn_edit" rel="{{id}}">编辑</a></div>
+                </div>
+            </div>
+            {{/items}}
+        */}),
+        _init:function(){
+            J.$win.bind(EVT.UIReady,function(e){
+                p.rank2.$d = $('#xdataList1');
+                p.rank2.render(p.rank2.getData());
+            }).bind(EVT.DataTypeChange,function(e,t){
+                p.rank2.dataType = parseInt(t);
+            }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
+                p.rank2.onCTagUpdated(opType,d);
+            });
+            $('.data_btn_edit').live('click',function(e){
+                //tagData,$trigger,isCustomYTag
+                var $trigger = $(this).parents('.data_list_entry'),
+                    isCustomYTag = $trigger.find('.data_rank_lk')[0].getAttribute('data-ytagattr')=='ctag';
+                p.ytagEditor.show(J.data.getCTag(this.rel),$trigger,isCustomYTag);
+            });
+        },
+        onCTagUpdated:function(opType,d){
+            switch(opType){
+                case -1:
+                    //delete
+                    $('#xdataLnkCTag'+d).remove();
+                break;
+                case 0:
+                    //add
+                    var items = this.getData([d]);
+                    this.render(items,true);
+                break;
+                case 1:
+                    //update
+                    $('#xdataLnkCTag'+d.id).remove();
+                    var items = this.getData([d]);
+                    this.render(items,true);
+                break;
+            };//switch
+        },
+        getData:function(prependItems){
+            var items = prependItems||(J.data.getCTags()||[]),
+                len = items.length,
+                tempItem = null,
+                cItems = [],
+                ytagLen = 0;
+            for(var i=0;i<len;i++){
+                tempItem = items[i];
+                tempItem.id = tempItem.isCustomYTag?tempItem.id:tempItem.ytagSelector;
+                tempItem.ytags = [];
+                tempItem.click_num=0;
+                tempItem.order_num=0;
+                tempItem.click_trans_rate=0;
+                if(tempItem.isCustomYTag){
+                    switch(tempItem.type){
+                        case 1:
+                            //类名
+                            tempItem.ytags = J.data.getClickDataBySelector(tempItem.ytagSelector);
+                        break;
+                        case 2:
+                            //id
+                            tempItem.ytags = J.data.getClickDataByIds(tempItem.ytagSelector.split('|'));
+                        break;
+                    };//switch
+                };
+                ytagLen = tempItem.ytags.length;
+                for(var j=0;j<ytagLen;j++){
+                    tempItem.click_num+=tempItem.ytags[j].click_num;
+                    tempItem.order_num+=tempItem.ytags[j].order_num;
+                };//for
+                tempItem.click_trans_rate = tempItem.click_num==0?0:parseFloat( (tempItem.order_num*100/tempItem.click_num).toFixed(2) );
+                
+                switch(this.dataType){
+                    case 1:
+                        tempItem.val = tempItem.click_num;
+                    break;
+                    case 2:
+                        tempItem.val = tempItem.order_num;
+                    break;
+                    case 3:
+                        tempItem.val = tempItem.click_trans_rate;
+                    break;
+                };
+
+                if(tempItem.isCustomYTag){
+                    cItems.push(tempItem);
+                };
+            };
+            return cItems;
+        },
+        render:function(cItems,isPrepend){
+            this.$d.find('.xdata_alert').remove();
+            if(!isPrepend){
+                this.$d.find('.data_list_item').remove();
+            }
+            this.$d.prepend(Mustache.to_html(this.tpl,{
+                    empty:(cItems.length==0),
+                    items:cItems
+                }));
+        }
+    };
+    //ytag editor
+    p.ytagEditor = {
+        $d:null,
+        $name:null,
+        $value:null,
+        $trigger:null,
+        tagData:null,
+        isVisible:false,
+        isCustomYTag:false,
+        tipTimer:null,
+        _init:function(){
+            J.$win.bind(EVT.UIReady,function(e){
+                p.ytagEditor.$d = $('#xdataPop2');
+                p.ytagEditor.$name = $('#xdataPop2Ipt1');
+                p.ytagEditor.$value = $('#xdataPop2Ipt2');
+                p.ytagEditor.$tip = $('#xdataPop2Tip');
+                //update
+                $('#xdataPop2Btn1').bind('click',function(e){
+                    p.ytagEditor.save(this.rel);
+                });
+                //delete
+                $('#xdataPop2Btn2').bind('click',function(e){
+                    p.ytagEditor.delete(this.rel);
+                });
+
+                //add new
+                $('#xdataAddCTag').bind('click',function(e){
+                    p.ytagEditor.show({
+                        id:'',
+                        alias:'',
+                        ytagSelector:''
+                    },$(this),true);
+                });
+            }).bind(EVT.Collapse,function(e){
+                p.ytagEditor.hide();
+            });
+        },
+        showTip:function(txt,duration){
+            clearTimeout(this.tipTimer);
+            if(!txt){
+                this.$tip.addClass('xdata_hidden');
+                return;
+            };
+            this.$tip.removeClass('xdata_hidden');
+            this.$tip.html('<span class="xdata_error">'+txt+'</span>');
+            if(duration){
+                this.tipTimer = setTimeout(function(){
+                    p.ytagEditor.showTip(null);
+                },duration);
+            }
+        },
+        save:function(id){
+            var d = {
+                id:id,
+                alias:$.trim(this.$name.val()),
+                ytagSelector:$.trim(this.$value.val()),
+                isCustomYTag:this.isCustomYTag,
+                type:1//1为类名，2为id列表
+            };
+            if(d.alias.length==0||d.ytagSelector.length==0){
+                this.showTip('模块名称和ytag选择器均不能为空！',3000);
+                return false;
+            };
+            var $tempDom = null;
+            //获取关联的ytag
+            if(d.ytagSelector.indexOf('.')!=-1 || d.ytagSelector.indexOf('#')!=-1){
+                //css选择器
+                $tempDom = $(d.ytagSelector);
+                if($tempDom.length===0){
+                    this.showTip('ytag选择器必须是有效的css选择器，或则是以|分隔的有效的ytag id！',3000);
+                    return false;
+                };
+                J.data.saveCTag(d);
+                return true;
+            };
+            //ytag id，|分隔
+            if( d.ytagSelector.indexOf('|')==-1 && (!/^[0-9]+$/.test(d.ytagSelector)) ){
+                this.showTip('ytag选择器必须是有效的css选择器，或则是以|分隔的有效的ytag id！',3000);
+                return false;
+            };
+            var tags = d.ytagSelector.split('|'),
+                isValid = true,
+                len = tags.length;
+            for(var i =0;i<len;i++){
+                if(!(/^[0-9]+$/.test(tags[i])) ){
+                    isValid=false;
+                    break;
+                }
+            };//for
+            if(!isValid){
+                this.showTip('ytag选择器必须是有效的css选择器，或则是以|分隔的有效的ytag id！',3000);
+                return false;
+            };
+            d.type=2;
+            J.data.saveCTag(d);
+            return true;
+        },
+        show:function(tagData,$trigger,isCustomYTag){
+            this.isCustomYTag = isCustomYTag||false;
+            this.tagData=tagData;
+            this.$trigger=$trigger;
+            this.$d.removeClass('xdata_hidden');
+            this.isVisible=true;
+            this.updatePosition();
+            this.loadData(tagData);
+        },
+        hide:function(){
+            this.$d.addClass('xdata_hidden');
+            this.isVisible=false;
+        },
+        updatePosition:function(){
+            if(!this.isVisible){
+                return;
+            };
+            var bottom = 0,
+                $trigger = this.$trigger;
+            if($trigger){
+                bottom = J.$win.height()-($trigger.offset().top-p.main.$ui.offset().top)-29/* 箭头的位置 */-$trigger.outerHeight()/2;
+            }
+            this.$d.css({
+                bottom:bottom
+            });
+        },
+        loadData:function(tagData){
+            this.$name[0].value = tagData.alias;
+            this.$value[0].value = tagData.ytagSelector;
+            document.getElementById('xdataPop2Btn1').rel = document.getElementById('xdataPop2Btn2').rel = tagData.id;
+        }
+    };
     //ytag chart
     p.ytagChart = {
         $d:null,
@@ -1151,6 +1526,10 @@ J(function($,p,pub){
                 });
                 //滚动条
                 $('.xdata_rank,.xdata_mods').bind('scroll.ytagChart',function(e){
+                    p.ytagChart.reset();
+                });
+                //排行榜的切换
+                $('#xdataRank .xdata_ranktype').bind('click.ytagChart',function(e){
                     p.ytagChart.reset();
                 });
 
@@ -1295,10 +1674,6 @@ J(function($,p,pub){
             dataType = parseInt(dataType);
             var niceData = this.parseData(rawData,dataType),
                 baseOpts = {
-                chart:{
-                    height:250,
-                    width:600
-                },
                 title: {
                     text: ' '
                 },
@@ -1432,7 +1807,8 @@ J(function($,p,pub){
             return data;
         },
         getRelatedYTags:function($tag,ytag,attrName){
-            var tags = [];
+            var tags = [],
+                isCustomTagWithCssSelector = (attrName==='ctag'&&(ytag.indexOf('#')!=-1 || ytag.indexOf('.')!=-1) );
             if (attrName==='_ytag') {
                 $tag.find('[ytag]').each(function(i1,o1){
                     tags.push(o1.getAttribute('ytag'));
@@ -1530,10 +1906,10 @@ J(function($,p,pub){
             p.main.addToCache($(o));
         });
     };
-
-    //get a ytag's data
-    pub.get=function(ytag,attrName){
+    //get ytag's data
+    pub.get = function(ytag,attrName){
         attrName = attrName||'ytag';
+        //TODO:addToCache的第一个参数怎么处理？
         ytag = cache[(attrName+ytag)]||p.main.addToCache($( ('[$="'+ytag+'"]').replace('$',attrName) ),attrName);
         return ytag;
     };
@@ -1547,19 +1923,19 @@ J(function($,p,pub){
 /* S 热区 */
 J(function($,p,pub){
     pub.id="heatmap";
-    var $body = $('body');
+    var $body = J.$body;
     //heatmap
     p.heatmap = {
         isRender:false,
         instance:null,
         _init:function(){
-            $body.bind('onXDataMenuClick',function(e,d){
-                if(d.rel=="1"){
+            J.$win.bind(J.ui.EVT.UIReady,function(e){
+                $('#xdataBtnHeatmap').bind('click',function(e){
                     if(!p.heatmap.isRender){
                         p.heatmap.render();
                     }
                     p.heatmap.toggleDisplay();
-                }
+                });
             });
         },
         toggleDisplay:function(){
