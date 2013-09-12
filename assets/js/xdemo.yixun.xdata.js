@@ -1749,6 +1749,9 @@ J(function($,p,pub){
             dataType = parseInt(dataType);
             var niceData = this.parseData(rawData,dataType),
                 baseOpts = {
+                chart:{
+                    width:540
+                },
                 title: {
                     text: ' '
                 },
