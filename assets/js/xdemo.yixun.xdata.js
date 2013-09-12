@@ -504,6 +504,22 @@ J(function($,p,pub){
         },_params||{});
         return clickStreamData('DragClickData',_params,cbk);
     };
+    pub.getItemDimension = function($o){
+        if($o.length===0){
+            return null;
+        }
+        var $parent = $o.parent(),
+            off = $o.offset()||{top:0,left:0},
+            data = {
+                left:off.left,
+                top:off.top,
+                width:$o.outerWidth(),
+                height:$o.outerHeight(),
+                parentWidth:$parent.outerWidth(),
+                parentHeight:$parent.outerHeight()
+            };
+        return data;
+    };
     /**
      * 获取主数据和点击数据
      * @params {Object} _params 为null时表示是第一次数据加载
@@ -536,74 +552,74 @@ J(function($,p,pub){
                 cbk&&cbk(null,data,data1);
             });
         });
-        /**
-         * 获取自定义tag信息
-         */
-        pub.getCTags = function(rawForm){
-            rawForm=rawForm||false;
-            var key = 'xdata_ctags_'+pub.bizInfo.pid,
-                rawData = localStorage[key];
-            if(!rawData){
-                return null;
-            };
-            rawData = JSON.parse(rawData);
-            if (rawForm) {
-                return rawData;
-            };
-            var tags = [];
-            for(var c in rawData){
-                tags.push(rawData[c]);
-            };
-            return tags;
+    };
+    /**
+     * 获取自定义tag信息
+     */
+    pub.getCTags = function(rawForm){
+        rawForm=rawForm||false;
+        var key = 'xdata_ctags_'+pub.bizInfo.pid,
+            rawData = localStorage[key];
+        if(!rawData){
+            return null;
         };
-        /**
-         * 获取自定义tag数据
-         * @params {String} id tag编号
-         */
-        pub.getCTag = function(id){
-            var d = pub.getCTags(true);
-            if (!d) {
-                return null;
-            };
-            return d[id];
+        rawData = JSON.parse(rawData);
+        if (rawForm) {
+            return rawData;
         };
-        /**
-         * 保存自定义tag数据
-         * @params {Object} tagData tag数据
-         */
-        pub.saveCTag = function(tagData){
-            var d = pub.getCTags(true)||{},
-                isNew = false;
-            if(tagData.id==''){
-                tagData.id = new Date().getTime();
-            };
-            if(!pub.getCTag(tempData.id)){
-                isNew = true;
-            };
-            d[tagData.id]=tagData;
-            var key = 'xdata_ctags_'+pub.bizInfo.pid;
-            localStorage[key]=JSON.stringify(d);
-            J.$win.trigger(pub.EVT.CTagUpdated,[(isNew?0:1),tagData]);
+        var tags = [];
+        for(var c in rawData){
+            tags.push(rawData[c]);
+        };
+        return tags;
+    };
+    /**
+     * 获取自定义tag数据
+     * @params {String} id tag编号
+     */
+    pub.getCTag = function(id){
+        var d = pub.getCTags(true);
+        if (!d) {
+            return null;
+        };
+        return d[id];
+    };
+    /**
+     * 保存自定义tag数据
+     * @params {Object} tagData tag数据
+     */
+    pub.saveCTag = function(tagData){
+        var d = pub.getCTags(true)||{},
+            isNew = false;
+        if(tagData.id==''){
+            tagData.id = new Date().getTime();
+        };
+        if(!pub.getCTag(tagData.id)){
+            isNew = true;
+        };
+        d[tagData.id]=tagData;
+        var key = 'xdata_ctags_'+pub.bizInfo.pid;
+        localStorage[key]=JSON.stringify(d);
+        J.$win.trigger(pub.EVT.CTagUpdated,[(isNew?0:1),tagData]);
+        return d;
+    };
+    /**
+     * 删除自定义tag数据
+     * @params {String} id tag id
+     */
+    pub.deleteCTag = function(id){
+        var d = pub.getCTags(true);
+        if(!d){
+            return null;
+        };
+        if(!d[id]){
             return d;
         };
-        /**
-         * 删除自定义tag数据
-         * @params {String} id tag id
-         */
-        pub.deleteCTag = function(id){
-            var d = pub.getCTags(true);
-            if(!d){
-                return null;
-            };
-            if(!d[id]){
-                return d;
-            };
-            delete d[id];
-            var key = 'xdata_ctags_'+pub.bizInfo.pid;
-            localStorage[key]=JSON.stringify(d);
-            J.$win.trigger(pub.EVT.CTagUpdated,[-1,id]);
-            return d;
-        };
+        delete d[id];
+        var key = 'xdata_ctags_'+pub.bizInfo.pid;
+        localStorage[key]=JSON.stringify(d);
+        J.$win.trigger(pub.EVT.CTagUpdated,[-1,id]);
+        return d;
     };
     /**
      * 停止主数据和点击数据的ajax请求
@@ -1382,11 +1398,17 @@ J(function($,p,pub){
                 p.ytagEditor.$tip = $('#xdataPop2Tip');
                 //update
                 $('#xdataPop2Btn1').bind('click',function(e){
-                    p.ytagEditor.save(this.rel);
+                    var isOk = p.ytagEditor.save(this.rel);
+                    if(isOk){
+                        p.ytagEditor.hide();
+                    }
                 });
                 //delete
                 $('#xdataPop2Btn2').bind('click',function(e){
-                    p.ytagEditor.delete(this.rel);
+                    var isOk = p.ytagEditor.delete(this.rel);
+                    if(isOk){
+                        p.ytagEditor.hide();
+                    }
                 });
 
                 //add new
@@ -1472,6 +1494,8 @@ J(function($,p,pub){
         },
         hide:function(){
             this.$d.addClass('xdata_hidden');
+            this.$name[0].value = '';
+            this.$value[0].value = '';
             this.isVisible=false;
         },
         updatePosition:function(){
@@ -1775,8 +1799,14 @@ J(function($,p,pub){
                 <div class="xdata_tagcover_bd">{{coverTip}}</div>
             </div>
         */}),
-        $cover:null,
+        covers:{},
         $ytagTrigger:null,
+        hideCovers:function(){
+            for(var c in this.covers){
+                this.covers[c].addClass('xdata_hidden');
+            }
+        },
+        //将单个ytag或_ytag添加到缓存中
         addToCache:function($o,attrName){
             if($o.length===0){
                 return null;
@@ -1790,28 +1820,69 @@ J(function($,p,pub){
                     ytagAttr:attrName,
                     ytagid:ytag,
                     $dom:$o,
-                    left:off.left,
-                    top:off.top,
                     title:$.trim($o[0].title),
                     text:$.trim($o.text()),
                     href:$o[0].href,
-                    selector:('[$="'+ytag+'"]').replace('$',attrName),
-                    width:$o.outerWidth(),
-                    height:$o.outerHeight(),
-                    parentWidth:$parent.outerWidth(),
-                    parentHeight:$parent.outerHeight()
+                    selector:('[$="'+ytag+'"]').replace('$',attrName)
                 };
+            $.extend(data,J.data.getItemDimension($o)||{});
             data.text=data.text.length===0?(data.title.length===0?'[!!无标题!!]':data.title):data.text;
             data.ytags=this.getRelatedYTags($o,ytag,attrName);
             cache[data.id] = data;
             return data;
         },
+        //将自定义的单元添加到缓存
+        addCTagToCache:function(ctag){
+            var isCustomTagWithCssSelector = (ctag.indexOf('#')!=-1 || ctag.indexOf('.')!=-1),
+                cssSelectors = [],
+                len=0,
+                ctagid = ctag.replace(/#/gi,'-').replace(/./gi,'-').replace(/,/gi,'-').replace(/ +?/g,'-'),
+                data = {
+                    id:('ctag'+ctagid),
+                    selector:''
+                };
+
+            if(isCustomTagWithCssSelector){
+                cssSelectors = ctag.split(',');
+                len = cssSelectors.length;
+                data.selector = ctag;
+            }else{
+                cssSelectors = ctag.split('|');
+                len = cssSelectors.length;
+                for(var i =0;i<len;i++){
+                    data.selector+='[ytag="'+cssSelectors[i]+'"]';
+                };
+            }
+            data.$dom = $(data.selector);
+            data.ytags=this.getRelatedYTags(data.$dom,ctag,'ctag');
+            data.isCustom=true;
+            data.top = (data.$dom.offset()||{top:0}).top;
+
+            //获取每个元素的位置、高宽信息
+            data.$dom.each(function(i,o){
+                o = $(o);
+                o.data('xdatadim',J.data.getItemDimension(o));
+            });
+
+            cache[data.id] = data;
+            return data;
+        },
         getRelatedYTags:function($tag,ytag,attrName){
             var tags = [],
-                isCustomTagWithCssSelector = (attrName==='ctag'&&(ytag.indexOf('#')!=-1 || ytag.indexOf('.')!=-1) );
+                isCustomTag = (attrName==='ctag'),
+                tempYTagId=null;
             if (attrName==='_ytag') {
                 $tag.find('[ytag]').each(function(i1,o1){
                     tags.push(o1.getAttribute('ytag'));
+                });
+            }else if(isCustomTag){
+                $tag.find('[ytag]').each(function(i1,o1){
+                    tags.push(o1.getAttribute('ytag'));
+                });
+                $tag.each(function(i,o){
+                    if( (tempYTagId=o.getAttribute('ytag')) ){
+                        tags.push(tempYTagId);
+                    }
                 });
             }else{
                 tags.push(ytag);
@@ -1855,6 +1926,7 @@ J(function($,p,pub){
             this.$ytagTrigger = $(elmTrigger).addClass(clOn);
 
             var ytagData = J.ytag.get(elmTrigger.getAttribute('data-ytag'),elmTrigger.getAttribute('data-ytagattr'));
+
             $('body').stop().animate({
                 scrollTop:ytagData.top
             },'fast',function(){
@@ -1862,11 +1934,9 @@ J(function($,p,pub){
                 J.ui.showYTagChart(ytagData,p.main.$ytagTrigger);
             });
         },
-        showCover:function(tagData){
-            if(this.$cover){
-                this.$cover.addClass('xdata_hidden');
-            }
-            var coverId = '#xdataCover'+tagData.id,
+        _showCover:function(id,dim){
+            this.hideCovers(dim);
+            var coverId = '#xdataCover'+id,
                 $cover= $(coverId),
                 cssProps={
                     position:'fixed',
@@ -1877,27 +1947,61 @@ J(function($,p,pub){
                     height:'auto',
                     color:'red'
                 },
-                isHidden = tagData.$dom.is(':hidden');
-            tagData.coverTip = tagData.selector+(isHidden?'当前处于隐藏状态...':'');
-            if(isHidden){
-                pub.removeFromCache(tagData.ytagid,tagData.ytagAttr);
-            }
+                isHidden = dim.isHidden;
+            var coverTip = dim.selector+(isHidden?',当前处于隐藏状态...':'');
 
             if($cover.length===1){
-                this.$cover=$cover.removeClass('xdata_hidden');
+                $cover.removeClass('xdata_hidden');
                 if(isHidden){
-                    this.$cover.css(cssProps).find('.xdata_tagcover_bd').html(tagData.coverTip);
+                    $cover.css(cssProps).find('.xdata_tagcover_bd').html(coverTip);
                 }
+                this.covers[id]=$cover;
                 return;
             };
-            J.$body.append(Mustache.to_html(this.coverTpl,tagData));
-            cssProps = isHidden?cssProps:({
+            J.$body.append(Mustache.to_html(this.coverTpl,{id:id,coverTip:coverTip}));
+            cssProps = isHidden?cssProps:dim;
+            this.covers[id] = $(coverId).css(cssProps);
+        },
+        showCover:function(tagData){
+            if(tagData.isCustom){
+                this.showCTagCover(tagData);
+                return;
+            };
+
+            var coverDim = {
                 top:tagData.top,
                 left:tagData.left,
                 width:(tagData.width>tagData.parentWidth?tagData.parentWidth:tagData.width),
-                height:(tagData.height>tagData.parentHeight?tagData.parentHeight:tagData.height)
+                height:(tagData.height>tagData.parentHeight?tagData.parentHeight:tagData.height),
+                isHidden:tagData.$dom.is(':hidden'),
+                selector:tagData.selector
+            };
+            if(coverDim.isHidden){
+                pub.removeFromCache(tagData.id);
+            }
+            this._showCover(tagData.id,coverDim);
+        },
+        showCTagCover:function(tagData){
+            this.hideCovers();
+            if(tagData.$dom.length==0){
+                return;
+            };
+            var coverDim = null;
+            tagData.$dom.each(function(i,o){
+                o = $(o);
+                coverDim = o.data('xdatadim');
+                coverDim.isHidden = o.is(':hidden');
+                coverDim.selector = o[0].id||o[0].className;
+                p.main._showCover(p.main.getCacheKey(o.selector,'ctag'),coverDim);
             });
-            this.$cover = $(coverId).css(cssProps);
+        },
+        getCacheKey:function(ytag,attrName){
+            var isCTag = attrName==='ctag';
+            if(!isCTag){
+                return (attrName+ytag);
+            }
+            var ctagid = ytag.replace(/#/gi,'-').replace(/./gi,'-').replace(/,/gi,'-').replace(/ +?/g,'-');
+            return ('ctag'+ctagid);
         }
     };
     //caculate all ytag's data
@@ -1909,13 +2013,19 @@ J(function($,p,pub){
     //get ytag's data
     pub.get = function(ytag,attrName){
         attrName = attrName||'ytag';
-        //TODO:addToCache的第一个参数怎么处理？
-        ytag = cache[(attrName+ytag)]||p.main.addToCache($( ('[$="'+ytag+'"]').replace('$',attrName) ),attrName);
-        return ytag;
+        var isCTag = attrName==='ctag',
+            key = p.main.getCacheKey(ytag,attrName),
+            data = null;
+
+        if( (data=cache[key]) ){
+            return data;
+        }
+        data = isCTag?p.main.addCTagToCache(ytag):p.main.addToCache($( ('[$="'+ytag+'"]').replace('$',attrName) ),attrName);
+        return data;
     };
-    pub.removeFromCache=function(ytag,attrName){
-        attrName = attrName||'ytag';
-        cache[(attrName+ytag)]=null;
+
+    pub.removeFromCache=function(id){
+        cache[id]=null;
     };
 });
 /* E YTAG */
