@@ -1972,10 +1972,7 @@ J(function($,p,pub){
                 this.$ytagTrigger.removeClass(clOn);
             }
             this.$ytagTrigger=null;
-            if(this.$cover){
-                this.$cover.addClass('xdata_hidden');
-            }
-            this.$cover=null;
+            this.hideCovers();
         },
         onClickYTagTrigger:function(elmTrigger){
             var clOn = 'xdata_ytagtrigger_on';
