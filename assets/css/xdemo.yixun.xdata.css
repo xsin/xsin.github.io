@@ -147,7 +147,7 @@
      .xdata_wrap_hide{
         right:-387px;
      }
-    .xdata_close{
+    .xdata_pop_close,.xdata_close{
         position: absolute;
         left: -10px;
         top: 0;
@@ -162,8 +162,14 @@
         z-index: 5;
         -webkit-transform:rotate(45deg);
     }
-    .xdata_close:hover{text-decoration: none;}
+    .xdata_pop_close{
+        top:-5px;
+    }
+    .xdata_close:hover,.xdata_pop_close:hover{text-decoration: none;color:#FB8800;background: #444;}
     .xdata_wrap:hover .xdata_close{
+        visibility: visible;
+    }
+    .data_pop:hover .xdata_pop_close{
         visibility: visible;
     }
     .xdata_wrap_hide .xdata_close{
@@ -192,10 +198,11 @@
 /* xdata ui by feeling -v09.11
 ===================================*/
 /*===== 布局 =====*/
-.data_ui{position:absolute;z-index:1; right:0; top:0; width:400px; min-height:100%; border-left:1px solid #CCC; background-color:#FFF; box-shadow:-2px 0 2px rgba(0,0,0,0.1);}
+.data_ui{position:absolute;z-index:1; right:0; top:0; bottom:0;width:400px;overflow: auto; border-left:1px solid #CCC; background-color:#FFF; box-shadow:-2px 0 2px rgba(0,0,0,0.1);}
 
     /*===== 顶部选项卡 =====*/
         .data_tab{overflow:hidden; position:absolute; z-index:2; right:0; top:0; width:400px; height:41px;}
+        .data_tab_fixed{position:fixed;}
             .data_tab ul{display:-webkit-box;}
             .data_tab li{-webkit-box-flex:1;}
             .data_tab li a{display:block; padding:10px 0; background-color:#EFEFEF; text-align:center;}
@@ -253,7 +260,7 @@
                 .data_list_entry .data_rank_control{display:none; position:absolute; right:10px; top:14px;}
                 .data_list_entry:hover,
                 .data_list_entry.on{background-color:#EFEFEF;}
-                .data_list_entry:hover .data_rank_control{display:block;}
+                .data_list_entry.on .data_rank_control,.data_list_entry:hover .data_rank_control{display:block;}
 
                 .data_list_second{margin:0 20px;}
                 

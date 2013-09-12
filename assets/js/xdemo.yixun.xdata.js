@@ -656,7 +656,7 @@ J(function($,p,pub){
         <div id="xdataWrap" class="xdata_wrap">
             <a id="xdataClose" href="javascript:;" class="xdata_close">+</a>
             <div id="xdataUI" class="data_ui">
-                <div class="data_tab">
+                <div id="xdataTab" class="data_tab data_tab_fixed">
                     <ul id="xdataType">
                         <li><a href="javascript:;" class="on" rel="1">点击量</a></li>
                         <li><a href="javascript:;" rel="2">下单量</a></li>
@@ -718,6 +718,7 @@ J(function($,p,pub){
                         <a href="#" class="data_btn">设为版本节点</a>
                     </div>
                 </div>
+                <a id="xdataPop1Close" href="javascript:;" class="xdata_pop_close">+</a>
             </div>
             <div id="xdataPop2" class="data_pop data_pop2 xdata_hidden">
                 <div class="data_pop_add">
@@ -729,6 +730,7 @@ J(function($,p,pub){
                     </p>
                     <div id="xdataPop2Tip" class="xdata_pop2tip xdata_hidden"></div>
                 </div>
+                <a id="xdataPop2Close" href="javascript:;" class="xdata_pop_close">+</a>
             </div>
         </div>
     */});
@@ -736,7 +738,8 @@ J(function($,p,pub){
     var EVT={
         'DataTypeChange':'onXDataTypeChange',
         'UIReady':'onXDataUIReady',
-        'Collapse':'onXDataCollapse'
+        'Collapse':'onXDataCollapse',
+        'YTagChartReset':'onXDataYTagChartReset'
     };
     pub.EVT=EVT;
     //数据类型切换
@@ -1106,6 +1109,7 @@ J(function($,p,pub){
             J.$body.append(coreTpl);
             this.$ui = $('#xdataWrap');
             this.$uiCore = $('#xdataUI');
+            this.$tab = $('#xdataTab');
             this.$rankList = this.$uiCore.find('.data_list');
             $('#xdataClose').bind('click',function(e){
                 p.main[p.main.visible?'hide':'show'].call(p.main);
@@ -1133,7 +1137,18 @@ J(function($,p,pub){
                 })*/;
             //autohide after UIReady
             this.autoHide();
+            this.$ui.onTransitioned(function(){
+                if(p.main.visible){
+                    p.main.fixedTab();
+                }
+            });
             J.$win.trigger(EVT.UIReady);
+        },
+        fixedTab:function(){
+            this.$tab.addClass('data_tab_fixed');
+        },
+        unfixedTab:function(){
+            this.$tab.removeClass('data_tab_fixed');
         },
         showError:function(txt){
             this.$startUp.html('<span class="xdata_err">'+txt.toString()+'</span>');
@@ -1143,6 +1158,7 @@ J(function($,p,pub){
             this.visible=true;
         },
         hide:function(){
+            this.unfixedTab();
             this.$ui.addClass('xdata_wrap_hide');
             this.visible=false;
             J.$win.trigger(EVT.Collapse);
@@ -1271,6 +1287,7 @@ J(function($,p,pub){
     p.rank2 = {
         $d:null,
         dataType:1,
+        dataChangedAt:1,
         tpl:J.heredoc(function(){/*
             {{#empty}}
             <div class="xdata_alert">无数据</div>
@@ -1287,17 +1304,15 @@ J(function($,p,pub){
         _init:function(){
             J.$win.bind(EVT.UIReady,function(e){
                 p.rank2.$d = $('#xdataList1');
-                p.rank2.render(p.rank2.getData());
+                p.rank2.reload();
             }).bind(EVT.DataTypeChange,function(e,t){
                 p.rank2.dataType = parseInt(t);
+                p.rank2.reload();
             }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
                 p.rank2.onCTagUpdated(opType,d);
-            });
-            $('.data_btn_edit').live('click',function(e){
-                //tagData,$trigger,isCustomYTag
-                var $trigger = $(this).parents('.data_list_entry'),
-                    isCustomYTag = $trigger.find('.data_rank_lk')[0].getAttribute('data-ytagattr')=='ctag';
-                p.ytagEditor.show(J.data.getCTag(this.rel),$trigger,isCustomYTag);
+            }).bind(J.data.EVT.ClickDataChange,function(e,d){
+                p.rank2.dataChangedAt=p.rank2.dataType;
+                p.rank2.reload();
             });
         },
         onCTagUpdated:function(opType,d){
@@ -1378,6 +1393,9 @@ J(function($,p,pub){
                     empty:(cItems.length==0),
                     items:cItems
                 }));
+        },
+        reload:function(){
+            p.rank2.render(p.rank2.getData());
         }
     };
     //ytag editor
@@ -1405,10 +1423,8 @@ J(function($,p,pub){
                 });
                 //delete
                 $('#xdataPop2Btn2').bind('click',function(e){
-                    var isOk = p.ytagEditor.delete(this.rel);
-                    if(isOk){
-                        p.ytagEditor.hide();
-                    }
+                    p.ytagEditor.delete(this.rel);
+                    p.ytagEditor.hide();
                 });
 
                 //add new
@@ -1419,9 +1435,25 @@ J(function($,p,pub){
                         ytagSelector:''
                     },$(this),true);
                 });
+
+                $('#xdataPop2Close').bind('click',function(e){
+                    p.ytagEditor.hide();
+                });
+
             }).bind(EVT.Collapse,function(e){
                 p.ytagEditor.hide();
+            }).bind('resize.ytagEditor',function(e){
+                p.ytagEditor.updatePosition();
             });
+
+            $('.data_btn_edit').live('click',function(e){
+                //tagData,$trigger,isCustomYTag
+                var $trigger = $(this).parents('.data_list_entry'),
+                    isCustomYTag = $trigger.find('.data_rank_lk')[0].getAttribute('data-ytagattr')=='ctag';
+                p.ytagEditor.show(J.data.getCTag(this.rel),$trigger,isCustomYTag);
+                return false;
+            });
+
         },
         showTip:function(txt,duration){
             clearTimeout(this.tipTimer);
@@ -1436,6 +1468,9 @@ J(function($,p,pub){
                     p.ytagEditor.showTip(null);
                 },duration);
             }
+        },
+        delete:function(id){
+            J.data.deleteCTag(id);
         },
         save:function(id){
             var d = {
@@ -1484,9 +1519,14 @@ J(function($,p,pub){
             return true;
         },
         show:function(tagData,$trigger,isCustomYTag){
+
+            if(this.$trigger){
+                this.$trigger.removeClass('on');
+            }
+
             this.isCustomYTag = isCustomYTag||false;
             this.tagData=tagData;
-            this.$trigger=$trigger;
+            this.$trigger=$trigger.addClass('on');
             this.$d.removeClass('xdata_hidden');
             this.isVisible=true;
             this.updatePosition();
@@ -1556,13 +1596,23 @@ J(function($,p,pub){
                 $('#xdataRank .xdata_ranktype').bind('click.ytagChart',function(e){
                     p.ytagChart.reset();
                 });
+                $('#xdataPop1Close').bind('click',function(e){
+                    p.ytagChart.reset();
+                });
 
             }).bind(EVT.DataTypeChange,function(e,t){
                 p.ytagChart.dataType=parseInt(t);
                 p.ytagChart.reset();
             }).bind('resize.ytagChart',function(e){
                 p.ytagChart.updatePosition();
+            }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
+                p.ytagChart.onCTagUpdated(opType,d);
             });
+        },
+        onCTagUpdated:function(opType,d){
+            if(this.isVisible){
+                this.reset();
+            }
         },
         reset:function(){
             if(this.isLoading&&this.jqXHR&& this.jqXHR.readyState != 4){
@@ -1572,6 +1622,7 @@ J(function($,p,pub){
             this.hide();
             this.tagData=null;
             this.$trigger=null;
+            J.$win.trigger(EVT.YTagChartReset);
         },
         show:function(tagData,$trigger){
             this.tagData=tagData;
@@ -1681,13 +1732,13 @@ J(function($,p,pub){
                 dataByTime=[d[i].t,0];
                 switch(dataType){
                     case 1:
-                        dataByTime[1]=d[i].d.data.data[0].click_num;
+                        dataByTime[1]=d[i].d.status===true?d[i].d.data.data[0].click_num:0;
                     break;
                     case 2:
-                        dataByTime[1]=d[i].d.data.data[0].order_num;
+                        dataByTime[1]=d[i].d.status===true?d[i].d.data.data[0].order_num:0;
                     break;
                     case 3:
-                        dataByTime[1]=parseFloat(d[i].d.data.data[0].click_trans_rate);
+                        dataByTime[1]=d[i].d.status===true?parseFloat(d[i].d.data.data[0].click_trans_rate):0;
                     break;
                 };//switch
                 r.push(dataByTime);
@@ -1835,10 +1886,11 @@ J(function($,p,pub){
         addCTagToCache:function(ctag){
             var isCustomTagWithCssSelector = (ctag.indexOf('#')!=-1 || ctag.indexOf('.')!=-1),
                 cssSelectors = [],
+                cssSelectors1 = [],
                 len=0,
-                ctagid = ctag.replace(/#/gi,'-').replace(/./gi,'-').replace(/,/gi,'-').replace(/ +?/g,'-'),
+                ctagid = this.getCacheKey(ctag,'ctag'),
                 data = {
-                    id:('ctag'+ctagid),
+                    id:ctagid,
                     selector:''
                 };
 
@@ -1850,10 +1902,11 @@ J(function($,p,pub){
                 cssSelectors = ctag.split('|');
                 len = cssSelectors.length;
                 for(var i =0;i<len;i++){
-                    data.selector+='[ytag="'+cssSelectors[i]+'"]';
+                    cssSelectors1.push('[ytag="'+cssSelectors[i]+'"]');
                 };
+                data.selector = cssSelectors1.join(',');
             }
-            data.$dom = $(data.selector);
+            data.$dom = $(data.selector);//NOTE:发现ytag用的很滥，同一个ytag用在多个链接上
             data.ytags=this.getRelatedYTags(data.$dom,ctag,'ctag');
             data.isCustom=true;
             data.top = (data.$dom.offset()||{top:0}).top;
@@ -1870,18 +1923,29 @@ J(function($,p,pub){
         getRelatedYTags:function($tag,ytag,attrName){
             var tags = [],
                 isCustomTag = (attrName==='ctag'),
-                tempYTagId=null;
+                tempCache={};
             if (attrName==='_ytag') {
                 $tag.find('[ytag]').each(function(i1,o1){
-                    tags.push(o1.getAttribute('ytag'));
+                    o1 = o1.getAttribute('ytag');
+                    if(!tempCache[o1]){
+                        tags.push(o1);
+                        tempCache[o1]=true;
+                    }
+                    
                 });
             }else if(isCustomTag){
                 $tag.find('[ytag]').each(function(i1,o1){
-                    tags.push(o1.getAttribute('ytag'));
+                    o1 = o1.getAttribute('ytag');
+                    if(!tempCache[o1]){
+                        tags.push(o1);
+                        tempCache[o1]=true;
+                    }
                 });
-                $tag.each(function(i,o){
-                    if( (tempYTagId=o.getAttribute('ytag')) ){
-                        tags.push(tempYTagId);
+                $tag.each(function(i1,o1){
+                    o1 = o1.getAttribute('ytag');
+                    if( o1 && (!tempCache[o1]) ){
+                        tags.push(o1);
+                        tempCache[o1]=true;
                     }
                 });
             }else{
@@ -1890,13 +1954,8 @@ J(function($,p,pub){
             return tags;
         },
         _init:function(){
-            J.$win.bind(J.ui.EVT.DataTypeChange,function(e,t){
-                p.main.reset(t);
-            }).bind(J.ui.EVT.UIReady,function(e){
-                //滚动条
-                $('.xdata_rank,.xdata_mods').bind('scroll.ytag',function(e){
-                    p.main.reset();
-                });
+            J.$win.bind(J.ui.EVT.YTagChartReset,function(e){
+                p.main.reset();
             });
             $('[data-ytag]').live('click',function(e){
                 p.main.onClickYTagTrigger(this);
@@ -1934,8 +1993,10 @@ J(function($,p,pub){
                 J.ui.showYTagChart(ytagData,p.main.$ytagTrigger);
             });
         },
-        _showCover:function(id,dim){
-            this.hideCovers(dim);
+        _showCover:function(id,dim,hideOthers){
+            if(hideOthers){
+                this.hideCovers();
+            }
             var coverId = '#xdataCover'+id,
                 $cover= $(coverId),
                 cssProps={
@@ -1979,7 +2040,7 @@ J(function($,p,pub){
             if(coverDim.isHidden){
                 pub.removeFromCache(tagData.id);
             }
-            this._showCover(tagData.id,coverDim);
+            this._showCover(tagData.id,coverDim,true);
         },
         showCTagCover:function(tagData){
             this.hideCovers();
@@ -1991,8 +2052,8 @@ J(function($,p,pub){
                 o = $(o);
                 coverDim = o.data('xdatadim');
                 coverDim.isHidden = o.is(':hidden');
-                coverDim.selector = o[0].id||o[0].className;
-                p.main._showCover(p.main.getCacheKey(o.selector,'ctag'),coverDim);
+                coverDim.selector = o[0].id||o[0].className||(tagData.id+i);
+                p.main._showCover(p.main.getCacheKey(coverDim.selector,'ctag'),coverDim);
             });
         },
         getCacheKey:function(ytag,attrName){
@@ -2000,8 +2061,9 @@ J(function($,p,pub){
             if(!isCTag){
                 return (attrName+ytag);
             }
-            var ctagid = ytag.replace(/#/gi,'-').replace(/./gi,'-').replace(/,/gi,'-').replace(/ +?/g,'-');
-            return ('ctag'+ctagid);
+            //将“#,.|空格”全部换成-
+            var ctagid = ytag.replace(/[#,\.\| +?]/gi,'-');
+            return (attrName+ctagid);
         }
     };
     //caculate all ytag's data
@@ -2022,6 +2084,10 @@ J(function($,p,pub){
         }
         data = isCTag?p.main.addCTagToCache(ytag):p.main.addToCache($( ('[$="'+ytag+'"]').replace('$',attrName) ),attrName);
         return data;
+    };
+
+    pub.reset = function(){
+        p.main.reset();
     };
 
     pub.removeFromCache=function(id){
