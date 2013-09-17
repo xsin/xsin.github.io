@@ -1159,7 +1159,7 @@ J(function($,p,pub){
             this.visible=true;
         },
         hide:function(){
-            this.unfixedTab();
+            this.unfixedHD();
             this.$ui.addClass('xdata_wrap_hide');
             this.visible=false;
             J.$win.trigger(EVT.Collapse);
