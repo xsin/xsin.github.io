@@ -656,42 +656,42 @@ J(function($,p,pub){
         <div id="xdataWrap" class="xdata_wrap">
             <a id="xdataClose" href="javascript:;" class="xdata_close">+</a>
             <div id="xdataUI" class="data_ui">
-                <div id="xdataTab" class="data_tab data_tab_fixed">
-                    <ul id="xdataType">
-                        <li><a href="javascript:;" class="on" rel="1">点击量</a></li>
-                        <li><a href="javascript:;" rel="2">下单量</a></li>
-                        <li><a href="javascript:;" rel="3">转化率</a></li>
-                    </ul>
-                </div>
-
-                <div class="data_item">
+                <div class="data_ui_hd">
+                    <div id="xdataTab" class="data_tab data_tab_fixed">
+                        <ul id="xdataType">
+                            <li><a href="javascript:;" class="on" rel="1">点击量</a></li>
+                            <li><a href="javascript:;" rel="2">下单量</a></li>
+                            <li><a href="javascript:;" rel="3">转化率</a></li>
+                        </ul>
+                    </div>
                     <div class="data_time">
                         <input class="xdata_date xdata_sdate" id="xdataKeyChartDate1" type="date"/><span class="c_tx3">-</span><input class="xdata_date xdata_edate" id="xdataKeyChartDate2" type="date" />
-                        <a id="xdataRetweet1" href="javascript:;" class="xdata_btn_retweet"><i class="xdata_icon xdata_icon_retweet"><b>刷新</b></i></a>
+                        <button id="xdataRetweet1" class="data_btn">刷新</button>
                     </div>
-                    <div id="xdataKeyCharts" class="data_total">
-                        <div id="xdataKeyChartTip" class="xdata_keycharttip xdata_hidden"><div class="xdata_keycharttip_bg"></div><div class="xdata_keycharttip_bd"></div></div>
-                        <div id="xdataKeyChart1" class="data_total_inner xdata_keychart xdata_visible"></div>
-                        <div id="xdataKeyChart2" class="data_total_inner xdata_keychart"></div>
-                        <div id="xdataKeyChart3" class="data_total_inner xdata_keychart"></div>
-                    </div>
-                    <div class="data_rank">
-                        <div class="data_rank_btn">
-                            <a href="javascript:;" id="xdataBtnHeatmap" class="data_btn">显示热区图</a>
+                </div>
+
+                <div class="data_ui_bd">
+                    <div class="data_box">
+                        <div class="data_box_hd">
+                            <h3>页面趋势</h3>
+                            <a href="javascript:;" id="xdataBtnHeatmap" class="data_btn data_btn_bg1">显示热区图</a>
                         </div>
-                        <div class="data_rank_show">
-                            <div class="data_rank_show_hd">
-                                <h3>排行榜</h3>
+                        <div class="data_box_bd">
+                            <div id="xdataKeyCharts" class="data_total">
+                                <div id="xdataKeyChartTip" class="xdata_keycharttip xdata_hidden"><div class="xdata_keycharttip_bg"></div><div class="xdata_keycharttip_bd"></div></div>
+                                <div id="xdataKeyChart1" class="data_total_inner xdata_keychart xdata_visible"></div>
+                                <div id="xdataKeyChart2" class="data_total_inner xdata_keychart"></div>
+                                <div id="xdataKeyChart3" class="data_total_inner xdata_keychart"></div>
                             </div>
-                            <div id="xdataRank" class="data_rank_show_bd">
-                                <div class="data_choose">
-                                    <label><input class="xdata_ranktype" type="radio" checked="checked" value="1" name="xdata_ranktype"/>自定义</label>
-                                    <label><input class="xdata_ranktype" type="radio" value="2" name="xdata_ranktype"/>默认</label>
-                                </div>
-                                <!--自定义ytag排行榜-->
-                                <div id="xdataList1" class="data_list">
-                                    <div class="data_rank_add"><a id="xdataAddCTag" href="javascript:;">+</a></div>
-                                </div><!--/data_list-->
+                        </div>
+                        <div class="data_box">
+                            <div class="data_box_hd">
+                                <h3>模块趋势</h3>
+                                <a id="xdataAddCTag" href="javascript:;" class="data_btn data_btn_bg1">新增模块</a>
+                            </div>
+                            <div class="data_box_bd">
+                                <!--默认列表-->
+                                <div id="xdataList1" class="data_list"></div>
                                 <!--单个ytag排行榜-->
                                 <div id="xdataList2" class="data_list data_listb xdata_hidden">
                                     <div id="xdataRank1" class="xdata_rank xdata_visible"></div>
@@ -700,31 +700,31 @@ J(function($,p,pub){
                                 </div>
                                 <!--/单个ytag排行榜-->
                             </div>
-                        </div>
-                    </div><!--/data_rank-->
+                        </div><!--/data_box-->
+                    </div>
                 </div>
+
             </div>
             <div id="xdataPop1" class="data_pop xdata_hidden">
                 <div class="data_time">
                     <input id="xdataPop1Date1" class="xdata_date xdata_sdate1" type="date" /><span class="c_tx3">-</span><input id="xdataPop1Date2" class="xdata_date xdata_edate" type="date" />
-                    <a id="xdataRetweet2" href="javascript:;" class="xdata_btn_retweet"><i class="xdata_icon xdata_icon_retweet"><b>刷新</b></i></a>
+                    <button id="xdataRetweet2" class="data_btn">刷新</button>
                 </div>
-                <div class="data_pop_item">
+                <div class="data_pop_con">
                     <div class="data_total">
                         <div id="xdataYTagChartTip" class="xdata_ytagcharttip xdata_hidden"></div>
                         <div id="xdataYTagChart" class="data_total_inner xdata_ytagchart"></div>
-                    </div>
-                    <div class="data_pop_control">
-                        <a href="#" class="data_btn">设为版本节点</a>
                     </div>
                 </div>
                 <a id="xdataPop1Close" href="javascript:;" class="xdata_pop_close">+</a>
             </div>
             <div id="xdataPop2" class="data_pop data_pop2 xdata_hidden">
                 <div class="data_pop_add">
-                    <p><input id="xdataPop2Ipt1" type="text" placeholder="请输入模块名称" /></p>
-                    <p><input id="xdataPop2Ipt2" type="text" value="" placeholder="请输入模块的css选择器或以|分隔的ytag"/></p>
-                    <p>
+                    <ul>
+                        <li><input id="xdataPop2Ipt1" type="text" placeholder="请输入模块名称" /></li>
+                        <li><input id="xdataPop2Ipt2" type="text" value="" placeholder="请输入模块的css选择器或以|分隔的ytag"/></li>
+                    </ul>
+                    <div class="data_control">
                         <a id="xdataPop2Btn1" href="javascript:;" class="data_btn">更新</a>
                         <a id="xdataPop2Btn2" href="javascript:;" class="data_btn data_btn_bg1">删除</a>
                     </p>
@@ -1179,11 +1179,13 @@ J(function($,p,pub){
             <div class="xdata_alert">无数据</div>
             {{/empty}}
             {{^empty}}
-            <ol>
             {{#items}}
-            <li><a id="xdataLnk{{id}}" href="javascript:;" data-ytag="{{ytagid}}" data-href="{{href}}" title="{{title}}">{{text}}</a><sup>{{val}}</sup></li>
+            <div class="data_list_item">
+                <div class="data_list_entry">
+                    <a class="data_list_lk" id="xdataLnk{{id}}" href="javascript:;" data-ytag="{{ytagid}}" data-href="{{href}}" title="{{title}}">{{text}}<span>{{val}}</span></a>
+                </div>
+            </div>
             {{/items}}
-            </ol>
             {{/empty}}
         */}),
         _init:function(){
@@ -1295,8 +1297,12 @@ J(function($,p,pub){
             {{#items}}
             <div class="data_list_item">
                 <div class="data_list_entry">
-                    <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" class="data_rank_lk">{{alias}}<span>{{val}}</span></a>
-                    <div class="data_rank_control"><a href="javascript:;" class="data_btn_edit" rel="{{id}}">编辑</a></div>
+                    <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
+                    <div class="data_list_control">
+                        <a href="javascript:;" class="data_btn_edit" rel="{{id}}">编辑</a>
+                        <a href="javascript:;" class="data_btn_more">展开/收起</a>
+                    </div>
+                    <div class="data_rank_control"></div>
                 </div>
             </div>
             {{/items}}
@@ -1449,7 +1455,7 @@ J(function($,p,pub){
             $('.data_btn_edit').live('click',function(e){
                 //tagData,$trigger,isCustomYTag
                 var $trigger = $(this).parents('.data_list_entry'),
-                    isCustomYTag = $trigger.find('.data_rank_lk')[0].getAttribute('data-ytagattr')=='ctag';
+                    isCustomYTag = $trigger.find('.data_list_lk')[0].getAttribute('data-ytagattr')=='ctag';
                 p.ytagEditor.show(J.data.getCTag(this.rel),$trigger,isCustomYTag);
                 return false;
             });
