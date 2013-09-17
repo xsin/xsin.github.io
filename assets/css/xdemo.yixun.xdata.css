@@ -145,7 +145,7 @@
     .data_ui_hd{overflow:hidden; position:absolute; z-index:2; right:0; top:0; width:340px; height:90px;}
     .data_ui_bd{padding:90px 15px 0;}
     /*===== 选项卡 =====*/
-        .data_tab{overflow:hidden; position:absolute; z-index:2; right:0; top:0; width:340px; height:41px;}
+        .data_tab{}
             .data_tab ul{display:-webkit-box;}
             .data_tab li{-webkit-box-flex:1;}
             .data_tab li a{display:block; padding:10px 0; background-color:#388A5A; color:#FFF; text-align:center;}
