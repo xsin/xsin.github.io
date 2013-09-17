@@ -656,8 +656,8 @@ J(function($,p,pub){
         <div id="xdataWrap" class="xdata_wrap">
             <a id="xdataClose" href="javascript:;" class="xdata_close">+</a>
             <div id="xdataUI" class="data_ui">
-                <div class="data_ui_hd">
-                    <div id="xdataTab" class="data_tab data_tab_fixed">
+                <div id="xdataUIHD" class="data_ui_hd">
+                    <div id="xdataTab" class="data_tab xdata_fixed">
                         <ul id="xdataType">
                             <li><a href="javascript:;" class="on" rel="1">点击量</a></li>
                             <li><a href="javascript:;" rel="2">下单量</a></li>
@@ -1110,6 +1110,7 @@ J(function($,p,pub){
             this.$ui = $('#xdataWrap');
             this.$uiCore = $('#xdataUI');
             this.$tab = $('#xdataTab');
+            this.$hd = $('#xdataUIHD');
             this.$rankList = this.$uiCore.find('.data_list');
             $('#xdataClose').bind('click',function(e){
                 p.main[p.main.visible?'hide':'show'].call(p.main);
@@ -1144,11 +1145,11 @@ J(function($,p,pub){
             });
             J.$win.trigger(EVT.UIReady);
         },
-        fixedTab:function(){
-            this.$tab.addClass('data_tab_fixed');
+        fixedHD:function(){
+            this.$hd.addClass('xdata_fixed');
         },
-        unfixedTab:function(){
-            this.$tab.removeClass('data_tab_fixed');
+        unfixedHD:function(){
+            this.$hd.removeClass('xdata_fixed');
         },
         showError:function(txt){
             this.$startUp.html('<span class="xdata_err">'+txt.toString()+'</span>');
