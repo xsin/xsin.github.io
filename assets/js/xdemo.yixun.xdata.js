@@ -656,8 +656,8 @@ J(function($,p,pub){
         <div id="xdataWrap" class="xdata_wrap">
             <a id="xdataClose" href="javascript:;" class="xdata_close">+</a>
             <div id="xdataUI" class="data_ui">
-                <div id="xdataUIHD" class="data_ui_hd">
-                    <div id="xdataTab" class="data_tab xdata_fixed">
+                <div id="xdataUIHD" class="data_ui_hd xdata_fixed">
+                    <div id="xdataTab" class="data_tab">
                         <ul id="xdataType">
                             <li><a href="javascript:;" class="on" rel="1">点击量</a></li>
                             <li><a href="javascript:;" rel="2">下单量</a></li>
