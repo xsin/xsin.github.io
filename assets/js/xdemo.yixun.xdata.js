@@ -1140,7 +1140,7 @@ J(function($,p,pub){
             this.autoHide();
             this.$ui.onTransitioned(function(){
                 if(p.main.visible){
-                    p.main.fixedTab();
+                    p.main.fixedHD();
                 }
             });
             J.$win.trigger(EVT.UIReady);
@@ -1818,7 +1818,7 @@ J(function($,p,pub){
             var date = dates.splice(0,1)[0],
                 timeStamp = date.getTime(),
                 sdate = J.data.getDateTimeStr(date),
-                edate = J.data.getDateTimeStr(date,{dayDiff:1}),
+                edate = sdate,
                 _params = {
                     date_type:'custom',
                     start_date:sdate,
