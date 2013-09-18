@@ -54,7 +54,6 @@
 .xdata_tagcover{position:absolute;z-index:10000;color:#fff;}
 .xdata_tagcover_bg{position: absolute;z-index: 1;top:0;left:0;right:0;bottom:0;background-color: #000;opacity: 0.6;}
 .xdata_tagcover_bd{position: relative;z-index: 2;padding:10px;text-align: center;}
-.xdata_ytagtrigger_on{background-color: #efefef;font-weight: bold;}
 .xdata_bootup{
     background: #333;
     width:90px;
@@ -216,7 +215,7 @@
 				.data_list_entry:hover{background-color:#E3DEBC;}
 
 					.data_list_control{display:none; position:absolute; right:10px; top:14px;}
-					.data_list_entry:hover .data_list_control{display:block;}
+					.data_list_entry:hover .data_list_control,.data_list_entry.on .data_list_control{display:block;}
 		
 					.data_list_entry .on{background-color:#48A770;}
 

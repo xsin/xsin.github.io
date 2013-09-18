@@ -557,7 +557,7 @@ J(function($,p,pub){
      * 获取预配置的tag信息
      */
     pub.getDefaultCTags = function(cbk){
-        var xhr = $.getScript('http://oxox.io/assets/js/xdemo.yixun.xdata.ctags.js');
+        var xhr = $.getScript('http://oxox.io/assets/js/xdemo.yixun.xdata.ctags.js?t'+(new Date()).getTime());
         xhr.done(function(script, textStatus, jqxhr){
             cbk(null,(window['xdataCTags']||{})[pub.bizInfo.pid]);
         }).fail(function(jqxhr, cfgs, err){
@@ -580,7 +580,7 @@ J(function($,p,pub){
         return obj;
     };
     pub.getAllCTags = function(cbk){
-        var items = pub.getCTags();
+        var items = pub.getCTags()||[];
         if(!pub.defaultCTags){
             J.data.getDefaultCTags(function(err,d){
                 if(err){
@@ -2039,7 +2039,7 @@ J(function($,p,pub){
             pub.rockAndRollAll();
         },
         reset:function(t){
-            var clOn = 'xdata_ytagtrigger_on';
+            var clOn = 'on';
             if(this.$ytagTrigger){
                 this.$ytagTrigger.removeClass(clOn);
             }
@@ -2047,7 +2047,7 @@ J(function($,p,pub){
             this.hideCovers();
         },
         onClickYTagTrigger:function(elmTrigger){
-            var clOn = 'xdata_ytagtrigger_on';
+            var clOn = 'on';
             if(this.$ytagTrigger){
                 if(this.$ytagTrigger[0].id===elmTrigger.id){
                     return;
