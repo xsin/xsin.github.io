@@ -224,6 +224,7 @@
 					.data_list_lk:hover{text-decoration:none;}
 
 					.data_list_belong .data_list_entry{padding:10px 40px;}
+            .data_list_item1 .data_btn_edit{display: none;}
 
 
 	/*===== 详情 =====*/

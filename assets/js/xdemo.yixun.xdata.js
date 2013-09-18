@@ -909,7 +909,7 @@ J(function($,p,pub){
                 chart=$chart.highcharts();
                 $chart.data('xdatachart',chart)
             }
-            
+            console.log(chartOpts);
             chart.series[0].update(chartOpts.series[0]);
             chart.setTitle(chartOpts.title);
         },
@@ -1343,7 +1343,7 @@ J(function($,p,pub){
             <div class="xdata_alert">无数据</div>
             {{/empty}}
             {{#items}}
-            <div id="xdataCTag{{id}}" class="data_list_item">
+            <div id="xdataCTag{{id}}" class="data_list_item{{cl1}}">
                 <div class="data_list_entry">
                     <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
                     <div class="data_list_control">
@@ -1407,6 +1407,7 @@ J(function($,p,pub){
                 tempItem.click_num=0;
                 tempItem.order_num=0;
                 tempItem.click_trans_rate=0;
+                tempItem.cl1="";
                 if(tempItem.isCustomYTag){
                     switch(tempItem.type){
                         case 1:
@@ -1419,6 +1420,9 @@ J(function($,p,pub){
                         break;
                     };//switch
                 };
+                if(tempItem.readonly){
+                    tempItem.cl1=' data_list_item1';
+                }
                 ytagLen = tempItem.ytags.length;
                 for(var j=0;j<ytagLen;j++){
                     tempItem.click_num+=tempItem.ytags[j].click_num;
