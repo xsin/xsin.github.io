@@ -132,16 +132,21 @@
     .xdata_mods ul{padding-top: 10px;}
     .xdata_mods a {padding: 5px;}
 
+    .xdata_readonly .data_control{display: none;}
+    .xdata_loading2{display: inline-block;vertical-align: middle;}
+
 .xdata_ytagchart .xdata_loading,.xdata_ytagcharttip .xdata_loading1{display: block;margin:10px auto;}
 
 .xdata_keycharttip,.xdata_keycharttip_bg{position: absolute;top:0;left:0;bottom: 0;right:0;}
 .xdata_keycharttip_bg{z-index: 1;background-color: #000;opacity: 0.5;}
 .xdata_keycharttip_bd{position: absolute;z-index: 2;left:0;top:30%;right:0;text-align: center;}
+.xdata_btn_addmod{display: none!important;}
+.xdata_admin .xdata_btn_addmod{display: inline-block!important;}
 
 /* xdata ui by feeling -v09.11
 ===================================*/
 /*===== 布局 =====*/
-.data_ui{position:absolute;z-index:1; right:0; top:0; bottom:0;width:340px;overflow: auto; background-color:#F3EFE0;}
+.data_ui{position:absolute;z-index:1; right:0; top:0; min-height:100%;width:340px;overflow: auto; background-color:#F3EFE0;}
     .data_ui_hd{overflow:hidden; position:absolute; z-index:2; right:0; top:0; width:340px; height:90px;}
     .data_ui_bd{padding:90px 15px 0;}
     /*===== 选项卡 =====*/
@@ -153,7 +158,7 @@
 
     /*===== 模块 =====*/
         .data_box{margin-bottom:20px;}
-            .data_box_hd{overflow:hidden; zoom:1; padding:10px 0 5px; text-align:right;}
+            .data_box_hd{overflow:hidden; zoom:1; padding:10px 0 5px; text-align:right;position: relative;}
             .data_box_hd h3{float:left; font-size:14px; font-weight:bold;}
 
     /*===== 按钮 =====*/

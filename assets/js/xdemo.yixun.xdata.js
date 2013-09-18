@@ -554,6 +554,50 @@ J(function($,p,pub){
         });
     };
     /**
+     * 获取预配置的tag信息
+     */
+    pub.getDefaultCTags = function(cbk){
+        var xhr = $.getScript('http://oxox.io/assets/js/xdemo.yixun.xdata.ctags.js');
+        xhr.done(function(script, textStatus, jqxhr){
+            cbk(null,(window['xdataCTags']||{})[pub.bizInfo.pid]);
+        }).fail(function(jqxhr, cfgs, err){
+            cbk(err);
+        });
+    };
+    /**
+     * 获取指定编号的预设tag
+     */
+    pub.getDefaultCTagById = function(id){
+        var pageCTags = (pub.defaultCTags||[]),
+            len = pageCTags.length,
+            obj = null;
+        for(var i =0 ;i<len;i++){
+            if(pageCTags[i].id===id){
+                obj = pageCTags[i];
+                break;
+            }
+        };
+        return obj;
+    };
+    pub.getAllCTags = function(cbk){
+        var items = pub.getCTags();
+        if(!pub.defaultCTags){
+            J.data.getDefaultCTags(function(err,d){
+                if(err){
+                    console.log('预设模块读取出错：',err);
+                    cbk(items);
+                    return;
+                };
+                pub.defaultCTags = d||[];
+                items = items.concat(pub.defaultCTags);
+                cbk(items);
+            });
+            return;
+        };
+        items = items.concat(pub.defaultCTags);
+        cbk(items);
+    };
+    /**
      * 获取自定义tag信息
      */
     pub.getCTags = function(rawForm){
@@ -578,11 +622,9 @@ J(function($,p,pub){
      * @params {String} id tag编号
      */
     pub.getCTag = function(id){
-        var d = pub.getCTags(true);
-        if (!d) {
-            return null;
-        };
-        return d[id];
+        var d = pub.getCTags(true)||{};
+        d = d[id]||pub.getDefaultCTagById(id);
+        return d;
     };
     /**
      * 保存自定义tag数据
@@ -687,7 +729,8 @@ J(function($,p,pub){
                         <div class="data_box">
                             <div class="data_box_hd">
                                 <h3>模块趋势</h3>
-                                <a id="xdataAddCTag" href="javascript:;" class="data_btn data_btn_bg1">新增模块</a>
+                                <a id="xdataAddCTag" href="javascript:;" class="data_btn data_btn_bg1 xdata_btn_addmod">新增模块</a>
+                                <img id="xdataLoading2" class="xdata_loading2" src="http://static.gtimg.com/icson/img/common/loading.gif"/>
                             </div>
                             <div class="data_box_bd">
                                 <!--默认列表-->
@@ -1081,6 +1124,9 @@ J(function($,p,pub){
         tpl0:'<div id="xdataBootup" class="xdata_bootup xdata_show"><strong class="xdata_c1">C</strong>lick<strong class="xdata_c2">S</strong>tream<span class="xdata_loading"></span></div>',
         _init:function(){
             J.$body.append(this.tpl0);
+            if(location.href.indexOf('xdata')>-1){
+                J.$body.addClass('xdata_admin');
+            }
             this.$startUp = $('#xdataBootup');
             this._initEvts();
         },
@@ -1291,6 +1337,7 @@ J(function($,p,pub){
         $d:null,
         dataType:1,
         dataChangedAt:1,
+        dataInited:false,
         tpl:J.heredoc(function(){/*
             {{#empty}}
             <div class="xdata_alert">无数据</div>
@@ -1303,7 +1350,6 @@ J(function($,p,pub){
                         <a href="javascript:;" class="data_btn_edit" rel="{{id}}">编辑</a>
                         <a href="javascript:;" class="data_btn_more">展开/收起</a>
                     </div>
-                    <div class="data_rank_control"></div>
                 </div>
             </div>
             {{/items}}
@@ -1330,20 +1376,27 @@ J(function($,p,pub){
                 break;
                 case 0:
                     //add
-                    var items = this.getData([d]);
+                    var items = this.parseData([d]);
                     this.render(items,true);
                 break;
                 case 1:
                     //update
                     $('#xdataLnkCTag'+d.id).remove();
-                    var items = this.getData([d]);
+                    var items = this.parseData([d]);
                     this.render(items,true);
                 break;
             };//switch
         },
-        getData:function(prependItems){
-            var items = prependItems||(J.data.getCTags()||[]),
-                len = items.length,
+        getData:function(cbk){
+            J.data.getAllCTags(function(items){
+                cbk(items);
+            });
+        },
+        parseData:function(items){
+
+            items = items||[];
+
+            var len = items.length,
                 tempItem = null,
                 cItems = [],
                 ytagLen = 0;
@@ -1402,7 +1455,14 @@ J(function($,p,pub){
                 }));
         },
         reload:function(){
-            p.rank2.render(p.rank2.getData());
+            this.getData(function(d){
+                d = p.rank2.parseData(d);
+                p.rank2.render(d);
+                if(!p.rank2.dataInited){
+                    $('#xdataLoading2').remove();
+                    p.rank2.dataInited=true;
+                }
+            });
         }
     };
     //ytag editor
@@ -1562,6 +1622,11 @@ J(function($,p,pub){
             this.$name[0].value = tagData.alias;
             this.$value[0].value = tagData.ytagSelector;
             document.getElementById('xdataPop2Btn1').rel = document.getElementById('xdataPop2Btn2').rel = tagData.id;
+            if(tagData.readonly){
+                this.$d.addClass('xdata_readonly');
+            }else{
+                this.$d.removeClass('xdata_readonly');
+            }
         }
     };
     //ytag chart
