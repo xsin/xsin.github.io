@@ -868,8 +868,8 @@ J(function($,p,pub){
                     }
                 }]
             };
-            rawData.total.click_num=parseInt((rawData.total.click_num+'').replace(',',''));
-            rawData.total.order_num=parseInt((rawData.total.order_num+'').replace(',',''));
+            rawData.total.click_num=parseInt((rawData.total.click_num+'').replace(/,/gi,''));
+            rawData.total.order_num=parseInt((rawData.total.order_num+'').replace(/,/gi,''));
             rawData.total.click_trans_rate = rawData.total.click_num==0?0:(rawData.total.order_num*100/rawData.total.click_num).toFixed(2);
             switch(dataType){
                 case 1:
@@ -909,7 +909,7 @@ J(function($,p,pub){
                 chart=$chart.highcharts();
                 $chart.data('xdatachart',chart)
             }
-            console.log(chartOpts);
+            //console.log(chartOpts);
             chart.series[0].update(chartOpts.series[0]);
             chart.setTitle(chartOpts.title);
         },
