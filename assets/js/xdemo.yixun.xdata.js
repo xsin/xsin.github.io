@@ -1343,7 +1343,7 @@ J(function($,p,pub){
             <div class="xdata_alert">无数据</div>
             {{/empty}}
             {{#items}}
-            <div class="data_list_item">
+            <div id="xdataCTag{{id}}" class="data_list_item">
                 <div class="data_list_entry">
                     <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
                     <div class="data_list_control">
@@ -1372,7 +1372,7 @@ J(function($,p,pub){
             switch(opType){
                 case -1:
                     //delete
-                    $('#xdataLnkCTag'+d).remove();
+                    $('#xdataCTag'+d).remove();
                 break;
                 case 0:
                     //add
@@ -1381,7 +1381,7 @@ J(function($,p,pub){
                 break;
                 case 1:
                     //update
-                    $('#xdataLnkCTag'+d.id).remove();
+                    $('#xdataCTag'+d.id).remove();
                     var items = this.parseData([d]);
                     this.render(items,true);
                 break;
