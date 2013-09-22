@@ -1066,7 +1066,7 @@ J(function($,p,pub){
             var dLen = dates.length,
                 sdate = J.data.getDateTimeStr(dates[0]),
                 edate = J.data.getDateTimeStr(dates[dLen-1]),
-                dateType = ( dLen===1 && sdate==J.data.getDateTimeStr(new Date()) )?'today':'custom',
+                dateType = ( dLen===1 && sdate==J.data.getDateTimeStr(new Date(),{ignoreHMS:true}) )?'today':'custom',
                 _params = {
                     date_type:dateType,
                     start_date:sdate,
@@ -1986,7 +1986,7 @@ J(function($,p,pub){
                 data.selector = cssSelectors1.join(',');
             }
             data.$dom = $(data.selector);//NOTE:发现ytag用的很滥，同一个ytag用在多个链接上
-            data.ytags=this.getRelatedYTags(data.$dom,ctag,'ctag');
+            data.ytags=this.getRelatedYTags(data.$dom,ctag,'ctag',isCustomTagWithCssSelector);
             data.isCustom=true;
             data.top = (data.$dom.offset()||{top:0}).top;
 
@@ -1999,7 +1999,7 @@ J(function($,p,pub){
             cache[data.id] = data;
             return data;
         },
-        getRelatedYTags:function($tag,ytag,attrName){
+        getRelatedYTags:function($tag,ytag,attrName,isCustomTagWithCssSelector){
             var tags = [],
                 isCustomTag = (attrName==='ctag'),
                 tempCache={};
@@ -2012,24 +2012,32 @@ J(function($,p,pub){
                     }
                     
                 });
-            }else if(isCustomTag){
-                $tag.find('[ytag]').each(function(i1,o1){
-                    o1 = o1.getAttribute('ytag');
-                    if(!tempCache[o1]){
-                        tags.push(o1);
-                        tempCache[o1]=true;
-                    }
-                });
-                $tag.each(function(i1,o1){
-                    o1 = o1.getAttribute('ytag');
-                    if( o1 && (!tempCache[o1]) ){
-                        tags.push(o1);
-                        tempCache[o1]=true;
-                    }
-                });
-            }else{
-                tags.push(ytag);
+                return tags;
             };
+            if(!isCustomTag){
+                tags.push(ytag);
+                return tags;
+            };
+
+            if(!isCustomTagWithCssSelector){
+                tags = tags.concat(ytag.split('|'));
+                return tags;
+            };
+
+            $tag.find('[ytag]').each(function(i1,o1){
+                o1 = o1.getAttribute('ytag');
+                if(!tempCache[o1]){
+                    tags.push(o1);
+                    tempCache[o1]=true;
+                }
+            });
+            $tag.each(function(i1,o1){
+                o1 = o1.getAttribute('ytag');
+                if( o1 && (!tempCache[o1]) ){
+                    tags.push(o1);
+                    tempCache[o1]=true;
+                }
+            });
             return tags;
         },
         _init:function(){
