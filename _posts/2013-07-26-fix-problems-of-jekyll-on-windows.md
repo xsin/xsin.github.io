@@ -17,7 +17,7 @@ Jekyll 官方网站是以外链的形式给出的 [Windows 下安装 Jekyll 方�
 一，软件版本问题。建议在 Windwos 7/8 64位中下载安装以下版本 Ruby 和 DevKit：
 
 * [Python 2.7.5 Windows X86-64 Installer](http://www.python.org/ftp/python/2.7.5/python-2.7.5.amd64.msi)
-* [Ruby 2.0.0-p247 (x64)](http://dl.bintray.com/oneclick/rubyinstaller/ruby-2.0.0-p247-x64-mingw32.7z?direct)
+* [Ruby 2.0.0-p247 (x64)](http://dl.bintray.com/oneclick/rubyinstaller/rubyinstaller-2.0.0-p247-x64.exe?direct)
 * [DevKit-mingw64-64-4.7.2-20130224-1432-sfx.exe](http://files.rubyforge.vm.bytemark.co.uk/rubyinstaller/DevKit-mingw64-64-4.7.2-20130224-1432-sfx.exe)
 
 首先安装Python，设置Python.exe所在的目录到环境变量Path中;
