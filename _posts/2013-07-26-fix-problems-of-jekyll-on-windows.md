@@ -22,10 +22,10 @@ Jekyll 官方网站是以外链的形式给出的 [Windows 下安装 Jekyll 方�
 
 首先安装Python，设置Python.exe所在的目录到环境变量Path中;
 
-接着安装Ruby，然后解压Devkit到某个目录例如（D:\ruby\_install\DevKit），在命令行工具中运行:
+接着安装Ruby（默认：C:\Ruby200-x64），然后解压Devkit到_install目录（C:\Ruby200-x64\_install\DevKit），在命令行工具中运行:
 
 {% highlight bash %}
-cd D:\ruby\_install\DevKit
+cd C:\Ruby200-x64\_install\DevKit
 ruby dk.rb init
 ruby dk.rb install
 {% endhighlight bash %}
@@ -35,6 +35,8 @@ ruby dk.rb install
 {% highlight bash %}
 gem install jekyll
 {% endhighlight bash %}
+
+注：如果提示无法下载数据，请给Ruby.exe设置代理。
 
 ---
 
