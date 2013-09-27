@@ -25,7 +25,7 @@ J(function($,p,pub){
         $name:$('.lg_form_name'),
         $pwd:$('.lg_form_pwd'),
         _init:function(){
-            if($name.length){
+            if(this.$name.length){
                 this.rock();
             }
         },
