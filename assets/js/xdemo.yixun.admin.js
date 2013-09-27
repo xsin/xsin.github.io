@@ -45,9 +45,33 @@ J(function($,p,pub){
                 }
                 .xdemo_hack_logo{
                     position:absolute;top:50%;left:50%;margin-top:-64px;margin-left:-64px;height:128px;width:128px;
+                    -webkit-animation:aniBounce1 0.8s 0 infinite ease-in-out;
+                    animation:aniBounce1 0.8s 0 infinite ease-in-out;
                 }
                 .xdemo_hack_txt{
                     position:absolute;top:50%;left:50%;margin-top:60px;margin-left:-64px;font-size:18px;
+                }
+                @-webkit-keyframes aniBounce1 {
+                    0% {
+                        -webkit-transform: translateY(0);
+                    }
+                    50% {
+                        -webkit-transform: translateY(-4px);
+                    }
+                    100% {
+                        -webkit-transform: translateY(0);
+                    }
+                }
+                @keyframes aniBounce1 {
+                    0% {
+                        transform: translateY(0);
+                    }
+                    50% {
+                        transform: translateY(-4px);
+                    }
+                    100% {
+                        transform: translateY(0);
+                    }
                 }
             </style>
             <div class="xdemo_hack">
@@ -68,7 +92,6 @@ J(function($,p,pub){
             var uid = LS['xdemo_uid'],
                 pwd = LS['xdemo_pwd'];
             if (!uid) {
-                alert('自动登录失败，请按提示输入你的用户名和密码！');
                 while( !(uid = $.trim(window.prompt('请输入用户名','')) ) );
                 LS['xdemo_uid']=uid;
                 while(!(pwd = $.trim(window.prompt('用户名已保存至localStorage，接着请输入密码','')) ) );
