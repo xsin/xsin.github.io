@@ -49,7 +49,7 @@ J(function($,p,pub){
                     animation:aniBounce1 0.8s 0 infinite ease-in-out;
                 }
                 .xdemo_hack_txt{
-                    position:absolute;top:50%;left:50%;margin-top:60px;margin-left:-64px;font-size:18px;
+                    position:absolute;top:50%;left:50%;margin-top:70px;margin-left:-94px;font-size:20px;text-transform:uppercase;
                 }
                 @-webkit-keyframes aniBounce1 {
                     0% {
