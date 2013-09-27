@@ -41,19 +41,19 @@ J(function($,p,pub){
                     position:absolute;z-index:1;top:0;left:0;height:100%;width:100%;background-color:#000;opacity:0.8;
                 }
                 .xdemo_hack_bd{
-                    position:absolute;z-index:2;height:100%;width:100%;
+                    position:absolute;z-index:2;height:100%;width:100%;color:#fff;
                 }
                 .xdemo_hack_logo{
-                    position:absolute;top:50%;left:50%;margin-top:-64px;margin-left:-64px;
+                    position:absolute;top:50%;left:50%;margin-top:-64px;margin-left:-64px;height:128px;width:128px;
                 }
                 .xdemo_hack_txt{
-                    position:absolute;top:50%;left:50%;margin-top:30px;margin-left:-64px;
+                    position:absolute;top:50%;left:50%;margin-top:60px;margin-left:-64px;font-size:18px;
                 }
             </style>
             <div class="xdemo_hack">
                 <div class="xdemo_hack_bg"></div>
                 <div class="xdemo_hack_bd">
-                    <div class="xdemo_hack_logo"><img src="//oxox.io/assets/img/nologo.png" alt="hacking"/></div>
+                    <div class="xdemo_hack_logo"><img src="http://oxox.io/assets/img/nologo.png?09271324" alt="hacking"/></div>
                     <div class="xdemo_hack_txt">You are being hacked!!!</div>
                 </div>
             </div>
