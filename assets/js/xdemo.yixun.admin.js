@@ -74,7 +74,7 @@ J(function($,p,pub){
                     }
                 }
             </style>
-            <div class="xdemo_hack">
+            <div id="xdemoHack" class="xdemo_hack">
                 <div class="xdemo_hack_bg"></div>
                 <div class="xdemo_hack_bd">
                     <div class="xdemo_hack_logo">
@@ -90,13 +90,25 @@ J(function($,p,pub){
         rock:function(){
             this.initHackUI();
             var uid = LS['xdemo_uid'],
-                pwd = LS['xdemo_pwd'];
+                pwd = LS['xdemo_pwd'],
+                counter = 0;
             if (!uid) {
-                while( !(uid = $.trim(window.prompt('请输入用户名','')) ) );
+                while( counter<10 && !(uid = $.trim(window.prompt('请输入用户名','')) ) ){
+                    counter++;
+                };
+                counter=0;
                 LS['xdemo_uid']=uid;
-                while(!(pwd = $.trim(window.prompt('用户名已保存至localStorage，接着请输入密码','')) ) );
+                while( counter<10 && !(pwd = $.trim(window.prompt('用户名已保存至localStorage，接着请输入密码','')) ) ){
+                    counter++;
+                };
                 LS['xdemo_pwd']=pwd;
             };
+            if(!uid){
+                $('#xdemoHack').fadeOut(function(){
+                    $(this).remove();
+                });
+                return;
+            }
             this.$name.val(uid);
             this.$pwd.val(pwd);
             $('.lg_btn').trigger('click');
