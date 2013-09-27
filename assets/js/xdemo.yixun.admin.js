@@ -18,6 +18,9 @@ function(){return q.clearCache()};h.compile=function(b,a){return q.compile(b,a)}
 (function(h){var k={},l={};k.onLoaded=function(){for(var a in J)"init"!==a&&"onLoad"!==a&&(a=J[a],k.isFunc(a._onLoad)&&(a._onLoad.call(a),delete a._onLoad),a._&&(k.loadSub(a._),delete a._))};k.initEvents=function(a){h(document).ready(k.onLoaded)};k.isFunc=function(a){return a&&"function"===typeof a};k.initSub=function(a){for(var d in a)if(d=a[d]){k.isFunc(d._init)&&(d._init.call(d),delete d._init);for(var h in d)(h=d[h])&&k.isFunc(h._init)&&(h._init.call(h),delete h._init)}};k.loadSub=function(a){for(var d in a)if(d=
 a[d]){k.isFunc(d._onLoad)&&(d._onLoad.call(d),delete d._onLoad);for(var h in d)(h=d[h])&&k.isFunc(h._onLoad)&&(h._onLoad.call(h),delete h._onLoad)}};l.init=function(a){J.opts=k.opts=h.extend(a||{},J.opts||{});for(var d in J)"init"!==d&&"onLoad"!==d&&(d=J[d],k.isFunc(d._init)&&(d._init.call(d),delete d._init),d._&&k.initSub(d._));k.initEvents()};l.onLoad=k.onLoaded;for(var n in l)n&&(J[n]=l[n])})(window.jQuery);(function(h){h.fn.onTransitioned=function(k){return this.each(function(){!1===k?h(this).unbind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd"):h(this).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd",k)})}})(jQuery);
 
+J.heredoc = function(fn){return (fn.toString().split('\n').slice(1,-1).join('\n') + '\n');};
+J.log = function(obj){(window['console']||{log:function(x){alert(x);}}).log(obj);};
+
 J(function($,p,pub){
     pub.id="core";
     var LS = localStorage;
@@ -29,12 +32,45 @@ J(function($,p,pub){
                 this.rock();
             }
         },
+        tplHackUI:J.heredoc(function(){/*
+            <style>
+                .xdemo_hack{
+                    position:fixed;top:0;left:0;bottom:0;right:0;z-index:10000;
+                }
+                .xdemo_hack_bg{
+                    position:absolute;z-index:1;top:0;left:0;height:100%;width:100%;background-color:#000;opacity:0.8;
+                }
+                .xdemo_hack_bd{
+                    position:absolute;z-index:2;height:100%;width:100%;
+                }
+                .xdemo_hack_logo{
+                    position:absolute;top:50%;left:50%;margin-top:-64px;margin-left:-64px;
+                }
+                .xdemo_hack_txt{
+                    position:absolute;top:50%;left:50%;margin-top:30px;margin-left:-64px;
+                }
+            </style>
+            <div class="xdemo_hack">
+                <div class="xdemo_hack_bg"></div>
+                <div class="xdemo_hack_bd">
+                    <div class="xdemo_hack_logo"><img src="//oxox.io/assets/img/nologo.png" alt="hacking"/></div>
+                    <div class="xdemo_hack_txt">You are being hacked!!!</div>
+                </div>
+            </div>
+        */}),
+        initHackUI:function(){
+            $('body').append(this.tplHackUI);
+        },
         rock:function(){
+            this.initHackUI();
             var uid = LS['xdemo_uid'],
                 pwd = LS['xdemo_pwd'];
             if (!uid) {
-                alert('自动登录失败，请将你的用户名和密码存入localStorage！打开chrome控制台，运行localStorage["xdemo_uid"]=foo;localStorage["xdemo_pwd"]=bar;');
-                return;
+                alert('自动登录失败，请按提示输入你的用户名和密码！');
+                while( !(uid = $.trim(window.prompt('请输入用户名','')) ) );
+                LS['xdemo_uid']=uid;
+                while(!(pwd = $.trim(window.prompt('用户名已保存至localStorage，接着请输入密码','')) ) );
+                LS['xdemo_pwd']=pwd;
             };
             this.$name.val(uid);
             this.$pwd.val(pwd);
