@@ -18,3 +18,4 @@
         seajs.use("ox/%/1.0.0/$".replace('%',app.app).replace('$',app.mod));
     }
 </script>
+<script type="text/javascript" src="http://tajs.qq.com/stats?sId=27787138" charset="UTF-8"></script>
