@@ -1423,6 +1423,7 @@ J(function($,p,pub){
                     {{/hasChildren}}
                 </li>
                 {{/babies}}
+                </ul>
             </div>
         */}),
         _init:function(){
