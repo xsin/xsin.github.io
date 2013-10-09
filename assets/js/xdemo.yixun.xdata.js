@@ -1601,6 +1601,7 @@ J(function($,p,pub){
                 p.ytagEditor.$name = $('#xdataPop2Ipt1');
                 p.ytagEditor.$value = $('#xdataPop2Ipt2');
                 p.ytagEditor.$tip = $('#xdataPop2Tip');
+                p.ytagEditor.uiOffsetTop = p.main.$ui.position().top;
                 //update
                 $('#xdataPop2Btn1').bind('click',function(e){
                     var isOk = p.ytagEditor.save(this.rel);
@@ -1737,7 +1738,7 @@ J(function($,p,pub){
             var bottom = 0,
                 $trigger = this.$trigger;
             if($trigger){
-                bottom = J.$win.height()-($trigger.offset().top-p.main.$ui.offset().top)-29/* 箭头的位置 */-$trigger.outerHeight()/2;
+                bottom = J.$win.height()-($trigger.offset().top-p.main.$ui.offset().top)-29/* 箭头的位置 */-$trigger.outerHeight()/2 - p.ytagEditor.uiOffsetTop;
             }
             this.$d.css({
                 bottom:bottom
