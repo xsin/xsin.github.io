@@ -20,7 +20,7 @@
     .xdata_bootup .xdata_loading{position: absolute;top:0;left:50%;margin-left: -10px;}
     .xdata_show{right:0;opacity: 1;}
 
-.xdata_wrap{position: fixed;z-index:10001;top:20px;right:0;bottom:20px;width:341px;transition:all .5s ease-out;}
+.xdata_wrap{position: fixed;z-index:10001;top:20px;right:0;bottom:20px;width:340px;transition:all .5s ease-out; box-shadow:-2px 2px 5px rgba(0,0,0,0.1);}
 .xdata_wrap input,
 .xdata_wrap select{padding:3px 5px;border:1px solid #DEDEDE;line-height:14px;}
     .xdata_wrap_hide{right:-328px;}
@@ -52,7 +52,7 @@
 /* xdata ui by feeling -v10.08
 ===================================*/
 /*===== 布局 =====*/
-	.data_ui{position:absolute; right:0; top:0; bottom:0; width:340px; border-left:1px solid #E3E2DF; border-top:2px solid #386A8A; border-bottom:1px solid #E3E2DF; background-color:#F6F5EF;}
+	.data_ui{position:absolute; right:0; top:0; bottom:0; width:340px; border-top:3px solid #386A8A; background-color:#F6F5EF;}
 		.data_ui_hd{position:absolute; left:0; top:0; width:100%; height:85px;}
 		.data_ui_bd{overflow:auto; position:absolute; left:0; top:85px; bottom:0; width:100%;}
 /*===== 选项卡 =====*/
@@ -64,9 +64,9 @@
 
 
 /*===== 模块 =====*/
-	.data_box{margin:0 15px 20px;}
-		.data_box_hd{overflow:hidden; zoom:1; padding:10px 0 5px; text-align:right;position: relative;}
-		.data_box_hd h3{float:left; font-size:14px; font-weight:bold; font-family:"microsoft yahei"; color:#033333;}
+	.data_box{padding:10px 15px;}
+		.data_box_hd{overflow:hidden; zoom:1; padding-bottom:10px; text-align:right;position: relative;}
+		.data_box_hd h3{float:left; font-weight:bold;}
 
 
 /*===== 按钮 =====*/
@@ -85,14 +85,7 @@
         line-height:100px;
     }
 
-	.data_btn_more{
-		overflow:hidden;
-		display:inline-block;
-		width:16px;
-		height:16px;
-	background:url("img/ico_1.png") no-repeat 0 0;
-		line-height:100px;
-	}
+	.data_ico_more{position:absolute; right:15px; top:15px;display: inline-block;visibility: hidden;width: 0; height: 0; border-top: 4px solid transparent;border-bottom: 4px solid transparent; border-right:4px solid #666; }
 /*===== radio切换 =====*/
     .data_choose{padding:10px; background-color:#F5F5F5;}
         .data_choose label{margin-right:20px;}
@@ -110,7 +103,7 @@
 
 /*===== 数据趋势 =====*/
 	.data_total{position:relative; border-bottom:3px solid #E9E9E3; background-color:#FFF; text-align:center;}
-		.data_total_inner{margin:auto; padding:20px 10px; width:90%; height:150px;}
+		.data_total_inner{margin:auto; padding:20px 10px; width:90%; height:120px;}
 
 
 /*===== 按钮 =====*/
@@ -121,39 +114,39 @@
 	.data_list{margin:0 -15px;}
 		.data_list li{border-top:1px solid #E3E2DF;}
 		.data_list li:first-child{border-top:none;}
-		.data_list li li{border-top:none;}
 		
 			.data_list_entry{overflow:hidden; position:relative; padding:10px 15px;}
-			.data_list_entry:hover{background-color:#E3DEBC;}
+			.data_list_entry:hover,.data_list_item_hover > .data_list_entry{background-color:#E3DEBC;}
 
-				.data_list_control{display:none; position:absolute; right:10px; top:14px;}
-				.data_list_entry:hover .data_list_control,.data_list_entry.on .data_list_control{display:block;}
+				.data_list_control{display:none; position:absolute; right:22px; top:12px;}
+				.data_list_entry:hover .data_list_control,.data_list_entry_editing .data_list_control{display:block;}
 
 				.data_list_lk{display:block;}
 				.data_list_lk span{position:absolute; margin-top:1px; margin-left:20px; color:#FB8800;}
 				.data_list_lk:hover{text-decoration:none;}
 
-		/*===== 单个模块 =====*/
-		
-		.data_list_item1 .data_btn_edit{display: none;}
+		.data_list_more li{border-top:1px dotted #D0D0D0;}
+		.data_list_more li:first-child{border-top:none;}
 
-		/*===== 多个模块 =====*/
-		.data_list_more{overflow:hidden; height:38px;}
-		.data_list_more_on{height:auto; border-top-color:#D2CEBE!important; background:#F0EFE8 url("img/data_list_more_on.png") repeat-x 0 0;}
-		.data_list_more_on li{border-bottom:1px dotted #D0D0D0;}
-		.data_list_more_on li:last-child{border-bottom:none;}
+		/*===== 单个模块 =====*/
+		.data_list_item1 .data_btn_edit{display: none;}/* item1为配置好的模块|item2为含子级模块的模块 */
+
+		/*===== 子级模块 =====*/
+        .data_list_item2 > .data_list_entry > .data_ico_more{visibility: visible;}
+		.data_list_more{position: fixed;z-index: 3;bottom: 0;right: 350px;width: 230px;background-color: #F0EFE8;border:1px solid #D2CEBE;box-shadow: 1px 1px 5px rgba(0,0,0,0.2);display:none;}
+        .data_list_more .data_list_more{position: absolute;bottom:-1px;right:240px;}
 
 		/*===== 选中态 =====*/
-		.data_list_entry_on{background-color:#386A8A;}
+		.data_list_entry_on,.data_list_entry_on:hover{background-color:#386A8A;}
 		.data_list_entry_on a,
 		.data_list_entry_on span{color:#FFF;}
 
-
 /*===== 弹出层 =====*/
 	/*===== 详情 =====*/
-		.data_pop{position:fixed;z-index:2; right:340px; bottom:0; padding:10px 20px; width:600px; border:1px solid #648BA4; box-shadow:0 0 10px rgba(0,0,0,0.3); background-color:#FFF;}
-		.data_pop2{width:300px;}
-		.data_pop:after{
+		.data_pop{position:fixed!important;z-index:2; left:50%; top:46%;margin-left: -300px;margin-top:-135px; padding:10px 20px; width:600px; border:1px solid #648BA4; box-shadow:0 0 10px rgba(0,0,0,0.3); background-color:#FFF;}
+		.data_pop1 .xdata_pop_close{left:auto;right:-10px;}
+        .data_pop2{width:300px;}
+		.data_pop2:after{
 			overflow:hidden;
 			position:absolute;
 			content:" ";

@@ -7,23 +7,43 @@ window['xdataCTags']={
             type: 1,                                    //ytag选择器的类型：1为css选择器，2为多个ytagid以|分隔
             ytagSelector: ".ic_toolbar",                //ytag选择器的值
             readonly:true,
-            isCustomYTag:true
-        },
-        {
-            id:"mod_entry",
-            alias: "Toolbar头部工具条-左侧入口",
-            type: 1,
-            ytagSelector: ".mod_entry",
-            readonly:true,
-            isCustomYTag:true
-        },
-        {
-            id:"mod_sitemap",
-            alias: "Toolbar头部工具条-左侧入口",
-            type: 1,
-            ytagSelector: ".mod_sitemap",
-            readonly:true,
-            isCustomYTag:true
+            isCustomYTag:true,
+            babies:[
+                {
+                    id:"mod_entry",
+                    alias: "Toolbar-左侧入口",
+                    type: 1,
+                    ytagSelector: ".mod_entry",
+                    readonly:true,
+                    isCustomYTag:true,
+                    babies:[
+                        {
+                            id:"lnk_qqwangou",
+                            alias: "QQ网购链接",
+                            type: 2,
+                            ytagSelector: "00101",
+                            readonly:true,
+                            isCustomYTag:true
+                        },
+                        {
+                            id:"lnk_paipai",
+                            alias: "拍拍链接",
+                            type: 2,
+                            ytagSelector: "00102",
+                            readonly:true,
+                            isCustomYTag:true
+                        }
+                    ]
+                },
+                {
+                    id:"mod_sitemap",
+                    alias: "Toolbar-右侧入口",
+                    type: 1,
+                    ytagSelector: ".mod_sitemap",
+                    readonly:true,
+                    isCustomYTag:true
+                }
+            ]
         },
         {
             id:"mod_logo",
