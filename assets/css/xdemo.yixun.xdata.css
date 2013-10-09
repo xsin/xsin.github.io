@@ -144,7 +144,7 @@
 /*===== 弹出层 =====*/
 	/*===== 详情 =====*/
 		.data_pop{position:fixed!important;z-index:2; right:340px; bottom:0; padding:10px 20px; width:600px; border:1px solid #648BA4; box-shadow:0 0 10px rgba(0,0,0,0.3); background-color:#FFF;}
-		.data_pop1{left:50%; top:46%;margin-left: -300px;margin-top:-135px; }
+		.data_pop1{left:50%; top:46%;margin-left: -300px;margin-top:-135px; bottom:auto;}
         .data_pop1 .xdata_pop_close{left:auto;right:-10px;}
         .data_pop2{width:300px;}
 		.data_pop2:after{
