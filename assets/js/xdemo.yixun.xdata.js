@@ -620,7 +620,11 @@ J(function($,p,pub){
             data:_params
         });
         xhr.done(function(d,txtStatus,jqXhr){
-            cbk(null,d);
+            if(d.code!=="1"){
+                cbk(d.info);
+                return;
+            }
+            cbk(null,d.info.xv);
         }).fail(function(jqXhr,txtStatus,err){
             cbk(err);
         });
