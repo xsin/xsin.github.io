@@ -616,7 +616,8 @@ J(function($,p,pub){
         var url = 'http://log.oxox.io/api.php'
         var xhr = $.ajax({
             url:url,
-            dataType:'json'
+            dataType:'json',
+            data:_params
         });
         xhr.done(function(d,txtStatus,jqXhr){
             cbk(null,d);
