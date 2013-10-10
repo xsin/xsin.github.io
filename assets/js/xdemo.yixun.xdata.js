@@ -600,10 +600,27 @@ J(function($,p,pub){
      * 获取预配置的tag信息
      */
     pub.getDefaultCTags = function(cbk){
+        /*
         var xhr = $.getScript('http://oxox.io/assets/js/xdemo.yixun.xdata.ctags.js?t'+(new Date()).getTime());
         xhr.done(function(script, textStatus, jqxhr){
             cbk(null,(window['xdataCTags']||{})[pub.bizInfo.pid]);
         }).fail(function(jqxhr, cfgs, err){
+            cbk(err);
+        });
+        */
+        var _params = {
+            "act":"query",
+            "xn":"xdata",
+            "xk":"mods_"+pub.bizInfo.pid
+        };
+        var url = 'http://log.oxox.io/api.php'
+        var xhr = $.ajax({
+            url:url,
+            dataType:'json'
+        });
+        xhr.done(function(d,txtStatus,jqXhr){
+            cbk(null,d);
+        }).fail(function(jqXhr,txtStatus,err){
             cbk(err);
         });
     };
