@@ -20,7 +20,7 @@
     .xdata_bootup .xdata_loading{position: absolute;top:0;left:50%;margin-left: -10px;}
     .xdata_show{right:0;opacity: 1;}
 
-.xdata_wrap{position: fixed;z-index:10001;top:20px;right:0;bottom:20px;width:340px;transition:all .5s ease-out; box-shadow:-2px 2px 5px rgba(0,0,0,0.1);}
+.xdata_wrap{position: fixed;z-index:10001;top:20px;right:0;bottom:20px;width:340px;transition:all .5s ease-out; box-shadow:-2px 2px 3px rgba(0,0,0,0.3);}
 .xdata_wrap input,
 .xdata_wrap select{padding:3px 5px;border:1px solid #DEDEDE;line-height:14px;}
     .xdata_wrap_hide{right:-328px;}
@@ -55,6 +55,11 @@
 	.data_ui{position:absolute; right:0; top:0; bottom:0; width:340px; border-top:3px solid #386A8A; background-color:#F6F5EF;}
 		.data_ui_hd{position:absolute; left:0; top:0; width:100%; height:85px;}
 		.data_ui_bd{overflow:auto; position:absolute; left:0; top:85px; bottom:0; width:100%;}
+
+	.data_exhaled{position:absolute; right:340px; top:33px; background-color:#F6F5EF; box-shadow:-3px 3px 3px rgba(0,0,0,0.3);}
+		.data_exhaled_btn{overflow:hidden; display:block; width:30px; height:54px; background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAFo9M/3AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjkxRUNGQjc0MzI1MjExRTM5NkQ4OUNBMENCNkI1NDlFIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjkxRUNGQjc1MzI1MjExRTM5NkQ4OUNBMENCNkI1NDlFIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6OTFFQ0ZCNzIzMjUyMTFFMzk2RDg5Q0EwQ0I2QjU0OUUiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6OTFFQ0ZCNzMzMjUyMTFFMzk2RDg5Q0EwQ0I2QjU0OUUiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5VZKlPAAAA1UlEQVR42mL4//8/AwgwMUABQACBEUgUJFIM4gAEEANMDRBcBLORBJJAbIAAQhaA60UBMAFhFGVQIA1iAwQQWADZHGQbsSm4hGwSNksnAbEUhrewWJEBEwcIIFwKmHBZAQL5GN5CMiEPiEVRxJEUwCVxKTiH1fFoVlwnpAAEbhBSAAJzYOIAAQZXgEMhMkhH1kiKASDfX0QPHmIMQNGI7nl8BuRBU40oNucQ64JUIL6GkbJI9AIIJEPjTppcA+BZEBq/MujqGdE1MTIy4otKUDL/hywAABitVgp/O20VAAAAAElFTkSuQmCC") no-repeat 50% 50%; line-height:500px;}
+		.data_exhaled_btn_on{background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAAbklEQVQ4jd3TMQ6CABBE0RcIR6AQOR1IYgUH0itZaAEexhgbCxIxgSU0TDnJ/1Nslt8kE93fpBPdBQfclojGyXFHFxWMJe1+JI/NJHNv/sYLWWS9QI8mCg84ReDjF66j8BNVBC7XwHDFOQqz8J0/q3QTM1KVhVQAAAAASUVORK5CYII=") no-repeat 50% 50%;}
+
 /*===== 选项卡 =====*/
     .data_tab{}
         .data_tab ul{display:-webkit-box;}
@@ -103,7 +108,7 @@
 
 /*===== 数据趋势 =====*/
 	.data_total{position:relative; border-bottom:3px solid #E9E9E3; background-color:#FFF; text-align:center;}
-		.data_total_inner{margin:auto; padding:20px 10px; width:90%; height:120px;}
+		.data_total_inner{margin:auto; padding:20px 10px; width:90%; height:100px;}
 
 
 /*===== 按钮 =====*/
@@ -133,7 +138,7 @@
 
 		/*===== 子级模块 =====*/
         .data_list_item2 > .data_list_entry > .data_ico_more{visibility: visible;}
-		.data_list_more{position: fixed;z-index: 3;bottom: 0;right: 350px;width: 230px;background-color: #F0EFE8;border:1px solid #D2CEBE;box-shadow: 1px 1px 5px rgba(0,0,0,0.2);display:none;}
+		.data_list_more{position: fixed;z-index: 2;bottom: 0;right: 350px;width: 230px;background-color:#F0EFE8;border:1px solid #D2CEBE;box-shadow: -2px 2px 2px rgba(0,0,0,0.3); display:none;}
         .data_list_more .data_list_more{position: absolute;bottom:-1px;right:240px;}
 
 		/*===== 选中态 =====*/
@@ -143,7 +148,7 @@
 
 /*===== 弹出层 =====*/
 	/*===== 详情 =====*/
-		.data_pop{position:fixed!important;z-index:2; right:340px; bottom:0; padding:10px 20px; width:600px; border:1px solid #648BA4; box-shadow:0 0 10px rgba(0,0,0,0.3); background-color:#FFF;}
+		.data_pop{position:fixed!important;z-index:3; right:340px; bottom:0; padding:10px 20px; width:600px; border:1px solid #648BA4; box-shadow:0 0 10px rgba(0,0,0,0.3); background-color:#FFF;}
 		.data_pop1{left:50%; top:46%;margin-left: -300px;margin-top:-135px; bottom:auto;}
         .data_pop1 .xdata_pop_close{left:auto;right:-10px;}
         .data_pop2{width:300px;}
