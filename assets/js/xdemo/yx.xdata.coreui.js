@@ -19,7 +19,7 @@ J(function($,p,pub){
                     </div>
                 </div>
 
-                <div class="data_ui_bd">
+                <div id="xdataUIBD" class="data_ui_bd">
                     <div class="data_box">
                         <div class="data_box_hd">
                             <h3>页面趋势</h3>
@@ -152,6 +152,7 @@ J(function($,p,pub){
             this.$uiCore = $('#xdataUI');
             this.$tab = $('#xdataTab');
             this.$hd = $('#xdataUIHD');
+            this.$bd = $('#xdataUIBD');
             this.$rankList = this.$uiCore.find('.data_list');
             $('#xdataClose').bind('click',function(e){
                 p.main[p.main.visible?'hide':'show'].call(p.main);
@@ -187,8 +188,8 @@ J(function($,p,pub){
 
             //coreui scrollevent
             //UICOre的scroll事件
-            p.main.$uiCore.bind('scroll.modChart',function(e){
-                J.$win.trigger(EVT.UIScroll,[e]);
+            p.main.$bd.bind('scroll.modChart',function(e){
+                J.$win.trigger(EVT.UIScroll);
             });
 
             J.$win.trigger(EVT.UIReady);

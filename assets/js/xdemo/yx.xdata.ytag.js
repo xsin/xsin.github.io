@@ -156,7 +156,7 @@ J(function($,p,pub){
                 scrollTop:ytagData.top
             },'fast',function(){
                 p.main.showCover(ytagData);
-                J.ui.showYTagChart(ytagData,p.main.$ytagTrigger);
+                J.modchart.show(ytagData,p.main.$ytagTrigger);
             });
         },
         _showCover:function(id,dim,hideOthers){

@@ -12,6 +12,7 @@ $.getScript('http://oxox.io/assets/js/libs/script.js')
                 prefix+"yx.xdata.modeditor.js?t="+t,
                 prefix+"yx.xdata.ytagrank.js?t="+t,
                 prefix+"yx.xdata.ytag.js?t="+t,
+                prefix+"yx.xdata.modrank.js?t="+t,
                 prefix+"yx.xdata.heatmap.js?t="+t
             ],"biz");
             $script.ready('biz',function(){
