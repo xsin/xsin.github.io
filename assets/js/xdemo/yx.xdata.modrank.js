@@ -183,7 +183,8 @@ J(function($,p,pub){
                 $('#xdataList1').find('.data_list_item2').oxmenu({
                     onShowing:function(id,cbk){
                         p.modRank.onShowingSubMenus(id,cbk);
-                    }
+                    },
+                    hideDelay:50
                 });
             };
 

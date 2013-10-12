@@ -18,10 +18,11 @@ J(function($,p,pub){
         _init:function(){
             J.$win.bind(J.ui.EVT.UIReady,function(e){
                 p.modChart.$d = $('#xdataPop1');
-                p.modChart.$chart = $('#xdatamodChart');
-                p.modChart.$tip = $('#xdatamodChartTip');
+                p.modChart.$chart = $('#xdataModChart');
+                p.modChart.$tip = $('#xdataModChartTip');
+                console.log(p.modChart);
                 //make the popup draggable
-                new Draggabilly(p.modChart.$d[0]);
+                //new Draggabilly(p.modChart.$d[0]);
                 //刷新按钮
                 $('#xdataRetweet2').bind('click',function(e){
                     if(p.modChart.isLoading){
@@ -44,7 +45,7 @@ J(function($,p,pub){
             }).bind(J.ui.EVT.DataTypeChange,function(e,t){
                 p.modChart.dataType=parseInt(t);
                 p.modChart.reset();
-            }).bind('resize.modChart,'+J.ui.EVT.UIScroll,function(e){
+            }).bind('resize.modChart',function(e){
                 //p.modChart.updatePosition();
             }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
                 p.modChart.onCTagUpdated(opType,d);
@@ -68,13 +69,13 @@ J(function($,p,pub){
         show:function(tagData,$trigger){
             this.tagData=tagData;
             this.$trigger=$trigger;
-            this.$d.removeClass('xdata_hidden');
+            this.$d.addClass('data_pop1_on');
             this.isVisible=true;
             //this.updatePosition();
             this.loadData(tagData);
         },
         hide:function(){
-            this.$d.addClass('xdata_hidden');
+            this.$d.removeClass('data_pop1_on');
             this.isVisible=false;
         },
         updatePosition:function(){
@@ -191,7 +192,7 @@ J(function($,p,pub){
             var niceData = this.parseData(rawData,dataType),
                 baseOpts = {
                 chart:{
-                    width:540
+                    type:'line'
                 },
                 title: {
                     text: ' '
@@ -202,7 +203,8 @@ J(function($,p,pub){
                 yAxis: {
                     title: {
                         text: null
-                    }
+                    },
+                    min:1
                 },
                 tooltip: {
                     crosshairs: true,

@@ -138,6 +138,9 @@ J(function($,p,pub){
             this.loadData(tagData);
         },
         hide:function(){
+            if(!this.isVisible){
+                return;
+            };
             this.$d.addClass('xdata_hidden');
             this.$name[0].value = '';
             this.$value[0].value = '';

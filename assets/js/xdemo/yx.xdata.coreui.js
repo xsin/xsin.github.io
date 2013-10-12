@@ -3,7 +3,6 @@ J(function($,p,pub){
     pub.id='ui';
     var coreTpl = J.heredoc(function(){/*
         <div id="xdataWrap" class="xdata_wrap">
-            <a id="xdataClose" href="javascript:;" class="xdata_close">+</a>
             <div id="xdataUI" class="data_ui">
                 <div id="xdataUIHD" class="data_ui_hd xdata_fixed">
                     <div id="xdataTab" class="data_tab">
@@ -18,7 +17,6 @@ J(function($,p,pub){
                         <button id="xdataRetweet1" class="data_btn">刷新</button>
                     </div>
                 </div>
-
                 <div id="xdataUIBD" class="data_ui_bd">
                     <div class="data_box">
                         <div class="data_box_hd">
@@ -53,20 +51,9 @@ J(function($,p,pub){
                         </div>
                     </div><!--/data_box-->
                 </div>
-
             </div>
-            <div id="xdataPop1" class="data_pop data_pop1 xdata_hidden">
-                <div class="data_time">
-                    <input id="xdataPop1Date1" class="xdata_date xdata_sdate1" type="date" /><span class="c_tx3">-</span><input id="xdataPop1Date2" class="xdata_date xdata_edate" type="date" />
-                    <button id="xdataRetweet2" class="data_btn">刷新</button>
-                </div>
-                <div class="data_pop_con">
-                    <div class="data_total">
-                        <div id="xdataYTagChartTip" class="xdata_ytagcharttip xdata_hidden"></div>
-                        <div id="xdataYTagChart" class="data_total_inner xdata_ytagchart"></div>
-                    </div>
-                </div>
-                <a id="xdataPop1Close" href="javascript:;" class="xdata_pop_close">+</a>
+            <div class="data_exhaled">
+                <a id="xdataClose" href="javascript:;" class="data_exhaled_btn">呼出</a>
             </div>
             <div id="xdataPop2" class="data_pop data_pop2 xdata_hidden">
                 <div class="data_pop_add">
@@ -77,11 +64,28 @@ J(function($,p,pub){
                     <div class="data_control">
                         <a id="xdataPop2Btn1" href="javascript:;" class="data_btn">更新</a>
                         <a id="xdataPop2Btn2" href="javascript:;" class="data_btn data_btn_bg1">删除</a>
-                    </p>
+                    </div>
                     <div id="xdataPop2Tip" class="xdata_pop2tip xdata_hidden"></div>
                 </div>
                 <a id="xdataPop2Close" href="javascript:;" class="xdata_pop_close">+</a>
             </div>
+        </div>
+        <div id="xdataPop1" class="data_pop data_pop1">
+            <div class="data_pop_bd">
+                <div class="data_time">
+                    <input id="xdataPop1Date1" class="xdata_date xdata_sdate1" type="date" /><span class="c_tx3">-</span><input id="xdataPop1Date2" class="xdata_date xdata_edate" type="date" />
+                    <button id="xdataRetweet2" class="data_btn">刷新</button>
+                    <button id="xdataTag1" class="data_btn" title="为模块设置版本">设置版本点</button>
+                    <a id="xdataLkTagList" class="data_btn" href="http://ecd.oa.com/xdata/timeline.html" title="查看该模块的版本历史" target="_blank">版本历史</a>
+                </div>
+                <div class="data_pop_con">
+                    <div class="data_total">
+                        <div id="xdataModChartTip" class="xdata_ytagcharttip xdata_hidden"></div>
+                        <div id="xdataModChart" class="data_total_inner xdata_ytagchart"></div>
+                    </div>
+                </div>
+            </div>
+            <a id="xdataPop1Close" href="javascript:;" class="xdata_pop_close">+</a>
         </div>
     */});
 
@@ -165,13 +169,12 @@ J(function($,p,pub){
             //日期控件设置
             var today=new Date(),
                 todayStr = today.toISOString().substring(0, 10);
-            p.main.$ui.find('.xdata_date').attr('max',todayStr)
+            $('.xdata_date').attr('max',todayStr)
+                .filter('.xdata_sdate').val(todayStr)
                 .end()
-                .find('.xdata_sdate').val(todayStr)
+                .filter('.xdata_edate').val(todayStr)
                 .end()
-                .find('.xdata_edate').val(todayStr)
-                .end()
-                .find('.xdata_sdate1').val(J.data.getDateTimeStr(new Date(),{len:10,dayDiff:-7}))
+                .filter('.xdata_sdate1').val(J.data.getDateTimeStr(new Date(),{len:10,dayDiff:-7}))
                 .end()
                 .bind('mouseenter',function(e){
                     clearTimeout(p.main.autoHideTimer);
