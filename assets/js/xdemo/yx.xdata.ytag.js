@@ -122,7 +122,7 @@ J(function($,p,pub){
             return tags;
         },
         _init:function(){
-            J.$win.bind(J.ui.EVT.YTagChartReset,function(e){
+            J.$win.bind(J.ui.EVT.ModChartReset,function(e){
                 p.main.reset();
             });
             $('[data-ytag]').live('click',function(e){
@@ -151,6 +151,8 @@ J(function($,p,pub){
             this.$ytagTrigger.parent().addClass(clOn);
 
             var ytagData = J.ytag.get(elmTrigger.getAttribute('data-ytag'),elmTrigger.getAttribute('data-ytagattr'));
+            ytagData.val = elmTrigger.getAttribute("data-val");
+            ytagData.treePath = pub.getTreePath();
 
             $('body').stop().animate({
                 scrollTop:ytagData.top
@@ -259,4 +261,24 @@ J(function($,p,pub){
     pub.removeFromCache=function(id){
         cache[id]=null;
     };
+
+    pub.getTreePath = function(){
+        var path = p.main.$ytagTrigger.data('data-treepath');
+        if(path){
+            return path;
+        };
+
+        var path = [],
+            $parents = p.main.$ytagTrigger.parents('.data_list_item');
+
+        path.push(J.modRank.getActiveMod().data());
+
+        $parents.each(function(i,o){
+            path.splice(0,0,$parents.eq(i).data());
+        });
+        
+        p.main.$ytagTrigger.data('data-treepath',path);
+        return path;
+    };
+
 });

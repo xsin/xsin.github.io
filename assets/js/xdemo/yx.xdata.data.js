@@ -236,7 +236,7 @@ J(function($,p,pub){
             len = pageCTags.length,
             obj = null;
         for(var i =0 ;i<len;i++){
-            if(pageCTags[i].id===id){
+            if(pageCTags[i].id.toString()===id){
                 obj = pageCTags[i];
                 break;
             }

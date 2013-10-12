@@ -15,12 +15,18 @@ J(function($,p,pub){
         cache:{},//data cache
         dataType:1,
         jqXHR:null,
+        tplMenu:J.heredoc(function(){/*
+            <div class="data_breadcrumb data_breadcrumb_flat">
+                {{#items}}
+                <a href="javascript" data-id="{{oxmenuid}}" class="{{clActive}}">{{alias}}</a>
+                {{/items}}
+            </div>
+        */}),
         _init:function(){
             J.$win.bind(J.ui.EVT.UIReady,function(e){
                 p.modChart.$d = $('#xdataPop1');
                 p.modChart.$chart = $('#xdataModChart');
                 p.modChart.$tip = $('#xdataModChartTip');
-                console.log(p.modChart);
                 //make the popup draggable
                 //new Draggabilly(p.modChart.$d[0]);
                 //刷新按钮
@@ -49,6 +55,8 @@ J(function($,p,pub){
                 //p.modChart.updatePosition();
             }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
                 p.modChart.onCTagUpdated(opType,d);
+            }).bind(J.ui.EVT.Collapse,function(e){
+                p.modChart.reset();
             });
         },
         onCTagUpdated:function(opType,d){
@@ -64,7 +72,7 @@ J(function($,p,pub){
             this.hide();
             this.tagData=null;
             this.$trigger=null;
-            J.$win.trigger(J.ui.EVT.modChartReset);
+            J.$win.trigger(J.ui.EVT.ModChartReset);
         },
         show:function(tagData,$trigger){
             this.tagData=tagData;
@@ -72,6 +80,7 @@ J(function($,p,pub){
             this.$d.addClass('data_pop1_on');
             this.isVisible=true;
             //this.updatePosition();
+            this.renderMenu();
             this.loadData(tagData);
         },
         hide:function(){
@@ -179,11 +188,15 @@ J(function($,p,pub){
                     case 2:
                         dataByTime[1]=d[i].d.status===true?d[i].d.data.data[0].order_num:0;
                     break;
-                    case 3:
+                    case 3://转化率
                         dataByTime[1]=d[i].d.status===true?parseFloat(d[i].d.data.data[0].click_trans_rate):0;
                     break;
                 };//switch
                 r.push(dataByTime);
+            };
+            //如果最后一天是当天，由于接口没有数据，我们用keyChart的当天数据
+            if(this.endDateIsToday()){
+                r[len-1][1] = dataType==3?parseFloat(this.tagData.val):parseInt(this.tagData.val);
             };
             return r;
         },
@@ -191,6 +204,9 @@ J(function($,p,pub){
             dataType = parseInt(dataType);
             var niceData = this.parseData(rawData,dataType),
                 baseOpts = {
+                credits : {
+                  enabled : false
+                },
                 chart:{
                     type:'line'
                 },
@@ -246,6 +262,17 @@ J(function($,p,pub){
             };
             this.chart.series[0].update(chartOpts.series[0]);
         },
+        renderMenu:function(){
+            this.tagData.treePath[this.tagData.treePath.length-1].clActive="active";
+            document.getElementById('dataCrumbs').innerHTML=J.toHtml(this.tplMenu,{items:this.tagData.treePath});
+            $('#dataCrumbs a').bind('click.xdata',function(e){
+                if(this.className.indexOf('active')==-1){
+                    return false;
+                };
+                $('#xdataLnkCTag'+this.getAttribute('data-id')).trigger('click');
+                return false;
+            });
+        },
         getDataByDates:function(tagids,dates,cbk){
             if(dates.length==0){
                 cbk(null,this.data);
@@ -276,11 +303,21 @@ J(function($,p,pub){
                 //递归
                 me.getDataByDates(tagids,dates,cbk);
             });
+        },
+        endDateIsToday:function(){
+            var edateStr = document.getElementById('xdataPop1Date2').value,
+                todayStr = J.data.getDateTimeStr(new Date());
+            var is = todayStr.indexOf(edateStr)!==-1;
+            return is;
         }
     };
 
     pub.show = function(tagData,$trigger){
         p.modChart.show(tagData,$trigger);
+    };
+
+    pub.isVisible = function(){
+        return p.modChart.isVisible;
     };
 
 });

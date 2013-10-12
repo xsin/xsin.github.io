@@ -2,7 +2,7 @@
 J(function($,p,pub){
     pub.id='ui';
     var coreTpl = J.heredoc(function(){/*
-        <div id="xdataWrap" class="xdata_wrap">
+        <div id="xdataWrap" class="xdata_wrap xdata_wrap_hide">
             <div id="xdataUI" class="data_ui">
                 <div id="xdataUIHD" class="data_ui_hd xdata_fixed">
                     <div id="xdataTab" class="data_tab">
@@ -78,6 +78,7 @@ J(function($,p,pub){
                     <button id="xdataTag1" class="data_btn" title="为模块设置版本">设置版本点</button>
                     <a id="xdataLkTagList" class="data_btn" href="http://ecd.oa.com/xdata/timeline.html" title="查看该模块的版本历史" target="_blank">版本历史</a>
                 </div>
+                <div id="dataCrumbs" class="data_crumbs"></div>
                 <div class="data_pop_con">
                     <div class="data_total">
                         <div id="xdataModChartTip" class="xdata_ytagcharttip xdata_hidden"></div>
@@ -93,7 +94,7 @@ J(function($,p,pub){
         'DataTypeChange':'onXDataTypeChange',
         'UIReady':'onXDataUIReady',
         'Collapse':'onXDataCollapse',
-        'YTagChartReset':'onXDataYTagChartReset',
+        'ModChartReset':'onXDataModChartReset',
         'UIScroll':'onXDataUIScroll'
     };
     pub.EVT=EVT;
@@ -115,8 +116,7 @@ J(function($,p,pub){
     };
     //主UI框架
     p.main={
-        visible:true,
-        autoHideTimer:null,
+        visible:false,
         $startUp:null,
         $ui:null,
         tpl0:'<div id="xdataBootup" class="xdata_bootup xdata_show"><strong class="xdata_c1">C</strong>lick<strong class="xdata_c2">S</strong>tream<span class="xdata_loading"></span></div>',
@@ -181,8 +181,6 @@ J(function($,p,pub){
                 })/*.bind('mouseleave',function(e){
                     p.main.autoHide();
                 })*/;
-            //autohide after UIReady
-            this.autoHide();
             this.$ui.onTransitioned(function(){
                 if(p.main.visible){
                     p.main.fixedHD();
@@ -215,12 +213,6 @@ J(function($,p,pub){
             this.$ui.addClass('xdata_wrap_hide');
             this.visible=false;
             J.$win.trigger(EVT.Collapse);
-        },
-        autoHide:function(){
-            clearTimeout(this.autoHideTimer);
-            this.autoHideTimer = setTimeout(function(){
-                p.main.hide();
-            },2500);
         }
     };
 

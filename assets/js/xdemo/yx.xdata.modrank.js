@@ -6,14 +6,15 @@ J(function($,p,pub){
         dataType:1,
         dataChangedAt:1,
         dataInited:false,
+        $activeTopMod:null,
         tpl:J.heredoc(function(){/*
             {{#empty}}
             <div class="xdata_alert">无数据</div>
             {{/empty}}
             {{#items}}
-            <li id="xdataCTag{{id}}" class="data_list_item{{cl1}}" data-oxmenuid="{{id}}">
+            <li id="xdataCTag{{id}}" class="data_list_item{{cl1}}" data-oxmenuid="{{id}}" data-alias="{{alias}}" data-val="{{val}}">
                 <div class="data_list_entry">
-                    <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
+                    <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
                     <p class="data_list_control">
                         <a href="javascript:;" class="data_btn_edit" rel="{{id}}">编辑</a>
                     </p>
@@ -26,10 +27,10 @@ J(function($,p,pub){
             <div id="xdataListMore{{pid}}" class="data_list data_list_more">
                 <ul>
                 {{#babies}}
-                <li id="xdataCTag{{id}}" class="data_list_item{{cl1}}" data-oxmenuid="{{id}}">
+                <li id="xdataCTag{{id}}" class="data_list_item{{cl1}}" data-oxmenuid="{{id}}" data-alias="{{alias}}" data-val="{{val}}">
                     {{#hasChildren}}
                         <div class="data_list_entry">
-                            <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
+                            <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
                             <p class="data_list_control">
                                 <a href="javascript:;" class="data_btn_edit" rel="{{id}}">编辑</a>
                             </p>
@@ -39,7 +40,7 @@ J(function($,p,pub){
                     {{/hasChildren}}
                     {{^hasChildren}}
                     <div class="data_list_entry">
-                        <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
+                        <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
                         <p class="data_list_control">
                             <a href="javascript:;" class="data_btn_edit" rel="{{id}}">编辑</a>
                         </p>
@@ -65,6 +66,9 @@ J(function($,p,pub){
                 p.modRank.reload();
             }).bind(J.ui.EVT.UIScroll,function(e,sTop){
                 J.$win.trigger('oxmenuPositionNeedUpdating');
+            });
+            $('#xdataList1 li').live("mouseenter."+pub.id,function(e){
+                p.modRank.$activeTopMod = $(this);
             });
         },
         onCTagUpdated:function(opType,d){
@@ -151,7 +155,7 @@ J(function($,p,pub){
             };
             return tempItem;
         },
-        parseData:function(items){
+        parseData:function(items){//TODO:挪到J.data中去
 
             items = items||[];
 
@@ -205,7 +209,7 @@ J(function($,p,pub){
         },
         reload:function(){
             this.getData(function(d){
-                d = p.modRank.parseData(d);
+                p.modRank.data = d = p.modRank.parseData(d);
                 p.modRank.render(d);
                 if(!p.modRank.dataInited){
                     $('#xdataLoading2').remove();
@@ -214,4 +218,9 @@ J(function($,p,pub){
             });
         }
     };
+
+    pub.getActiveMod = function(){
+        return p.modRank.$activeTopMod;
+    };
+
 });

@@ -39,6 +39,9 @@ J(function($,p,pub){
             var rawData = J.data['CurrentKeyData'],
                 niceData = this.parseData(rawData,dataType),
                 baseOpts = {
+                credits : {
+                  enabled : false
+                },
                 chart: {
                     type: 'column'
                 },
