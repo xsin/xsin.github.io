@@ -6,7 +6,6 @@ J(function($,p,pub){
         dataType:1,
         dataChangedAt:1,
         dataInited:false,
-        $activeTopMod:null,
         tpl:J.heredoc(function(){/*
             {{#empty}}
             <div class="xdata_alert">无数据</div>
@@ -27,7 +26,7 @@ J(function($,p,pub){
             <div id="xdataListMore{{pid}}" class="data_list data_list_more">
                 <ul>
                 {{#babies}}
-                <li id="xdataCTag{{id}}" class="data_list_item{{cl1}}" data-oxmenuid="{{id}}" data-alias="{{alias}}" data-val="{{val}}">
+                <li id="xdataCTag{{id}}" data-pid="{{pid}}" class="data_list_item{{cl1}}" data-oxmenuid="{{id}}" data-alias="{{alias}}" data-val="{{val}}">
                     {{#hasChildren}}
                         <div class="data_list_entry">
                             <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
@@ -66,9 +65,6 @@ J(function($,p,pub){
                 p.modRank.reload();
             }).bind(J.ui.EVT.UIScroll,function(e,sTop){
                 J.$win.trigger('oxmenuPositionNeedUpdating');
-            });
-            $('#xdataList1 li').live("mouseenter."+pub.id,function(e){
-                p.modRank.$activeTopMod = $(this);
             });
         },
         onCTagUpdated:function(opType,d){
@@ -217,10 +213,6 @@ J(function($,p,pub){
                 }
             });
         }
-    };
-
-    pub.getActiveMod = function(){
-        return p.modRank.$activeTopMod;
     };
 
 });

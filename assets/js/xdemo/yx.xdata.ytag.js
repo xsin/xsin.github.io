@@ -125,8 +125,8 @@ J(function($,p,pub){
             J.$win.bind(J.ui.EVT.ModChartReset,function(e){
                 p.main.reset();
             });
-            $('[data-ytag]').live('click',function(e){
-                p.main.onClickYTagTrigger(this);
+            $('[data-ytag]').live('click',function(e,d){
+                p.main.onClickYTagTrigger(this,d);
             });
             $ytags = $('[ytag]');
             pub.rockAndRollAll();
@@ -139,7 +139,7 @@ J(function($,p,pub){
             this.$ytagTrigger=null;
             this.hideCovers();
         },
-        onClickYTagTrigger:function(elmTrigger){
+        onClickYTagTrigger:function(elmTrigger,d){
             var clOn = 'data_list_entry_on';
             if(this.$ytagTrigger){
                 if(this.$ytagTrigger[0].id===elmTrigger.id){
@@ -153,6 +153,7 @@ J(function($,p,pub){
             var ytagData = J.ytag.get(elmTrigger.getAttribute('data-ytag'),elmTrigger.getAttribute('data-ytagattr'));
             ytagData.val = elmTrigger.getAttribute("data-val");
             ytagData.treePath = pub.getTreePath();
+            $.extend(ytagData,d||{});
 
             $('body').stop().animate({
                 scrollTop:ytagData.top
@@ -269,13 +270,26 @@ J(function($,p,pub){
         };
 
         var path = [],
-            $parents = p.main.$ytagTrigger.parents('.data_list_item');
+            $parents = p.main.$ytagTrigger.parents('.data_list_item'),
+            len = $parents.length,
+            $rootLi = null,
+            rootLiData=null,
+            pid=null;
 
-        path.push(J.modRank.getActiveMod().data());
+        //最后一个li是否一级菜单，如果不是需要获取一级菜单
+        pid = $parents.eq(len-1)[0].getAttribute('data-pid');
+        if(pid){
+            $rootLi = $('#xdataCTag'+pid);
+        };
 
         $parents.each(function(i,o){
             path.splice(0,0,$parents.eq(i).data());
         });
+        if($rootLi){
+            rootLiData = $rootLi.data();
+            rootLiData.isRoot = true;
+            path.splice(0,0,rootLiData);
+        };
         
         p.main.$ytagTrigger.data('data-treepath',path);
         return path;
