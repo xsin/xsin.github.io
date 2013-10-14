@@ -127,6 +127,8 @@ J(function($,p,pub){
             });
             $('[data-ytag]').live('click',function(e,d){
                 p.main.onClickYTagTrigger(this,d);
+            }).live('mouseenter.ytag',function(e,d){
+                p.main.onHoverIn(this,d);
             });
             $ytags = $('[ytag]');
             pub.rockAndRollAll();
@@ -138,6 +140,15 @@ J(function($,p,pub){
             }
             this.$ytagTrigger=null;
             this.hideCovers();
+        },
+        onHoverIn:function(elmTrigger,d){
+            var ytagData = J.ytag.get(elmTrigger.getAttribute('data-ytag'),elmTrigger.getAttribute('data-ytagattr'));
+
+            J.$body.stop().animate({
+                scrollTop:ytagData.top
+            },'fast',function(){
+                p.main.showCover(ytagData);
+            });
         },
         onClickYTagTrigger:function(elmTrigger,d){
             var clOn = 'data_list_entry_on';
@@ -155,12 +166,7 @@ J(function($,p,pub){
             ytagData.treePath = pub.getTreePath();
             $.extend(ytagData,d||{});
 
-            $('body').stop().animate({
-                scrollTop:ytagData.top
-            },'fast',function(){
-                p.main.showCover(ytagData);
-                J.modchart.show(ytagData,p.main.$ytagTrigger);
-            });
+            J.modchart.show(ytagData,p.main.$ytagTrigger);
         },
         _showCover:function(id,dim,hideOthers){
             if(hideOthers){
