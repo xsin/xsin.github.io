@@ -89,6 +89,7 @@ J(function($,p,pub){
             if(tagData.treePath[0].isRoot&&isNewMenu){
                 if($rootMenuItem0){
                     $rootMenuItem0[0].removeAttribute('data-oxmenukeephoverstate');
+                    $rootMenuItem0.trigger('mouseleave.oxmenu');
                 }
                 this.$rootMenuItem[0].setAttribute('data-oxmenukeephoverstate',"1");
             }
@@ -214,8 +215,22 @@ J(function($,p,pub){
         },
         getChartOption:function(rawData,dataType){
             dataType = parseInt(dataType);
-            var niceData = this.parseData(rawData,dataType),
-                baseOpts = {
+            var niceData = this.parseData(rawData,dataType);
+
+            //平均线
+            var niceData1 = [],
+                totalVal = 0,
+                avgVal = 0,
+                len = niceData.length;
+            for(var i =0;i<len;i++){
+                totalVal+=niceData[i][1];
+            };
+            avgVal = parseFloat(len==0?0:(totalVal/len).toFixed(2));
+            for(var i =0;i<len;i++){
+                niceData1.push([niceData[i][0],avgVal]);
+            };
+
+            var baseOpts = {
                 credits : {
                   enabled : false
                 },
@@ -246,10 +261,13 @@ J(function($,p,pub){
                     data: niceData,
                     zIndex: 1,
                     marker: {
-                        fillColor: 'white',
                         lineWidth: 2,
                         lineColor: Highcharts.getOptions().colors[dataType-1]
                     }
+                },{
+                    name:'平均点击量',
+                    data:niceData1,
+                    zIndex:1
                 }]
             };
             switch(dataType){
@@ -257,22 +275,27 @@ J(function($,p,pub){
                 break;
                 case 2:
                     baseOpts.series[0].name='下单量';
+                    baseOpts.series[1].name='平均下单量';
                 break;
                 case 3:
                     baseOpts.series[0].name='转化率';
+                    baseOpts.series[1].name='平均转化率';
                 break;
             };//switch
             return baseOpts;
         },
         render:function(data){
             //this.$chart.find('.xdata_loading1').remove();
-            var chartOpts = this.getChartOption(data,this.dataType);
+            var chartOpts = this.getChartOption(data,this.dataType),
+                seriesLen = chartOpts.series.length;
             if(!this.chart){
                 this.$chart.highcharts(chartOpts);
                 this.chart=this.$chart.highcharts();
                 return;
             };
-            this.chart.series[0].update(chartOpts.series[0]);
+            for(var i =0;i<seriesLen;i++){
+                this.chart.series[i].update(chartOpts.series[i]);
+            };
         },
         renderMenu:function(){
             if(this.tagData.norender){
