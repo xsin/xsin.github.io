@@ -49,7 +49,7 @@
 .xdata_btn_addmod{display: none!important;}
 .xdata_admin .xdata_btn_addmod{display: inline-block!important;}
 
-.data_crumbs{position:absolute;left:0;bottom:10px;height:40px;overflow: hidden;}
+.data_crumbs{position:absolute;left:0;top:65px;height:40px;overflow: hidden;}
 .data_breadcrumb {
     /*centering*/
     display: inline-block;
@@ -269,7 +269,7 @@
         .data_pop1_on{-webkit-transform:translateX(0);}
         .data_pop1 .xdata_pop_close{left:auto;right:-10px;}
         .data_pop1_on .xdata_pop_close{visibility: visible;}
-        .data_pop1 .data_pop_con{position:absolute;top:55px;bottom:90px;left:0;right:0;}
+        .data_pop1 .data_pop_con{position:absolute;top:115px;bottom:30px;left:0;right:0;}
         .data_pop1 .data_total,.data_pop1 .data_total_inner{height:100%;padding:0;}
         .data_pop2{width:300px;padding:10px 20px;}
 		.data_pop2:after{
