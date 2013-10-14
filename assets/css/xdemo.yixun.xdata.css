@@ -244,7 +244,7 @@
 				.data_list_lk span{position:absolute; margin-top:1px; margin-left:20px; color:#FB8800;}
 				.data_list_lk:hover{text-decoration:none;}
 
-		.data_list_more li{border-top:1px dotted #D0D0D0;}
+		.data_list_more li{border-top:1px dotted #D0D0D0;position: relative;}
 		.data_list_more li:first-child{border-top:none;}
 
 		/*===== 单个模块 =====*/
