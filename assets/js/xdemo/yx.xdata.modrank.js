@@ -184,7 +184,9 @@ J(function($,p,pub){
                     onShowing:function(id,cbk){
                         p.modRank.onShowingSubMenus(id,cbk);
                     },
-                    hideDelay:50
+                    hideDelay:0,
+                    showDelay:0,
+                    showSpeed:0
                 });
             };
 
