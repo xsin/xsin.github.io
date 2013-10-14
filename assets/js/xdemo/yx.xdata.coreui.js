@@ -35,7 +35,8 @@ J(function($,p,pub){
                     <div class="data_box">
                         <div class="data_box_hd">
                             <h3>模块趋势</h3>
-                            <a id="xdataAddCTag" href="javascript:;" class="data_btn data_btn_bg1 xdata_btn_addmod">新增模块</a>
+                            <a id="xdataAddCTag" href="javascript:;" class="data_btn data_btn_bg1 xdata_btn_addmod">新增私有模块</a>
+                            <a id="xdataCTagAdmin" target="_blank" href="http://oxox.io/tools/oxtree/" class="data_btn data_btn_bg1 xdata_btn_addmod">模块维护</a>
                             <img id="xdataLoading2" class="xdata_loading2" src="http://static.gtimg.com/icson/img/common/loading.gif"/>
                         </div>
                         <div class="data_box_bd">
