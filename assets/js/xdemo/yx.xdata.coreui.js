@@ -99,6 +99,7 @@ J(function($,p,pub){
         'UIScroll':'onXDataUIScroll'
     };
     pub.EVT=EVT;
+    pub.maxDateRange = 30;
     //数据类型切换
     p.dataType = {
         value:"1",

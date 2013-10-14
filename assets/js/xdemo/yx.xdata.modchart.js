@@ -158,8 +158,8 @@ J(function($,p,pub){
                 sdate.setDate(sdate.getDate()+1);
             };//while
 
-            if(dates.length>15){
-                me.showTip('统计时间范围超过15天！服务器亚历山大...');
+            if(dates.length>J.ui.maxDateRange){
+                me.showTip('统计时间范围超过$天！服务器亚历山大...'.replace('$',J.ui.maxDateRange));
                 return;
             }
 

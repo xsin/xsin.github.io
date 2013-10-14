@@ -204,6 +204,7 @@ J(function($,p,pub){
             cbk(html);
         },
         reload:function(){
+            this.resetSubMenus();
             this.getData(function(d){
                 p.modRank.data = d = p.modRank.parseData(d);
                 p.modRank.render(d);
@@ -212,6 +213,9 @@ J(function($,p,pub){
                     p.modRank.dataInited=true;
                 }
             });
+        },
+        resetSubMenus:function(){
+            $('#xdataWrap').find('.data_list_more').remove();
         }
     };
 
