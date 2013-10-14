@@ -97,8 +97,10 @@ J(function($,p,pub){
         hide:function(){
             this.$d.removeClass('data_pop1_on');
             this.isVisible=false;
-            this.$rootMenuItem[0].removeAttribute('data-oxmenukeephoverstate');
-            this.$rootMenuItem = null;
+            if(this.$rootMenuItem){
+                this.$rootMenuItem[0].removeAttribute('data-oxmenukeephoverstate');
+                this.$rootMenuItem = null;
+            }
         },
         updatePosition:function(){
             if(!this.isVisible){
