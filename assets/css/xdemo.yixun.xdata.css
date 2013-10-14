@@ -42,7 +42,7 @@
     .xdata_loading2{display: inline-block;vertical-align: middle;}
 
 .xdata_ytagchart .xdata_loading,.xdata_ytagcharttip .xdata_loading1{display: block;margin:10px auto;}
-.xdata_ytagcharttip{position: fixed;bottom:0;left:0;right:0;text-align: center;}
+.xdata_ytagcharttip{position: fixed;z-index:10;bottom:48%;left:0;right:0;text-align: center;}
 .xdata_keycharttip,.xdata_keycharttip_bg{position: absolute;top:0;left:0;bottom: 0;right:0;}
 .xdata_keycharttip_bg{z-index: 1;background-color: #000;opacity: 0.5;}
 .xdata_keycharttip_bd{position: absolute;z-index: 2;left:0;top:30%;right:0;text-align: center;}
