@@ -249,7 +249,7 @@ J(function($,p,pub){
                     title: {
                         text: null
                     },
-                    min:1
+                    min:0
                 },
                 tooltip: {
                     crosshairs: true,
