@@ -170,6 +170,7 @@ J(function($,p,pub){
     pub.getKeyAndClickData = function(_params,cbk){
         //获取当天主数据和点击数据
         pub['jqXHRKeyData']=pub.getKeyData(_params,function(err,data){
+            data.status && ( data.total.pv = parseInt(data.total.pv.replace(/,/g,'')) );
             pub["CurrentKeyData"] = data;
             pub['jqXHRKeyData'] = null;
             if(_params===null){

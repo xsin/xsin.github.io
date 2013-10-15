@@ -231,6 +231,7 @@
 
 /*===== 排行 =====*/
 	.data_list{margin:0 -15px;}
+        .data_list .xdata_warning,.data_list .xdata_alert{text-align: center;}
 		.data_list li{border-top:1px solid #E3E2DF;}
 		.data_list li:first-child{border-top:none;}
 		

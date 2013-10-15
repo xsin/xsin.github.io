@@ -193,25 +193,35 @@ J(function($,p,pub){
         parseData:function(d,dataType){
             var len = d.length,
                 r =[],
-                dataByTime=null;
+                dataByTime=null,
+                pv = J.data.CurrentKeyData.total.pv,
+                rateByPv = 0;
             for(var i=0;i<len;i++){
-                dataByTime=[d[i].t,0];
+                dataByTime={x:d[i].t,y:0,rateByPv:0};
                 switch(dataType){
                     case 1:
-                        dataByTime[1]=d[i].d.status===true?d[i].d.data.data[0].click_num:0;
+                        dataByTime.y=d[i].d.status===true?d[i].d.data.data[0].click_num:0;
                     break;
                     case 2:
-                        dataByTime[1]=d[i].d.status===true?d[i].d.data.data[0].order_num:0;
+                        dataByTime.y=d[i].d.status===true?d[i].d.data.data[0].order_num:0;
                     break;
                     case 3://转化率
-                        dataByTime[1]=d[i].d.status===true?parseFloat(d[i].d.data.data[0].click_trans_rate):0;
+                        dataByTime.y=d[i].d.status===true?parseFloat(d[i].d.data.data[0].click_trans_rate):0;
                     break;
                 };//switch
+
+                //如果最后一天是当天，由于接口没有数据，我们用keyChart的当天数据
+                if( ( i==(len-1)) && this.endDateIsToday() ){
+                    dataByTime.y = dataType==3?parseFloat(this.tagData.val):parseInt(this.tagData.val);
+                };
+
+                //每pv的比率
+                rateByPv = pv==0?0:dataByTime.y/pv;
+                rateByPv = parseFloat( (rateByPv*100).toFixed(2));
+
+                dataByTime.rateByPv = rateByPv;
+
                 r.push(dataByTime);
-            };
-            //如果最后一天是当天，由于接口没有数据，我们用keyChart的当天数据
-            if(this.endDateIsToday()){
-                r[len-1][1] = dataType==3?parseFloat(this.tagData.val):parseInt(this.tagData.val);
             };
             return r;
         },
@@ -225,11 +235,20 @@ J(function($,p,pub){
                 avgVal = 0,
                 len = niceData.length;
             for(var i =0;i<len;i++){
-                totalVal+=niceData[i][1];
+                totalVal+=niceData[i].y;
             };
             avgVal = parseFloat(len==0?0:(totalVal/len).toFixed(2));
             for(var i =0;i<len;i++){
-                niceData1.push([niceData[i][0],avgVal]);
+                niceData1.push({x:niceData[i].x,y:avgVal});
+            };
+
+            //每pv比率
+            var niceData2 = [];
+            for(var i=0;i<len;i++){
+                niceData2.push({
+                    x:niceData[i].x,
+                    y:niceData[i].rateByPv
+                });
             };
 
             var baseOpts = {
@@ -237,7 +256,8 @@ J(function($,p,pub){
                   enabled : false
                 },
                 chart:{
-                    type:'line'
+                    type:'line',
+                    zoomType: 'xy'
                 },
                 title: {
                     text: ' '
@@ -245,13 +265,33 @@ J(function($,p,pub){
                 xAxis: {
                     type: 'datetime'//datetime
                 },
-                yAxis: {
+                yAxis: [{
                     title: {
                         text: null
                     },
                     min:0
-                },
+                },{
+                    title:{
+                        text:null,
+                    },
+                    labels:{
+                        enabled:false
+                    },
+                    min:0
+                },{
+                    title:{
+                        text:null
+                    },
+                    min:0,
+                    labels:{
+                        formatter:function(){
+                            return this.value+' %';
+                        }
+                    },
+                    opposite:true
+                }],
                 tooltip: {
+                    xDateFormat: '%Y-%m-%d',
                     crosshairs: true,
                     shared: true,
                     valueSuffix: ''
@@ -261,6 +301,7 @@ J(function($,p,pub){
                 series: [{
                     name: '点击量',
                     data: niceData,
+                    yAxis:0,
                     zIndex: 1,
                     marker: {
                         lineWidth: 2,
@@ -269,7 +310,22 @@ J(function($,p,pub){
                 },{
                     name:'平均点击量',
                     data:niceData1,
+                    yAxis:1,
+                    type:'spline',
+                    marker:{
+                        enabled:false
+                    },
+                    dashStyle:'shortdot',
                     zIndex:1
+                },{
+                    name:'PV点击率',
+                    data:niceData2,
+                    yAxis:2,
+                    type:'spline',
+                    zIndex:1,
+                    tooltip:{
+                        valueSuffix:' %'
+                    }
                 }]
             };
             switch(dataType){
@@ -278,10 +334,12 @@ J(function($,p,pub){
                 case 2:
                     baseOpts.series[0].name='下单量';
                     baseOpts.series[1].name='平均下单量';
+                    baseOpts.series[2].name='PV下单率';
                 break;
                 case 3:
                     baseOpts.series[0].name='转化率';
                     baseOpts.series[1].name='平均转化率';
+                    baseOpts.series[2].name='PV转化率';
                 break;
             };//switch
             return baseOpts;
