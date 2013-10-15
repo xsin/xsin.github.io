@@ -38,4 +38,4 @@ if( typeof(R) =='function' && typeof(D)=='function' && D.amd ){
         });
 };
 
-})(jQuery,require,define);
+})(jQuery,window["require"],window["define"]);
