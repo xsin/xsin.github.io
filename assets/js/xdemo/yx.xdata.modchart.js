@@ -15,6 +15,7 @@ J(function($,p,pub){
         tagData:null,
         cache:{},//data cache
         dataType:1,
+        chartOpts:null,
         jqXHR:null,
         tplMenu:J.heredoc(function(){/*
             <div class="data_breadcrumb data_breadcrumb_flat">
@@ -272,14 +273,6 @@ J(function($,p,pub){
                     min:0
                 },{
                     title:{
-                        text:null,
-                    },
-                    labels:{
-                        enabled:false
-                    },
-                    min:0
-                },{
-                    title:{
                         text:null
                     },
                     min:0,
@@ -310,7 +303,7 @@ J(function($,p,pub){
                 },{
                     name:'平均点击量',
                     data:niceData1,
-                    yAxis:1,
+                    yAxis:0,
                     type:'spline',
                     marker:{
                         enabled:false
@@ -320,7 +313,7 @@ J(function($,p,pub){
                 },{
                     name:'PV点击率',
                     data:niceData2,
-                    yAxis:2,
+                    yAxis:1,
                     type:'spline',
                     zIndex:1,
                     tooltip:{
@@ -348,6 +341,8 @@ J(function($,p,pub){
             //this.$chart.find('.xdata_loading1').remove();
             var chartOpts = this.getChartOption(data,this.dataType),
                 seriesLen = chartOpts.series.length;
+            this.chartOpts = chartOpts;
+
             if(!this.chart){
                 this.$chart.highcharts(chartOpts);
                 this.chart=this.$chart.highcharts();
@@ -421,6 +416,10 @@ J(function($,p,pub){
 
     pub.isVisible = function(){
         return p.modChart.isVisible;
+    };
+
+    pub.getChartOption = function(){
+        return p.modChart.chartOpts;
     };
 
 });
