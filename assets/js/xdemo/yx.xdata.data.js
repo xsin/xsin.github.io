@@ -20,11 +20,11 @@ J(function($,p,pub){
         };
         isParamsReady=true;
     }catch(e){
-        J.log('获取统计参数失败！'+e.toString());
+        J.log(i18n.t("ajax.paramError")+e.toString());
     };
     var clickStreamData = function(_type,_params,_cbk){
         if (!isParamsReady) {
-            _cbk('获取统计参数失败！');
+            _cbk(i18n.t("ajax.paramError"));
             return null;
         };
         var jqXHR=$.ajax({
@@ -123,14 +123,14 @@ J(function($,p,pub){
     };
     //获取单个ytag的点击数据
     pub.getClickDataById = function(id){
-        var obj = null;
+        var obj = null,noData = i18n.t('ajax.noData');
         for(var c in pub['CurrentClickData'].data){
             obj = pub['CurrentClickData'].data[c];
             if(obj.page_tag===id){
                 break;
             }
         };
-        return obj||{'click_num':'无数据','click_trans_rate':'无数据','order_num':'无数据'};
+        return obj||{'click_num':noData,'click_trans_rate':noData,'order_num':noData};
     };
     //获取指定YTag的数据
     pub.getRangeClickData = function(_params,cbk){
@@ -249,7 +249,7 @@ J(function($,p,pub){
         if(!pub.defaultCTags){
             J.data.getDefaultCTags(function(err,d){
                 if(err){
-                    console.log('预设模块读取出错：',err);
+                    console.log(i18n.t('ajax.presetModError'),err);
                     cbk(items);
                     return;
                 };

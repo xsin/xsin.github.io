@@ -64,7 +64,7 @@ J(function($,p,pub){
                 legend: {
                 },
                 series: [{
-                    name: '点击量',
+                    name: i18n.t('nav.a'),
                     data: niceData,
                     zIndex: 1,
                     marker: {
@@ -79,16 +79,16 @@ J(function($,p,pub){
             rawData.total.click_trans_rate = rawData.total.click_num==0?0:(rawData.total.order_num*100/rawData.total.click_num).toFixed(2);
             switch(dataType){
                 case 1:
-                    baseOpts.series[0].name='点击量';
-                    baseOpts.title.text = '共'+rawData.total.click_num+'次';
+                    baseOpts.series[0].name=i18n.t('nav.a');
+                    baseOpts.title.text = i18n.t('com.total')+rawData.total.click_num+i18n.t('com.ci');
                 break;
                 case 2:
-                    baseOpts.series[0].name='下单量';
-                    baseOpts.title.text = '共'+rawData.total.order_num+'单';
+                    baseOpts.series[0].name=i18n.t('nav.b');
+                    baseOpts.title.text = i18n.t('com.total')+rawData.total.order_num+i18n.t('com.dan');
                 break;
                 case 3:
-                    baseOpts.series[0].name='转化率';
-                    baseOpts.title.text = '平均'+rawData.total.click_trans_rate+'%';
+                    baseOpts.series[0].name=i18n.t('nav.c');
+                    baseOpts.title.text = i18n.t('com.avg')+rawData.total.click_trans_rate+'%';
                 break;
             };//switch
             return baseOpts;
@@ -146,7 +146,7 @@ J(function($,p,pub){
             this.dateRange = sdate+'-'+edate;
 
             if(sdate==''||edate==''){
-                me.showTip('开始时间和结束时间不能为空!');
+                me.showTip(i18n.t('tip.beginDateEndDateRequired'));
                 return;
             };
 
@@ -165,7 +165,7 @@ J(function($,p,pub){
             };//while
 
             if(dates.length>J.ui.maxDateRange){
-                me.showTip('统计时间范围超过$天！服务器亚历山大...'.replace('$',J.ui.maxDateRange));
+                me.showTip(i18n.t('tip.dateRangeOvertop').replace('$',J.ui.maxDateRange));
                 return;
             }
 
@@ -188,7 +188,7 @@ J(function($,p,pub){
                 me.isLoading=false;
                 if(err){
                     me.hasAjaxError=true;
-                    me.showTip('服务器错误：'+err.toString());
+                    me.showTip(i18n.t('ajax.serverError')+err.toString());
                     return;
                 }
                 me.cacheKeyData[cacheId]=d1;

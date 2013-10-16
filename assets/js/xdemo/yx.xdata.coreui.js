@@ -7,21 +7,21 @@ J(function($,p,pub){
                 <div id="xdataUIHD" class="data_ui_hd xdata_fixed">
                     <div id="xdataTab" class="data_tab">
                         <ul id="xdataType">
-                            <li><a href="javascript:;" class="on" rel="1">点击量</a></li>
-                            <li><a href="javascript:;" rel="2">下单量</a></li>
-                            <li><a href="javascript:;" rel="3">转化率</a></li>
+                            <li><a href="javascript:;" class="on" rel="1" data-i18n="nav.a">点击量</a></li>
+                            <li><a href="javascript:;" rel="2" data-i18n="nav.b">下单量</a></li>
+                            <li><a href="javascript:;" rel="3" data-i18n="nav.c">转化率</a></li>
                         </ul>
                     </div>
                     <div class="data_time">
                         <input class="xdata_date xdata_sdate" id="xdataKeyChartDate1" type="date"/><span class="c_tx3">-</span><input class="xdata_date xdata_edate" id="xdataKeyChartDate2" type="date" />
-                        <button id="xdataRetweet1" class="data_btn">刷新</button>
+                        <button id="xdataRetweet1" class="data_btn" data-i18n="com.refresh">刷新</button>
                     </div>
                 </div>
                 <div id="xdataUIBD" class="data_ui_bd">
                     <div class="data_box">
                         <div class="data_box_hd">
-                            <h3>页面趋势</h3>
-                            <a href="javascript:;" id="xdataBtnHeatmap" class="data_btn data_btn_bg1">显示热区图</a>
+                            <h3 data-i18n="chart1.title">页面趋势</h3>
+                            <a href="javascript:;" id="xdataBtnHeatmap" class="data_btn data_btn_bg1" data-i18n="com.showHeatmap">显示热区图</a>
                         </div>
                         <div class="data_box_bd">
                             <div id="xdataKeyCharts" class="data_total">
@@ -34,7 +34,7 @@ J(function($,p,pub){
                     </div><!--/data_box-->
                     <div class="data_box">
                         <div class="data_box_hd">
-                            <h3>模块趋势</h3>
+                            <h3 data-i18n="chart2.title">模块趋势</h3>
                             <a id="xdataAddCTag" href="javascript:;" class="data_btn data_btn_bg1 xdata_btn_addmod">新增私有模块</a>
                             <a id="xdataCTagAdmin" target="_blank" href="http://oxox.io/tools/oxtree/" class="data_btn data_btn_bg1 xdata_btn_addmod">模块维护</a>
                             <img id="xdataLoading2" class="xdata_loading2" src="http://static.gtimg.com/icson/img/common/loading.gif"/>
@@ -54,17 +54,17 @@ J(function($,p,pub){
                 </div>
             </div>
             <div class="data_exhaled">
-                <a id="xdataClose" href="javascript:;" class="data_exhaled_btn">呼出</a>
+                <a id="xdataClose" href="javascript:;" class="data_exhaled_btn"></a>
             </div>
             <div id="xdataPop2" class="data_pop data_pop2 xdata_hidden">
                 <div class="data_pop_add">
                     <ul>
-                        <li><input id="xdataPop2Ipt1" type="text" placeholder="请输入模块名称" /></li>
-                        <li><input id="xdataPop2Ipt2" type="text" value="" placeholder="请输入模块的css选择器或以|分隔的ytag"/></li>
+                        <li><input id="xdataPop2Ipt1" type="text" data-i18n="placeholder=tip.modNameRequired" placeholder="请输入模块名称"/></li>
+                        <li><input id="xdataPop2Ipt2" type="text" data-i18n="placeholder=tip.modNameValueRule" value="" placeholder="请输入模块的css选择器或以|分隔的ytag"/></li>
                     </ul>
                     <div class="data_control">
-                        <a id="xdataPop2Btn1" href="javascript:;" class="data_btn">更新</a>
-                        <a id="xdataPop2Btn2" href="javascript:;" class="data_btn data_btn_bg1">删除</a>
+                        <a id="xdataPop2Btn1" href="javascript:;" class="data_btn" data-i18n="com.update">更新</a>
+                        <a id="xdataPop2Btn2" href="javascript:;" class="data_btn data_btn_bg1" data-i18n="com.delete">删除</a>
                     </div>
                     <div id="xdataPop2Tip" class="xdata_pop2tip xdata_hidden"></div>
                 </div>
@@ -75,9 +75,9 @@ J(function($,p,pub){
             <div class="data_pop_bd">
                 <div class="data_time">
                     <input id="xdataPop1Date1" class="xdata_date xdata_sdate1" type="date" /><span class="c_tx3">-</span><input id="xdataPop1Date2" class="xdata_date xdata_edate" type="date" />
-                    <button id="xdataRetweet2" class="data_btn">刷新</button>
-                    <button id="xdataTag1" class="data_btn" title="为模块设置版本">设置版本点</button>
-                    <a id="xdataLkTagList" class="data_btn" href="http://ecd.oa.com/xdata/timeline.html" title="查看该模块的版本历史" target="_blank">版本历史</a>
+                    <button id="xdataRetweet2" class="data_btn" data-i18n="com.refresh">刷新</button>
+                    <button id="xdataTag1" class="data_btn" data-i18n="chart2.btnSetVersion">设置版本点</button>
+                    <a id="xdataLkTagList" class="data_btn" href="http://ecd.oa.com/xdata/timeline.html" target="_blank" data-i18n="chart2.btnModHis">版本历史</a>
                 </div>
                 <div id="dataCrumbs" class="data_crumbs"></div>
                 <div class="data_pop_con">
@@ -154,7 +154,7 @@ J(function($,p,pub){
         render:function(){
             this.$startUp.onTransitioned(false);
             J.$body.append(coreTpl);
-            this.$ui = $('#xdataWrap');
+            this.$ui = $('#xdataWrap').oxi18n();
             this.$uiCore = $('#xdataUI');
             this.$tab = $('#xdataTab');
             this.$hd = $('#xdataUIHD');

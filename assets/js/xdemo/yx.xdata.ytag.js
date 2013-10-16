@@ -37,7 +37,7 @@ J(function($,p,pub){
                     selector:('[$="'+ytag+'"]').replace('$',attrName)
                 };
             $.extend(data,J.data.getItemDimension($o)||{});
-            data.text=data.text.length===0?(data.title.length===0?'[!!无标题!!]':data.title):data.text;
+            data.text=data.text.length===0?(data.title.length===0?'[!!NoTitle!!]':data.title):data.text;
             data.ytags=this.getRelatedYTags($o,ytag,attrName);
             cache[data.id] = data;
             return data;
@@ -66,12 +66,12 @@ J(function($,p,pub){
                 };
                 data.selector = cssSelectors1.join(',');
             }
-            data.$dom = $(data.selector);//NOTE:发现ytag用的很滥，同一个ytag用在多个链接上
+            data.$dom = $(data.selector);/*NOTE:发现ytag用的很滥，同一个ytag用在多个链接上*/
             data.ytags=this.getRelatedYTags(data.$dom,ctag,'ctag',isCustomTagWithCssSelector);
             data.isCustom=true;
             data.top = (data.$dom.offset()||{top:0}).top;
 
-            //获取每个元素的位置、高宽信息
+            /*获取每个元素的位置、高宽信息*/
             data.$dom.each(function(i,o){
                 o = $(o);
                 o.data('xdatadim',J.data.getItemDimension(o));
@@ -184,7 +184,7 @@ J(function($,p,pub){
                     color:'red'
                 },
                 isHidden = dim.isHidden;
-            var coverTip = dim.selector+(isHidden?',当前处于隐藏状态...':'');
+            var coverTip = dim.selector+(isHidden?','+i18n.t('tip.hidden'):'');
 
             if($cover.length===1){
                 $cover.removeClass('xdata_hidden');
@@ -282,7 +282,7 @@ J(function($,p,pub){
             rootLiData=null,
             pid=null;
 
-        //最后一个li是否一级菜单，如果不是需要获取一级菜单
+        /*最后一个li是否一级菜单，如果不是需要获取一级菜单*/
         pid = $parents.eq(len-1)[0].getAttribute('data-pid');
         if(pid){
             $rootLi = $('#xdataCTag'+pid);

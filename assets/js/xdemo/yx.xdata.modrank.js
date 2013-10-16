@@ -8,14 +8,14 @@ J(function($,p,pub){
         dataInited:false,
         tpl:J.heredoc(function(){/*
             {{#empty}}
-            <div class="xdata_alert">无数据</div>
+            <div class="xdata_alert" data-i18n="ajax.noData">无数据</div>
             {{/empty}}
             {{#items}}
             <li id="xdataCTag{{id}}" class="data_list_item{{cl1}}" data-oxmenuid="{{id}}" data-alias="{{alias}}" data-val="{{val}}">
                 <div class="data_list_entry">
                     <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
                     <p class="data_list_control">
-                        <a href="javascript:;" class="data_btn_edit" rel="{{id}}">编辑</a>
+                        <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
                     </p>
                     <i class="data_ico_more"></i>
                 </div>
@@ -31,7 +31,7 @@ J(function($,p,pub){
                         <div class="data_list_entry">
                             <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
                             <p class="data_list_control">
-                                <a href="javascript:;" class="data_btn_edit" rel="{{id}}">编辑</a>
+                                <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
                             </p>
                             <i class="data_ico_more"></i>
                         </div>
@@ -41,7 +41,7 @@ J(function($,p,pub){
                     <div class="data_list_entry">
                         <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
                         <p class="data_list_control">
-                            <a href="javascript:;" class="data_btn_edit" rel="{{id}}">编辑</a>
+                            <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
                         </p>
                         <i class="data_ico_more"></i>
                     </div>
@@ -180,7 +180,7 @@ J(function($,p,pub){
             this.$d.prepend(html);
 
             if (!isPrepend) {
-                $('#xdataList1').find('.data_list_item2').oxmenu({
+                $('#xdataList1').oxi18n().find('.data_list_item2').oxmenu({
                     onShowing:function(id,cbk){
                         p.modRank.onShowingSubMenus(id,cbk);
                     },

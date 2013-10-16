@@ -141,7 +141,7 @@ J(function($,p,pub){
                 cacheId = [me.dataType,tagData.ytags.join('-'),sdate,edate].join('-');
 
             if(sdate==''||edate==''){
-                me.showTip('开始时间和结束时间不能为空！');
+                me.showTip(i18n.t('tip.beginDateEndDateRequired'));
                 return;
             };
 
@@ -160,7 +160,7 @@ J(function($,p,pub){
             };//while
 
             if(dates.length>J.ui.maxDateRange){
-                me.showTip('统计时间范围超过$天！服务器亚历山大...'.replace('$',J.ui.maxDateRange));
+                me.showTip(i18n.t('tip.dateRangeOvertop').replace('$',J.ui.maxDateRange));
                 return;
             }
 
@@ -183,7 +183,7 @@ J(function($,p,pub){
                 me.isLoading=false;
                 me.jqXHR=null;
                 if(err){
-                    me.showTip('<div class="xdata_error">服务器错误：'+err.toString()+'</div>');
+                    me.showTip('<div class="xdata_error">'+i18n.t('ajax.serverError')+err.toString()+'</div>');
                     return;
                 }
                 me.cache[cacheId]=d;
@@ -292,7 +292,7 @@ J(function($,p,pub){
                 legend: {
                 },
                 series: [{
-                    name: '点击量',
+                    name: i18n.t('nav.a'),
                     data: niceData,
                     yAxis:0,
                     zIndex: 1,
@@ -301,7 +301,7 @@ J(function($,p,pub){
                         lineColor: Highcharts.getOptions().colors[dataType-1]
                     }
                 },{
-                    name:'平均点击量',
+                    name:i18n.t('com.avg')+i18n.t('nav.a'),
                     data:niceData1,
                     yAxis:0,
                     type:'spline',
@@ -311,7 +311,7 @@ J(function($,p,pub){
                     dashStyle:'shortdot',
                     zIndex:1
                 },{
-                    name:'PV点击率',
+                    name:'PV'+i18n.t('chart2.clickRate'),
                     data:niceData2,
                     yAxis:1,
                     type:'spline',
@@ -325,14 +325,14 @@ J(function($,p,pub){
                 case 1:
                 break;
                 case 2:
-                    baseOpts.series[0].name='下单量';
-                    baseOpts.series[1].name='平均下单量';
-                    baseOpts.series[2].name='PV下单率';
+                    baseOpts.series[0].name=i18n.t('nav.b');
+                    baseOpts.series[1].name=i18n.t('com.avg')+i18n.t('nav.b');
+                    baseOpts.series[2].name='PV'+i18n.t('chart2.orderRate');
                 break;
                 case 3:
-                    baseOpts.series[0].name='转化率';
-                    baseOpts.series[1].name='平均转化率';
-                    baseOpts.series[2].name='PV转化率';
+                    baseOpts.series[0].name=i18n.t('nav.c');
+                    baseOpts.series[1].name=i18n.t('com.avg')+i18n.t('nav.c');
+                    baseOpts.series[2].name='PV'+i18n.t('nav.c');
                 break;
             };//switch
             return baseOpts;

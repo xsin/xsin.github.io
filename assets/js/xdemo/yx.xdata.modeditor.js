@@ -86,7 +86,7 @@ J(function($,p,pub){
                 type:1//1为类名，2为id列表
             };
             if(d.alias.length==0||d.ytagSelector.length==0){
-                this.showTip('模块名称和ytag选择器均不能为空！',3000);
+                this.showTip(i18n.t('tip.modNameValueRequired'),3000);
                 return false;
             };
             var $tempDom = null;
@@ -95,7 +95,7 @@ J(function($,p,pub){
                 //css选择器
                 $tempDom = $(d.ytagSelector);
                 if($tempDom.length===0){
-                    this.showTip('ytag选择器必须是有效的css选择器，或则是以|分隔的有效的ytag id！',3000);
+                    this.showTip(i18n.t('tip.modNameValueRule'),3000);
                     return false;
                 };
                 J.data.saveCTag(d);
@@ -103,7 +103,7 @@ J(function($,p,pub){
             };
             //ytag id，|分隔
             if( d.ytagSelector.indexOf('|')==-1 && (!/^[0-9]+$/.test(d.ytagSelector)) ){
-                this.showTip('ytag选择器必须是有效的css选择器，或则是以|分隔的有效的ytag id！',3000);
+                this.showTip(i18n.t('tip.modNameValueRule'),3000);
                 return false;
             };
             var tags = d.ytagSelector.split('|'),
@@ -116,7 +116,7 @@ J(function($,p,pub){
                 }
             };//for
             if(!isValid){
-                this.showTip('ytag选择器必须是有效的css选择器，或则是以|分隔的有效的ytag id！',3000);
+                this.showTip(i18n.t('tip.modNameValueRule'),3000);
                 return false;
             };
             d.type=2;

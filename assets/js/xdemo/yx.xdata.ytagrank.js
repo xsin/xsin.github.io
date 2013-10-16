@@ -1,13 +1,13 @@
-//ytag排行榜
+
 J(function($,p,pub){
     pub.id = "ytagrank";
-    //ytag排行榜
+    /*ytag排行榜*/
     p.rank = {
         dataType:1,
         dataChangedAt:1,
         tpl:J.heredoc(function(){/*
             {{#empty}}
-            <div class="xdata_alert">无数据</div>
+            <div class="xdata_alert" data-i18n="ajax.noData"></div>
             {{/empty}}
             {{^empty}}
             {{#items}}
@@ -94,23 +94,23 @@ J(function($,p,pub){
             };
             return r;
         },
-        //降序排列数据
+        /*降序排列数据*/
         orderDataDescBy:function(arrData,dataType){
             //new a copy of arrData
             arrData = arrData.slice(0);
             switch(dataType){
                 case 1:
-                    //do nothing，默认是按点击数排序的
+                    /*do nothing，默认是按点击数排序的*/
                 break;
                 case 2:
-                    //按下单量排序
+                    /*按下单量排序*/
                     arrData.sort(function(a,b){
                         return (b.order_num-a.order_num);
                     });
                 break;
                 case 3:
-                    //按转化率排序
-                    //按下单量排序
+                    /*/按转化率排序
+                    //按下单量排序*/
                     arrData.sort(function(a,b){
                         return (parseFloat(b.click_trans_rate)-parseFloat(a.click_trans_rate));
                     });
