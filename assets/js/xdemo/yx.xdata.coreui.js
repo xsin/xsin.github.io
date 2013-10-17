@@ -170,7 +170,7 @@ J(function($,p,pub){
             });
             //日期控件设置
             var today=new Date(),
-                todayStr = today.toISOString().substring(0, 10);
+                todayStr = J.data.getDateTimeStr(today,{len:10});
             $('.xdata_date').attr('max',todayStr)
                 .filter('.xdata_sdate').val(todayStr)
                 .end()
