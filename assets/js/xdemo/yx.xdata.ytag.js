@@ -162,6 +162,7 @@ J(function($,p,pub){
             this.$ytagTrigger.addClass(clOn);
 
             var ytagData = J.ytag.get(this.$ytagTrigger.data());
+            ytagData.val = elmTrigger.getAttribute('data-val');//.data() will cache the previous value
             ytagData.treePath = pub.getTreePath();
             $.extend(ytagData,d||{});
 

@@ -77,6 +77,7 @@ J(function($,p,pub){
         },
         show:function(tagData,$trigger){
             this.tagData=tagData;
+            console.log(tagData);
             this.$trigger=$trigger;
             this.$d.addClass('data_pop1_on');
             this.isVisible=true;
