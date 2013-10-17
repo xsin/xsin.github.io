@@ -21,7 +21,7 @@ J(function($,p,pub){
                     <div class="data_box">
                         <div class="data_box_hd">
                             <h3 data-i18n="chart1.title">页面趋势</h3>
-                            <a href="javascript:;" id="xdataBtnHeatmap" class="data_btn data_btn_bg1" data-i18n="com.showHeatmap">显示热区图</a>
+                            <a href="javascript:;" id="xdataBtnHeatmap" class="data_btn data_btn_bg1 xdata_hidden" data-i18n="com.showHeatmap">显示热区图</a>
                         </div>
                         <div class="data_box_bd">
                             <div id="xdataKeyCharts" class="data_total">

@@ -134,9 +134,9 @@ J(function($,p,pub){
             pub.rockAndRollAll();
         },
         reset:function(t){
-            var clOn = 'data_list_entry_on';
+            var clOn = 'data_list_lk_on';
             if(this.$ytagTrigger){
-                this.$ytagTrigger.parent().removeClass(clOn);
+                this.$ytagTrigger.removeClass(clOn);
             }
             this.$ytagTrigger=null;
             this.hideCovers();
@@ -151,15 +151,15 @@ J(function($,p,pub){
             });
         },
         onClickYTagTrigger:function(elmTrigger,d){
-            var clOn = 'data_list_entry_on';
+            var clOn = 'data_list_lk_on';
             if(this.$ytagTrigger){
                 if(this.$ytagTrigger[0].id===elmTrigger.id){
                     return;
                 };
-                this.$ytagTrigger.parent().removeClass(clOn);
+                this.$ytagTrigger.removeClass(clOn);
             }
             this.$ytagTrigger = $(elmTrigger);
-            this.$ytagTrigger.parent().addClass(clOn);
+            this.$ytagTrigger.addClass(clOn);
 
             var ytagData = J.ytag.get(elmTrigger.getAttribute('data-ytag'),elmTrigger.getAttribute('data-ytagattr'));
             ytagData.val = elmTrigger.getAttribute("data-val");
@@ -277,25 +277,11 @@ J(function($,p,pub){
 
         var path = [],
             $parents = p.main.$ytagTrigger.parents('.data_list_item'),
-            len = $parents.length,
-            $rootLi = null,
-            rootLiData=null,
-            pid=null;
-
-        /*最后一个li是否一级菜单，如果不是需要获取一级菜单*/
-        pid = $parents.eq(len-1)[0].getAttribute('data-pid');
-        if(pid){
-            $rootLi = $('#xdataCTag'+pid);
-        };
+            len = $parents.length;
 
         $parents.each(function(i,o){
             path.splice(0,0,$parents.eq(i).data());
         });
-        if($rootLi){
-            rootLiData = $rootLi.data();
-            rootLiData.isRoot = true;
-            path.splice(0,0,rootLiData);
-        };
         
         p.main.$ytagTrigger.data('data-treepath',path);
         return path;

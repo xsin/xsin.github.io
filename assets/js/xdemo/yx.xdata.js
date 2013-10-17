@@ -5,7 +5,7 @@ var cbk = function($s){
             t = new Date().getTime();
     $s(["http://oxox.io/assets/js/libs/heatmap/heatmap.js",
         prefix+"yx.xdata.base.js?t="+t,
-        "http://oxox.io/jq/oxmenu/jquery.oxmenu.js?t="+t,
+        "http://oxox.io/jq/oxmenu/jquery.oxtree.js?t="+t,
         "http://oxox.io/jq/oxi18n/jquery.oxi18n.js?t="+t
     ],"base");
     $s.ready('base',function(){

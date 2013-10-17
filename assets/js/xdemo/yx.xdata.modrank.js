@@ -7,49 +7,27 @@ J(function($,p,pub){
         dataChangedAt:1,
         dataInited:false,
         tpl:J.heredoc(function(){/*
-            {{#empty}}
-            <div class="xdata_alert" data-i18n="ajax.noData">无数据</div>
-            {{/empty}}
-            {{#items}}
-            <li id="xdataCTag{{id}}" class="data_list_item{{cl1}}" data-oxmenuid="{{id}}" data-alias="{{alias}}" data-val="{{val}}">
-                <div class="data_list_entry">
-                    <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
-                    <p class="data_list_control">
-                        <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
-                    </p>
-                    <i class="data_ico_more"></i>
-                </div>
-            </li>
-            {{/items}}
-        */}),
-        tplSub:J.heredoc(function(){/*
-            <div id="xdataListMore{{pid}}" class="data_list data_list_more">
-                <ul>
+            <ul id="dataList{{pid}}" class="data_list_con">
                 {{#babies}}
-                <li id="xdataCTag{{id}}" data-pid="{{pid}}" class="data_list_item{{cl1}}" data-oxmenuid="{{id}}" data-alias="{{alias}}" data-val="{{val}}">
+                <li id="xdataCTag{{id}}" data-pid="{{pid}}" class="data_list_item{{cl1}}" data-id="{{id}}" data-alias="{{alias}}" data-val="{{val}}">
                     {{#hasChildren}}
-                        <div class="data_list_entry">
-                            <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
-                            <p class="data_list_control">
-                                <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
-                            </p>
-                            <i class="data_ico_more"></i>
-                        </div>
-                        {{>children}}
-                    {{/hasChildren}}
-                    {{^hasChildren}}
-                    <div class="data_list_entry">
+                        <i class="data_list_ico"></i>
                         <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
                         <p class="data_list_control">
                             <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
                         </p>
-                        <i class="data_ico_more"></i>
-                    </div>
+                        {{>children}}
+                    {{/hasChildren}}
+                    {{^hasChildren}}
+                    <i class="data_list_ico"></i>
+                    <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
+                    <p class="data_list_control">
+                        <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
+                    </p>
                     {{/hasChildren}}
                 </li>
                 {{/babies}}
-                </ul>
-            </div>
+            </ul>
         */}),
         _init:function(){
             J.$win.bind(J.ui.EVT.UIReady,function(e){
@@ -64,7 +42,7 @@ J(function($,p,pub){
                 p.modRank.dataChangedAt=p.modRank.dataType;
                 p.modRank.reload();
             }).bind(J.ui.EVT.UIScroll,function(e,sTop){
-                J.$win.trigger('oxmenuPositionNeedUpdating');
+                //J.$win.trigger('oxmenuPositionNeedUpdating');
             });
         },
         onCTagUpdated:function(opType,d){
@@ -128,7 +106,7 @@ J(function($,p,pub){
             }
             //含子级模块
             if(tempItem.babies&&tempItem.babies.length>0){
-                tempItem.cl1+=' data_list_item2';
+                tempItem.cl1+=' data_list_child';
                 tempItem.hasChildren = true;
             }
             ytagLen = tempItem.ytags.length;
@@ -173,21 +151,23 @@ J(function($,p,pub){
             if(!isPrepend){
                 this.$d.find('.data_list_item').remove();
             }
-            var html = '<ul>'+J.toHtml(this.tpl,{
-                    empty:(cItems.length==0),
-                    items:cItems
-                })+'</ul>';
+            if(cItems.length===0){
+                this.$d.html('<div class="xdata_alert" data-i18n="ajax.noData">无数据</div>').oxi18n();
+                return;
+            };
+            var d = {
+                id:'0',
+                babies:cItems,
+                isCustomYTag:true
+            };
+            this.parseTreeData(d,"-1");
+
+            var html = J.toHtml(this.tpl,d,{children:this.tpl});
+
             this.$d.prepend(html);
 
             if (!isPrepend) {
-                $('#xdataList1').oxi18n().find('.data_list_item2').oxmenu({
-                    onShowing:function(id,cbk){
-                        p.modRank.onShowingSubMenus(id,cbk);
-                    },
-                    hideDelay:0,
-                    showDelay:0,
-                    showSpeed:0
-                });
+                $('#xdataList1').oxi18n().oxtree();
             };
 
         },

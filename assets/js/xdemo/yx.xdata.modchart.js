@@ -6,7 +6,6 @@ J(function($,p,pub){
         $tip:null,
         $chart:null,
         $trigger:null,
-        $rootMenuItem:null,
         chart:null,
         isLoading:false,
         isVisible:false,
@@ -20,7 +19,7 @@ J(function($,p,pub){
         tplMenu:J.heredoc(function(){/*
             <div class="data_breadcrumb data_breadcrumb_flat">
                 {{#items}}
-                <a href="javascript:;" data-id="{{oxmenuid}}" class="{{clActive}}">{{alias}}</a>
+                <a href="javascript:;" data-id="{{id}}" class="{{clActive}}">{{alias}}</a>
                 {{/items}}
             </div>
         */}),
@@ -77,31 +76,17 @@ J(function($,p,pub){
             J.$win.trigger(J.ui.EVT.ModChartReset);
         },
         show:function(tagData,$trigger){
-            var $rootMenuItem0 = this.$rootMenuItem;
             this.tagData=tagData;
             this.$trigger=$trigger;
-            this.$rootMenuItem = $('#xdataCTag'+tagData.treePath[0].oxmenuid);
             this.$d.addClass('data_pop1_on');
             this.isVisible=true;
             //this.updatePosition();
             var isNewMenu = this.renderMenu();
             this.loadData(tagData);
-            //对于一级模块，设置data-oxmenukeephoverstate，防止hover状态丢失。具体参考jquery.oxmenu.js
-            if(tagData.treePath[0].isRoot&&isNewMenu){
-                if($rootMenuItem0){
-                    $rootMenuItem0[0].removeAttribute('data-oxmenukeephoverstate');
-                    $rootMenuItem0.trigger('mouseleave.oxmenu');
-                }
-                this.$rootMenuItem[0].setAttribute('data-oxmenukeephoverstate',"1");
-            }
         },
         hide:function(){
             this.$d.removeClass('data_pop1_on');
             this.isVisible=false;
-            if(this.$rootMenuItem){
-                this.$rootMenuItem[0].removeAttribute('data-oxmenukeephoverstate');
-                this.$rootMenuItem = null;
-            }
         },
         updatePosition:function(){
             if(!this.isVisible){
