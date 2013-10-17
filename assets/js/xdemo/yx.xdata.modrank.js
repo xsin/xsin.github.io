@@ -167,7 +167,7 @@ J(function($,p,pub){
             this.$d.prepend(html);
 
             if (!isPrepend) {
-                $('#xdataList1').oxi18n().oxtree();
+                $('#xdataList1').oxi18n().oxtree({},true);
             };
 
         },

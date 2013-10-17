@@ -280,7 +280,7 @@
 
 /*===== 弹出层 =====*/
 	/*===== 详情 =====*/
-		.data_pop{position:fixed!important;z-index:3; right:340px; bottom:0;border:1px solid #648BA4; box-shadow:0 0 10px rgba(0,0,0,0.3); background-color:#FFF;}
+		.data_pop{position:fixed!important;z-index:3; left:310px; bottom:0;border:1px solid #648BA4; box-shadow:0 0 10px rgba(0,0,0,0.3); background-color:#FFF;}
 		.data_pop_bd{position:absolute;top:10px;bottom:10px;left:20px;right:20px;}
         .data_pop1{z-index:10000;left:335px; top:3px;bottom:0;right:0px;border:0;border-top: 3px solid #386A8A;box-shadow:0 2px 8px rgba(0,0,0,0.3);-webkit-transition:all .25s ease-out;-webkit-transform:translateX(100%);}
         .data_pop1_on{-webkit-transform:translateX(0);right:10px;}
@@ -293,15 +293,16 @@
 			overflow:hidden;
 			position:absolute;
 			content:" ";
-			right:-16px;
+			left:-16px;
 			bottom:20px;
 			width:0;
 			height:0;
 			border-width:8px;
-			border-color:transparent transparent transparent #648BA4;
+			border-color:transparent #648BA4 transparent transparent;
 			border-style:dashed dashed dashed solid;
 			font-size:0;
 		}
+        .data_pop2 .xdata_pop_close{visibility: visible;right:-10px;left:auto;}
 
 	/*===== 新增统计单元 =====*/
 		.data_pop_add{}

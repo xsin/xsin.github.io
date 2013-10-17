@@ -48,12 +48,13 @@ J(function($,p,pub){
             }).bind(J.ui.EVT.Collapse,function(e){
                 p.modEditor.hide();
             }).bind('resize.modEditor',function(e){
+                p.modEditor.uiOffsetTop = J.ui.getPosition().top;
                 p.modEditor.updatePosition();
             });
 
             $('.data_btn_edit').live('click',function(e){
                 //tagData,$trigger,isCustomYTag
-                var $trigger = $(this).parents('.data_list_entry'),
+                var $trigger = $('#xdataCTag'+this.rel),
                     isCustomYTag = $trigger.find('.data_list_lk')[0].getAttribute('data-ytagattr')=='ctag';
                 p.modEditor.show(J.data.getCTag(this.rel),$trigger,isCustomYTag);
                 return false;
@@ -124,7 +125,7 @@ J(function($,p,pub){
             return true;
         },
         show:function(tagData,$trigger,isCustomYTag){
-            var clEditOn = 'data_list_entry_editing';
+            var clEditOn = 'data_list_item_editing';
             if(this.$trigger){
                 this.$trigger.removeClass(clEditOn);
             }
@@ -145,7 +146,7 @@ J(function($,p,pub){
             this.$name[0].value = '';
             this.$value[0].value = '';
             this.isVisible=false;
-            var clEditOn = 'data_list_entry_editing';
+            var clEditOn = 'data_list_item_editing';
             if(this.$trigger){
                 this.$trigger.removeClass(clEditOn);
             }
@@ -158,7 +159,7 @@ J(function($,p,pub){
             var bottom = 0,
                 $trigger = this.$trigger;
             if($trigger){
-                bottom = J.$win.height()-($trigger.offset().top-J.ui.getOffset().top)-29/* 箭头的位置 */-$trigger.outerHeight()/2 - p.modEditor.uiOffsetTop;
+                bottom = J.$win.height()-($trigger.offset().top- p.modEditor.uiOffsetTop)-29/* 箭头的位置 */-$trigger.outerHeight()/2 ;
             }
             this.$d.css({
                 bottom:bottom
