@@ -18,7 +18,6 @@ J(function($,p,pub){
                 p.modEditor.$name = $('#xdataPop2Ipt1');
                 p.modEditor.$value = $('#xdataPop2Ipt2');
                 p.modEditor.$tip = $('#xdataPop2Tip');
-                p.modEditor.uiOffsetTop = J.ui.getPosition().top;
                 //update
                 $('#xdataPop2Btn1').bind('click',function(e){
                     var isOk = p.modEditor.save(this.rel);
@@ -48,8 +47,9 @@ J(function($,p,pub){
             }).bind(J.ui.EVT.Collapse,function(e){
                 p.modEditor.hide();
             }).bind('resize.modEditor',function(e){
-                p.modEditor.uiOffsetTop = J.ui.getPosition().top;
                 p.modEditor.updatePosition();
+            }).bind(J.ui.EVT.UIScroll,function(e,stop){
+                p.modEditor.updatePosition(stop);
             });
 
             $('.data_btn_edit').live('click',function(e){
@@ -158,12 +158,23 @@ J(function($,p,pub){
             };
             var bottom = 0,
                 $trigger = this.$trigger;
+            
+            bottom = this.getOffsetBottom($trigger);
+
             if($trigger){
-                bottom = J.$win.height()-($trigger.offset().top- p.modEditor.uiOffsetTop)-29/* 箭头的位置 */-$trigger.outerHeight()/2 ;
+                bottom = bottom-29/* 箭头的位置 */-$trigger.outerHeight()/2 ;
             }
             this.$d.css({
                 bottom:bottom
             });
+        },
+        getOffsetBottom:function($dom){
+            if(!$dom){
+                return 0;
+            };
+            var bottom = J.$win.height()-($dom.offset().top - J.$win.scrollTop());
+            console.log(bottom);
+            return bottom;
         },
         loadData:function(tagData){
             this.$name[0].value = tagData.alias;

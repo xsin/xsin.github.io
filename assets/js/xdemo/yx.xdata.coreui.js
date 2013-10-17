@@ -192,7 +192,7 @@ J(function($,p,pub){
             //coreui scrollevent
             //UICOre的scroll事件
             p.main.$bd.bind('scroll.modChart',function(e){
-                J.$win.trigger(EVT.UIScroll);
+                J.$win.trigger(EVT.UIScroll,[p.main.$bd.scrollTop()]);
             });
 
             J.$win.trigger(EVT.UIReady);

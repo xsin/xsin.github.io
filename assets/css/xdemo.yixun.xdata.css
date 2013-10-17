@@ -42,7 +42,7 @@
     .xdata_loading2{display: inline-block;vertical-align: middle;}
 
 .xdata_ytagchart .xdata_loading,.xdata_ytagcharttip .xdata_loading1{display: block;margin:10px auto;}
-.xdata_ytagcharttip{position: fixed;z-index:10;bottom:30%;left:0;right:0;text-align: center;}
+.xdata_ytagcharttip{position: fixed;z-index:10;top:40%;left:0;right:0;text-align: center;}
 .xdata_keycharttip,.xdata_keycharttip_bg{position: absolute;top:0;left:0;bottom: 0;right:0;}
 .xdata_keycharttip_bg{z-index: 1;background-color: #000;opacity: 0.5;}
 .xdata_keycharttip_bd{position: absolute;z-index: 2;left:0;top:30%;right:0;text-align: center;}
@@ -259,8 +259,9 @@
 					.data_list_lk span{margin-left:10px; color:#FB8800;}
 					.data_list_lk:hover{text-decoration:none;}
 
-					.data_list_control{position:absolute; right:15px; top:3px;}
-                .data_list_item1 .data_list_control{display: none;}
+					.data_list_control{position:absolute; right:15px; top:3px;display: none;}
+                .data_list_item:hover .data_list_control,.data_list_item_editing .data_list_control{display: block;}
+                .data_list_item1 .data_list_control,.data_list_item1:hover .data_list_control{display: none!important;}
 
 
 		/*===== 有展开菜单的情况 =====*/
@@ -282,9 +283,9 @@
 	/*===== 详情 =====*/
 		.data_pop{position:fixed!important;z-index:3; left:310px; bottom:0;border:1px solid #648BA4; box-shadow:0 0 10px rgba(0,0,0,0.3); background-color:#FFF;}
 		.data_pop_bd{position:absolute;top:10px;bottom:10px;left:20px;right:20px;}
-        .data_pop1{z-index:10000;left:335px; top:3px;bottom:0;right:0px;border:0;border-top: 3px solid #386A8A;box-shadow:0 2px 8px rgba(0,0,0,0.3);-webkit-transition:all .25s ease-out;-webkit-transform:translateX(100%);}
-        .data_pop1_on{-webkit-transform:translateX(0);right:10px;}
-        .data_pop1 .xdata_pop_close{left:auto;right:-10px;}
+        .data_pop1{z-index:10000;left:335px; top:0;bottom:0;right:0;border:0;border-top: 3px solid #386A8A;box-shadow:0 2px 8px rgba(0,0,0,0.3);-webkit-transition:all .25s ease-out;-webkit-transform:translateX(100%);}
+        .data_pop1_on{-webkit-transform:translateX(0);}
+        .data_pop1 .xdata_pop_close{left:auto;right:2px;top:2px;}
         .data_pop1_on .xdata_pop_close{visibility: visible;}
         .data_pop1 .data_pop_con{position:absolute;top:115px;bottom:30px;left:0;right:0;}
         .data_pop1 .data_total,.data_pop1 .data_total_inner{height:100%;padding:0;}

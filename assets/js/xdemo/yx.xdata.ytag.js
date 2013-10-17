@@ -37,48 +37,48 @@ J(function($,p,pub){
                     selector:('[$="'+ytag+'"]').replace('$',attrName)
                 };
             $.extend(data,J.data.getItemDimension($o)||{});
-            data.text=data.text.length===0?(data.title.length===0?'[!!NoTitle!!]':data.title):data.text;
+            data.alias=data.text.length===0?(data.title.length===0?'[!!NoTitle!!]':data.title):data.text;
             data.ytags=this.getRelatedYTags($o,ytag,attrName);
             cache[data.id] = data;
             return data;
         },
         //将自定义的单元添加到缓存
-        addCTagToCache:function(ctag){
-            var isCustomTagWithCssSelector = (ctag.indexOf('#')!=-1 || ctag.indexOf('.')!=-1),
+        addCTagToCache:function(tagObj){
+            var ctag = tagObj.ytag,
+                isCustomTagWithCssSelector = (ctag.indexOf('#')!=-1 || ctag.indexOf('.')!=-1),
                 cssSelectors = [],
                 cssSelectors1 = [],
                 len=0,
-                ctagid = this.getCacheKey(ctag,'ctag'),
-                data = {
-                    id:ctagid,
-                    selector:''
-                };
+                ctagid = this.getCacheKey(tagObj);
+
+            tagObj.cid = ctagid;
+            tagObj.selector = "";
 
             if(isCustomTagWithCssSelector){
                 cssSelectors = ctag.split(',');
                 len = cssSelectors.length;
-                data.selector = ctag;
+                tagObj.selector = ctag;
             }else{
                 cssSelectors = ctag.split('|');
                 len = cssSelectors.length;
                 for(var i =0;i<len;i++){
                     cssSelectors1.push('[ytag="'+cssSelectors[i]+'"]');
                 };
-                data.selector = cssSelectors1.join(',');
+                tagObj.selector = cssSelectors1.join(',');
             }
-            data.$dom = $(data.selector);/*NOTE:发现ytag用的很滥，同一个ytag用在多个链接上*/
-            data.ytags=this.getRelatedYTags(data.$dom,ctag,'ctag',isCustomTagWithCssSelector);
-            data.isCustom=true;
-            data.top = (data.$dom.offset()||{top:0}).top;
+            tagObj.$dom = $(tagObj.selector);/*NOTE:发现ytag用的很滥，同一个ytag用在多个链接上*/
+            tagObj.ytags=this.getRelatedYTags(tagObj.$dom,ctag,'ctag',isCustomTagWithCssSelector);
+            tagObj.isCustom=true;
+            tagObj.top = (tagObj.$dom.offset()||{top:0}).top;
 
             /*获取每个元素的位置、高宽信息*/
-            data.$dom.each(function(i,o){
+            tagObj.$dom.each(function(i,o){
                 o = $(o);
                 o.data('xdatadim',J.data.getItemDimension(o));
             });
 
-            cache[data.id] = data;
-            return data;
+            cache[tagObj.cid] = tagObj;
+            return tagObj;
         },
         getRelatedYTags:function($tag,ytag,attrName,isCustomTagWithCssSelector){
             var tags = [],
@@ -142,7 +142,7 @@ J(function($,p,pub){
             this.hideCovers();
         },
         onHoverIn:function(elmTrigger,d){
-            var ytagData = J.ytag.get(elmTrigger.getAttribute('data-ytag'),elmTrigger.getAttribute('data-ytagattr'));
+            var ytagData = J.ytag.get($(elmTrigger).data());
 
             J.$body.stop().animate({
                 scrollTop:ytagData.top
@@ -161,8 +161,7 @@ J(function($,p,pub){
             this.$ytagTrigger = $(elmTrigger);
             this.$ytagTrigger.addClass(clOn);
 
-            var ytagData = J.ytag.get(elmTrigger.getAttribute('data-ytag'),elmTrigger.getAttribute('data-ytagattr'));
-            ytagData.val = elmTrigger.getAttribute("data-val");
+            var ytagData = J.ytag.get(this.$ytagTrigger.data());
             ytagData.treePath = pub.getTreePath();
             $.extend(ytagData,d||{});
 
@@ -184,7 +183,7 @@ J(function($,p,pub){
                     color:'red'
                 },
                 isHidden = dim.isHidden;
-            var coverTip = dim.selector+(isHidden?','+i18n.t('tip.hidden'):'');
+            var coverTip = dim.alias+(isHidden?','+i18n.t('tip.hidden'):'');
 
             if($cover.length===1){
                 $cover.removeClass('xdata_hidden');
@@ -209,8 +208,7 @@ J(function($,p,pub){
                 left:tagData.left,
                 width:(tagData.width>tagData.parentWidth?tagData.parentWidth:tagData.width),
                 height:(tagData.height>tagData.parentHeight?tagData.parentHeight:tagData.height),
-                isHidden:tagData.$dom.is(':hidden'),
-                selector:tagData.selector
+                isHidden:tagData.$dom.is(':hidden')
             };
             if(coverDim.isHidden){
                 pub.removeFromCache(tagData.id);
@@ -227,18 +225,15 @@ J(function($,p,pub){
                 o = $(o);
                 coverDim = o.data('xdatadim');
                 coverDim.isHidden = o.is(':hidden');
-                coverDim.selector = o[0].id||o[0].className||(tagData.id+i);
-                p.main._showCover(p.main.getCacheKey(coverDim.selector,'ctag'),coverDim);
+                coverDim.alias = tagData.alias;
+                p.main._showCover(p.main.getCacheKey({
+                    id:(tagData.id+i),
+                    ytagattr:'ctag'
+                }),coverDim);
             });
         },
-        getCacheKey:function(ytag,attrName){
-            var isCTag = attrName==='ctag';
-            if(!isCTag){
-                return (attrName+ytag);
-            }
-            //将“#,.|空格”全部换成-
-            var ctagid = ytag.replace(/[#,\.\| +?]/gi,'-');
-            return (attrName+ctagid);
+        getCacheKey:function(tagObj){
+            return (tagObj.ytagattr+tagObj.id);
         }
     };
     //caculate all ytag's data
@@ -248,16 +243,17 @@ J(function($,p,pub){
         });
     };
     //get ytag's data
-    pub.get = function(ytag,attrName){
-        attrName = attrName||'ytag';
-        var isCTag = attrName==='ctag',
-            key = p.main.getCacheKey(ytag,attrName),
+    pub.get = function(tagCfg){
+        var isCTag = tagCfg.ytagattr==='ctag',
+            key = p.main.getCacheKey(tagCfg),
             data = null;
-
+        tagCfg.ytag+='';
+        tagCfg.id+='';
+        tagCfg.val+='';
         if( (data=cache[key]) ){
             return data;
         }
-        data = isCTag?p.main.addCTagToCache(ytag):p.main.addToCache($( ('[$="'+ytag+'"]').replace('$',attrName) ),attrName);
+        data = isCTag?p.main.addCTagToCache(tagCfg):p.main.addToCache($( ('[$="'+tagCfg.ytag+'"]').replace('$',tagCfg.ytagattr) ),tagCfg.ytagattr);
         return data;
     };
 

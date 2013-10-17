@@ -12,7 +12,7 @@ J(function($,p,pub){
                 <li id="xdataCTag{{id}}" data-pid="{{pid}}" class="data_list_item{{cl1}}" data-id="{{id}}" data-alias="{{alias}}" data-val="{{val}}">
                     {{#hasChildren}}
                         <i class="data_list_ico"></i>
-                        <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
+                        <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
                         <p class="data_list_control">
                             <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
                         </p>
@@ -20,7 +20,7 @@ J(function($,p,pub){
                     {{/hasChildren}}
                     {{^hasChildren}}
                     <i class="data_list_ico"></i>
-                    <a id="xdataLnkCTag{{id}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
+                    <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
                     <p class="data_list_control">
                         <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
                     </p>
