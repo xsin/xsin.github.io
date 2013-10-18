@@ -5,12 +5,9 @@ J(function($,p,pub){
         <div id="xdataWrap" class="xdata_wrap xdata_wrap_hide">
             <div id="xdataUI" class="data_ui">
                 <div id="xdataUIHD" class="data_ui_hd xdata_fixed">
-                    <div id="xdataTab" class="data_tab">
-                        <ul id="xdataType">
-                            <li><a href="javascript:;" class="on" rel="1" data-i18n="nav.a">点击量</a></li>
-                            <li><a href="javascript:;" rel="2" data-i18n="nav.b">下单量</a></li>
-                            <li><a href="javascript:;" rel="3" data-i18n="nav.c">转化率</a></li>
-                        </ul>
+                    <div class="data_tips">
+                        <p data-i18n="tip.startTip">该页面存在多个隐藏模块，建议在查看数据前实时获取最新数据</p>
+                        <a id="xdataRetweet2" href="javascript:;" data-i18n="com.refresh">刷新</a>
                     </div>
                     <div class="data_time">
                         <input class="xdata_date xdata_sdate" id="xdataKeyChartDate1" type="date"/><span class="c_tx3">-</span><input class="xdata_date xdata_edate" id="xdataKeyChartDate2" type="date" />
@@ -42,13 +39,6 @@ J(function($,p,pub){
                         <div class="data_box_bd">
                             <!--默认列表-->
                             <div id="xdataList1" class="data_list"></div>
-                            <!--单个ytag排行榜-->
-                            <div id="xdataList2" class="data_list data_listb xdata_hidden">
-                                <div id="xdataRank1" class="xdata_rank xdata_visible"></div>
-                                <div id="xdataRank2" class="xdata_rank"></div>
-                                <div id="xdataRank3" class="xdata_rank"></div>
-                            </div>
-                            <!--/单个ytag排行榜-->
                         </div>
                     </div><!--/data_box-->
                 </div>
@@ -92,7 +82,6 @@ J(function($,p,pub){
     */});
 
     var EVT={
-        'DataTypeChange':'onXDataTypeChange',
         'UIReady':'onXDataUIReady',
         'Collapse':'onXDataCollapse',
         'ModChartReset':'onXDataModChartReset',
@@ -100,22 +89,6 @@ J(function($,p,pub){
     };
     pub.EVT=EVT;
     pub.maxDateRange = 30;
-    //数据类型切换
-    p.dataType = {
-        value:"1",
-        _init:function(){
-            J.$win.bind(EVT.UIReady,function(e){
-                p.dataType._initEvts();
-            });
-        },
-        _initEvts:function(){
-            this.$items = $('#xdataType a').bind('click',function(e){
-                p.dataType.$items.removeClass('on');
-                this.className='on';
-                J.$win.trigger(EVT.DataTypeChange,[this.rel]);
-            });
-        }
-    };
     //主UI框架
     p.main={
         visible:false,
@@ -156,17 +129,11 @@ J(function($,p,pub){
             J.$body.append(coreTpl);
             this.$ui = $('#xdataWrap').oxi18n();
             this.$uiCore = $('#xdataUI');
-            this.$tab = $('#xdataTab');
             this.$hd = $('#xdataUIHD');
             this.$bd = $('#xdataUIBD');
-            this.$rankList = this.$uiCore.find('.data_list');
             $('#xdataClose').bind('click',function(e){
                 p.main[p.main.visible?'hide':'show'].call(p.main);
                 return false;
-            });
-            //排行榜的切换
-            $('#xdataRank .xdata_ranktype').bind('click',function(e){
-                p.main.$rankList.addClass('xdata_hidden').filter('#xdataList'+this.value).removeClass('xdata_hidden');
             });
             //日期控件设置
             var today=new Date(),
