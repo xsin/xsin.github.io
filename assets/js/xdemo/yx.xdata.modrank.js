@@ -130,7 +130,7 @@ J(function($,p,pub){
                     tempItem.val = tempItem.click_trans_rate;
                 break;
             };
-
+            tempItem = this.parseSingleItemToday(tempItem);
             return tempItem;
         },
         parseSingleItemToday:function(tempItem){
@@ -166,7 +166,6 @@ J(function($,p,pub){
             for(var i=0;i<len;i++){
                 tempItem = items[i];
                 tempItem = this.parseSingleItem(tempItem);
-                tempItem = this.parseSingleItemToday(tempItem);
                 if(tempItem.isCustomYTag){
                     cItems.push(tempItem);
                 };

@@ -37,8 +37,11 @@ J(function($,p,pub){
                     p.modChart.loadData(p.modChart.tagData);
                 });
                 //数据类型切换
-                p.modChart.$type = $('#ddlXdataType').bind('change.modChart',function(e){
-                    J.$win.trigger(J.ui.EVT.DataTypeChange,[p.modChart.$type.val()]);
+                $('#xdataTypes .xdata_type').bind('click.modChart',function(e){
+                    if(this.value==(p.modChart.dataType+'')){
+                        return;
+                    };
+                    J.$win.trigger(J.ui.EVT.DataTypeChange,[this.value]);
                 });
                 //滚动条
                 $('.xdata_rank,.xdata_mods').bind('scroll.modChart',function(e){

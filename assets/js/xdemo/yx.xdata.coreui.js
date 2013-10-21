@@ -62,14 +62,14 @@ J(function($,p,pub){
             <div class="data_pop_bd">
                 <div class="data_time">
                     <input id="xdataPop1Date1" class="xdata_date xdata_sdate1" type="date" /><span class="c_tx3">-</span><input id="xdataPop1Date2" class="xdata_date xdata_edate" type="date" />
-                    <select id="ddlXdataType" class="data_ddl">
-                        <option value="1" data-i18n="nav.a" selected="selected"></option>
-                        <option value="2" data-i18n="nav.b"></option>
-                        <option value="3" data-i18n="nav.c"></option>
-                    </select>
                     <button id="xdataRetweet2" class="data_btn" data-i18n="com.refresh">刷新</button>
                     <button id="xdataTag1" class="data_btn" data-i18n="chart2.btnSetVersion">设置版本点</button>
                     <a id="xdataLkTagList" class="data_btn" href="http://ecd.oa.com/xdata/timeline.html" target="_blank" data-i18n="chart2.btnModHis">版本历史</a>
+                    <div id="xdataTypes" class="data_time_col">
+                        <label><input class="xdata_type" type="radio" value="1" name="xdata_type" checked="checked"/><span data-i18n="nav.a">点击量</span></label>
+                        <label><input class="xdata_type" type="radio" value="2" name="xdata_type"/><span data-i18n="nav.b">下单量</span></label>
+                        <label><input class="xdata_type" type="radio" value="3" name="xdata_type"/><span data-i18n="nav.c">转化率</span></label>
+                    </div>
                 </div>
                 <div id="dataCrumbs" class="data_crumbs"></div>
                 <div class="data_pop_con">

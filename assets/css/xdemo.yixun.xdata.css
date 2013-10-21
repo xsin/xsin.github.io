@@ -194,15 +194,18 @@
 /*===== 时间切换 =====*/
 	.data_time{overflow:hidden; padding:15px;}
 		.data_time span,
+        .data_time label,
 		.data_time input,
-        .data_time select,
-		.data_time button{display:inline; float:left;}
+		.data_time button,
+        .data_time .data_btn,
+        .data_time_col{display:inline; float:left;}
 		.data_time input[type=date]{width:92px;}
 		.data_time input[type="date"]::-webkit-inner-spin-button{display:none;}
 		.data_time input[type="date"]::-webkit-clear-button{display:none;}
 		.data_time span{margin:0 5px;}
-		.data_time .data_btn{margin-left:6px; padding:2px 8px;}
-        .data_time .data_ddl{margin:0 0 0 6px;padding:3px 8px;}
+		.data_time .data_btn,.data_time_col{margin-left:6px; padding:2px 8px;}
+        .data_time_col label{margin-right: 6px;}
+        .data_time_col input[type="radio"]{margin-top: 3px;}
 
 
 /*===== 模块 =====*/
