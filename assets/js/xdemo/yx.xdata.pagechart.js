@@ -10,16 +10,16 @@ J(function($,p,pub){
         isLoading:false,
         hasAjaxError:false,
         $tip:null,
-        cacheKeyData:{},
-        cacheClickData:{},
         keyData:null,
         clickData:null,
         _init:function(){
             J.$win.bind(J.ui.EVT.UIReady,function(e){
                 p.keyChart.onXDataUIReady();
             }).bind(J.ui.EVT.DataTypeChange,function(e,t){
-                p.keyChart.dataType=(t=parseInt(t));
-                p.keyChart.render(t);
+                p.keyChart.dataType=parseInt(t);
+                p.keyChart.render(p.keyChart.dataType,true);
+            }).bind(J.ui.EVT.Open,function(e,t){//每次打开时刷新一次数据
+                p.keyChart.$retweet.trigger('click');
             });
         },
         onXDataUIReady:function(){
@@ -27,10 +27,7 @@ J(function($,p,pub){
             this.$tip = $('#xdataKeyChartTip');
             this.$tipBD=this.$tip.find('.xdata_keycharttip_bd');
             //刷新按钮
-            $('#xdataRetweet1').bind('click',function(e){
-                if(p.keyChart.isLoading){
-                    return;
-                };
+            this.$retweet = $('#xdataRetweet1').bind('click',function(e){
                 p.keyChart.loadData();
             });
         },
@@ -43,7 +40,7 @@ J(function($,p,pub){
                   enabled : false
                 },
                 chart: {
-                    type: 'column'
+                    type: 'line'
                 },
                 title: {
                     text: ' '
@@ -66,12 +63,7 @@ J(function($,p,pub){
                 series: [{
                     name: i18n.t('nav.a'),
                     data: niceData,
-                    zIndex: 1,
-                    marker: {
-                        fillColor: 'white',
-                        lineWidth: 2,
-                        lineColor: Highcharts.getOptions().colors[dataType-1]
-                    }
+                    zIndex: 1
                 }]
             };
             rawData.total.click_num=parseInt((rawData.total.click_num+'').replace(/,/gi,''));
@@ -140,8 +132,7 @@ J(function($,p,pub){
                 dates=[],
                 tempDate = null,
                 sdate = document.getElementById('xdataKeyChartDate1').value,
-                edate = document.getElementById('xdataKeyChartDate2').value,
-                cacheId = [me.dataType,sdate,edate].join('-');
+                edate = document.getElementById('xdataKeyChartDate2').value;
 
             this.dateRange = sdate+'-'+edate;
 
@@ -174,15 +165,6 @@ J(function($,p,pub){
             this.hasAjaxError=false;
             this.clickData=null;
             this.keyData = null;
-            //从cache取数据
-            if(this.cacheKeyData[cacheId]){
-                this.keyData=this.cacheKeyData[cacheId];
-                this.clickData = this.cacheClickData[cacheId];
-                me.showTip(null);
-                me.isLoading=false;
-                me.render(me.dataType,true);
-                return;
-            }
             //从服务器取数据
             this.getDataByDates(dates,function(err,d1,d2){
                 me.isLoading=false;
@@ -191,8 +173,6 @@ J(function($,p,pub){
                     me.showTip(i18n.t('ajax.serverError')+err.toString());
                     return;
                 }
-                me.cacheKeyData[cacheId]=d1;
-                me.cacheClickData[cacheId]=d2;
                 me.keyData=d1;
                 me.clickData = d2;
                 me.showTip(null);
@@ -282,6 +262,10 @@ J(function($,p,pub){
             this.dateType = dateType;
             J.data.getKeyAndClickData(_params,cbk);
         }//getDataByDates
+    };
+
+    pub.isToday = function(){
+        return (p.keyChart.dateType==='today');
     };
 
 });

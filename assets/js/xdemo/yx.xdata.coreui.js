@@ -5,10 +5,6 @@ J(function($,p,pub){
         <div id="xdataWrap" class="xdata_wrap xdata_wrap_hide">
             <div id="xdataUI" class="data_ui">
                 <div id="xdataUIHD" class="data_ui_hd xdata_fixed">
-                    <div class="data_tips">
-                        <p data-i18n="tip.startTip">该页面存在多个隐藏模块，建议在查看数据前实时获取最新数据</p>
-                        <a id="xdataRetweet2" href="javascript:;" data-i18n="com.refresh">刷新</a>
-                    </div>
                     <div class="data_time">
                         <input class="xdata_date xdata_sdate" id="xdataKeyChartDate1" type="date"/><span class="c_tx3">-</span><input class="xdata_date xdata_edate" id="xdataKeyChartDate2" type="date" />
                         <button id="xdataRetweet1" class="data_btn" data-i18n="com.refresh">刷新</button>
@@ -32,6 +28,7 @@ J(function($,p,pub){
                     <div class="data_box">
                         <div class="data_box_hd">
                             <h3 data-i18n="chart2.title">模块趋势</h3>
+                            <a id="xdataShowChart3" href="javascript:;" class="data_btn data_btn_bg1 xdata_btn_chart3">模块占比</a>
                             <a id="xdataAddCTag" href="javascript:;" class="data_btn data_btn_bg1 xdata_btn_addmod">新增私有模块</a>
                             <a id="xdataCTagAdmin" target="_blank" href="http://oxox.io/tools/oxtree/" class="data_btn data_btn_bg1 xdata_btn_addmod">模块维护</a>
                             <img id="xdataLoading2" class="xdata_loading2" src="http://static.gtimg.com/icson/img/common/loading.gif"/>
@@ -65,6 +62,11 @@ J(function($,p,pub){
             <div class="data_pop_bd">
                 <div class="data_time">
                     <input id="xdataPop1Date1" class="xdata_date xdata_sdate1" type="date" /><span class="c_tx3">-</span><input id="xdataPop1Date2" class="xdata_date xdata_edate" type="date" />
+                    <select id="ddlXdataType" class="data_ddl">
+                        <option value="1" data-i18n="nav.a" selected="selected"></option>
+                        <option value="2" data-i18n="nav.b"></option>
+                        <option value="3" data-i18n="nav.c"></option>
+                    </select>
                     <button id="xdataRetweet2" class="data_btn" data-i18n="com.refresh">刷新</button>
                     <button id="xdataTag1" class="data_btn" data-i18n="chart2.btnSetVersion">设置版本点</button>
                     <a id="xdataLkTagList" class="data_btn" href="http://ecd.oa.com/xdata/timeline.html" target="_blank" data-i18n="chart2.btnModHis">版本历史</a>
@@ -84,8 +86,11 @@ J(function($,p,pub){
     var EVT={
         'UIReady':'onXDataUIReady',
         'Collapse':'onXDataCollapse',
+        'Open':'onXDataOpen',
         'ModChartReset':'onXDataModChartReset',
-        'UIScroll':'onXDataUIScroll'
+        'UIScroll':'onXDataUIScroll',
+        'DataTypeChange':'onXDataTypeChange',
+        'ModRankRendered':'onXDataModRankRendered'
     };
     pub.EVT=EVT;
     pub.maxDateRange = 30;
@@ -176,6 +181,7 @@ J(function($,p,pub){
         show:function(){
             this.$ui.removeClass('xdata_wrap_hide');
             this.visible=true;
+            J.$win.trigger(EVT.Open);
         },
         hide:function(){
             this.unfixedHD();

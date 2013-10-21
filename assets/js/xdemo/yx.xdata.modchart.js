@@ -12,7 +12,6 @@ J(function($,p,pub){
         hasAjaxError:false,
         data:[],
         tagData:null,
-        cache:{},//data cache
         dataType:1,
         chartOpts:null,
         jqXHR:null,
@@ -25,7 +24,7 @@ J(function($,p,pub){
         */}),
         _init:function(){
             J.$win.bind(J.ui.EVT.UIReady,function(e){
-                p.modChart.$d = $('#xdataPop1');
+                p.modChart.$d = $('#xdataPop1').oxi18n();
                 p.modChart.$chart = $('#xdataModChart');
                 p.modChart.$tip = $('#xdataModChartTip');
                 //make the popup draggable
@@ -37,12 +36,12 @@ J(function($,p,pub){
                     };
                     p.modChart.loadData(p.modChart.tagData);
                 });
+                //数据类型切换
+                p.modChart.$type = $('#ddlXdataType').bind('change.modChart',function(e){
+                    J.$win.trigger(J.ui.EVT.DataTypeChange,[p.modChart.$type.val()]);
+                });
                 //滚动条
                 $('.xdata_rank,.xdata_mods').bind('scroll.modChart',function(e){
-                    p.modChart.reset();
-                });
-                //排行榜的切换
-                $('#xdataRank .xdata_ranktype').bind('click.modChart',function(e){
                     p.modChart.reset();
                 });
                 $('#xdataPop1Close').bind('click',function(e){
@@ -51,7 +50,7 @@ J(function($,p,pub){
 
             }).bind(J.ui.EVT.DataTypeChange,function(e,t){
                 p.modChart.dataType=parseInt(t);
-                p.modChart.reset();
+                p.modChart.refresh();
             }).bind('resize.modChart',function(e){
                 //p.modChart.updatePosition();
             }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
@@ -77,13 +76,14 @@ J(function($,p,pub){
         },
         show:function(tagData,$trigger){
             this.tagData=tagData;
-            console.log(tagData);
             this.$trigger=$trigger;
             this.$d.addClass('data_pop1_on');
             this.isVisible=true;
-            //this.updatePosition();
-            var isNewMenu = this.renderMenu();
-            this.loadData(tagData);
+            this.renderMenu();
+            this.refresh();
+        },
+        refresh:function(){
+            this.loadData(this.tagData);
         },
         hide:function(){
             this.$d.removeClass('data_pop1_on');
@@ -123,8 +123,7 @@ J(function($,p,pub){
                 dates=[],
                 tempDate = null,
                 sdate = document.getElementById('xdataPop1Date1').value,
-                edate = document.getElementById('xdataPop1Date2').value,
-                cacheId = [me.dataType,tagData.ytags.join('-'),sdate,edate].join('-');
+                edate = document.getElementById('xdataPop1Date2').value;
 
             if(sdate==''||edate==''){
                 me.showTip(i18n.t('tip.beginDateEndDateRequired'));
@@ -155,24 +154,15 @@ J(function($,p,pub){
             this.hasAjaxError=false;
             
             this.data=[];
-            //从cache取数据
-            if(this.cache[cacheId]){
-                this.data=this.cache[cacheId];
-                me.showTip(null);
-                me.isLoading=false;
-                me.render(this.data);
-                return;
-            }
             //从服务器取数据
             //TODO:需要开发提供一个取多天数据的接口
-            this.getDataByDates(tagData.ytags,dates,function(err,d){
+            this.getDataByDates(tagData.ytagIds,dates,function(err,d){
                 me.isLoading=false;
                 me.jqXHR=null;
                 if(err){
                     me.showTip('<div class="xdata_error">'+i18n.t('ajax.serverError')+err.toString()+'</div>');
                     return;
                 }
-                me.cache[cacheId]=d;
                 me.showTip(null);
                 me.render(d);
             });
@@ -199,12 +189,12 @@ J(function($,p,pub){
 
                 //如果最后一天是当天，由于接口没有数据，我们用keyChart的当天数据
                 if( ( i==(len-1)) && this.endDateIsToday() ){
-                    dataByTime.y = dataType==3?parseFloat(this.tagData.val):parseInt(this.tagData.val);
+                    dataByTime.y = dataType==3?parseFloat(this.tagData.val0):parseInt(this.tagData.val0);
                 };
 
                 //每pv的比率
                 rateByPv = pv==0?0:dataByTime.y/pv;
-                rateByPv = parseFloat( (rateByPv*100).toFixed(2));
+                rateByPv = parseFloat( (rateByPv*100).toFixed(4));
 
                 dataByTime.rateByPv = rateByPv;
 
@@ -237,6 +227,7 @@ J(function($,p,pub){
                     y:niceData[i].rateByPv
                 });
             };
+            console.log(niceData2);
 
             var baseOpts = {
                 credits : {

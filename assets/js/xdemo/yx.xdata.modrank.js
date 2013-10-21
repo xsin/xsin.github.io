@@ -6,13 +6,14 @@ J(function($,p,pub){
         dataType:1,
         dataChangedAt:1,
         dataInited:false,
+        todayDataCache:{},
         tpl:J.heredoc(function(){/*
             <ul id="dataList{{pid}}" class="data_list_con">
                 {{#babies}}
-                <li id="xdataCTag{{id}}" data-pid="{{pid}}" class="data_list_item{{cl1}}" data-id="{{id}}" data-alias="{{alias}}" data-val="{{val}}">
+                <li id="xdataCTag{{id}}" data-pid="{{pid}}" class="data_list_item{{cl1}}" data-id="{{id}}" data-alias="{{alias}}" data-val="{{val}}" data-val0="{{val0}}">
                     {{#hasChildren}}
                         <i class="data_list_ico"></i>
-                        <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
+                        <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">{{alias}}<span>{{val}}</span><span>({{click_trans_rate}})</span></a>
                         <p class="data_list_control">
                             <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
                         </p>
@@ -20,7 +21,7 @@ J(function($,p,pub){
                     {{/hasChildren}}
                     {{^hasChildren}}
                     <i class="data_list_ico"></i>
-                    <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" class="data_list_lk">{{alias}}<span>{{val}}</span></a>
+                    <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">{{alias}}<span>{{val}}</span><span>({{click_trans_rate}})</span></a>
                     <p class="data_list_control">
                         <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
                     </p>
@@ -84,6 +85,7 @@ J(function($,p,pub){
         parseSingleItem:function(tempItem){
             tempItem.id = tempItem.isCustomYTag?tempItem.id:tempItem.ytagSelector;
             tempItem.ytags = [];
+            tempItem.ytagIds =[];
             tempItem.click_num=0;
             tempItem.order_num=0;
             tempItem.click_trans_rate=0;
@@ -111,6 +113,7 @@ J(function($,p,pub){
             }
             ytagLen = tempItem.ytags.length;
             for(var j=0;j<ytagLen;j++){
+                tempItem.ytagIds.push(tempItem.ytags[j].page_tag);
                 tempItem.click_num+=tempItem.ytags[j].click_num;
                 tempItem.order_num+=tempItem.ytags[j].order_num;
             };//for
@@ -127,6 +130,29 @@ J(function($,p,pub){
                     tempItem.val = tempItem.click_trans_rate;
                 break;
             };
+
+            return tempItem;
+        },
+        parseSingleItemToday:function(tempItem){
+            if(J.pagechart.isToday()){
+                this.todayDataCache[tempItem.id] = {
+                    click_num:tempItem.click_num,
+                    order_num:tempItem.order_num,
+                    click_trans_rate:tempItem.click_trans_rate
+                };
+            };
+            var todayItem = this.todayDataCache[tempItem.id];
+            switch(this.dataType){
+                case 1:
+                    tempItem.val0 = todayItem.click_num;
+                break;
+                case 2:
+                    tempItem.val0 = todayItem.order_num;
+                break;
+                case 3:
+                    tempItem.val0 = todayItem.click_trans_rate;
+                break;
+            };
             return tempItem;
         },
         parseData:function(items){//TODO:挪到J.data中去
@@ -140,6 +166,7 @@ J(function($,p,pub){
             for(var i=0;i<len;i++){
                 tempItem = items[i];
                 tempItem = this.parseSingleItem(tempItem);
+                tempItem = this.parseSingleItemToday(tempItem);
                 if(tempItem.isCustomYTag){
                     cItems.push(tempItem);
                 };
@@ -167,26 +194,12 @@ J(function($,p,pub){
             this.$d.prepend(html);
 
             if (!isPrepend) {
-                $('#xdataList1').oxi18n().oxtree({},true);
+                this.$d.oxi18n().oxtree({},true);
+                J.$win.trigger(J.ui.EVT.ModRankRendered);
             };
 
         },
-        onShowingSubMenus:function(id,cbk){
-            //获取子级模块数据
-            var rootTag = J.data.getDefaultCTagById(id);
-            if ( (!rootTag) || (!rootTag.babies) || (rootTag.babies.length===0) ) {
-                cbk('');
-                return;
-            };
-            this.parseTreeData(rootTag,id);
-            var html = J.toHtml(this.tplSub,{
-                    pid:id,
-                    babies:rootTag.babies
-                },{children:this.tplSub});
-            cbk(html);
-        },
         reload:function(){
-            this.resetSubMenus();
             this.getData(function(d){
                 p.modRank.data = d = p.modRank.parseData(d);
                 p.modRank.render(d);
@@ -196,9 +209,34 @@ J(function($,p,pub){
                 }
             });
         },
-        resetSubMenus:function(){
-            $('#xdataWrap').find('.data_list_more').remove();
+        getDataById:function(items,id){
+            id+='';
+            var item = null,
+                tempItem = null,
+                len = items.length;
+            for(var i=0;i<len;i++){
+                tempItem = items[i];
+                if( id == (tempItem.id+'') ){
+                    item = tempItem;
+                    break;
+                };
+                if(tempItem.babies&&tempItem.babies.length>0){
+                    item = this.getDataById(tempItem.babies,id);
+                };
+                if(item){
+                    break;
+                };
+            };
+            return item;
         }
+    };
+
+    pub.getData = function(){
+        return p.modRank.data;
+    };
+
+    pub.getDataById = function(id){
+        return p.modRank.getDataById(p.modRank.data||[],id);
     };
 
 });

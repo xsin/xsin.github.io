@@ -95,9 +95,13 @@ J(function($,p,pub){
     };
     //根据css选择器获取该选择器下ytag的数据
     pub.getClickDataBySelector = function(cssSelector){
-        var ids = [];
+        var ids = [],tempCache={},id;
         $(cssSelector).find('[ytag]').each(function(i,o){
-            ids.push(o.getAttribute('ytag'));
+            id = o.getAttribute('ytag');
+            if(!tempCache[id]){
+                ids.push(id);
+                tempCache[id]=true;
+            };
         });
         return pub.getClickDataByIds(ids);
     };
@@ -106,17 +110,28 @@ J(function($,p,pub){
         var len =0,
             obj = null,
             clickData = pub['CurrentClickData'].data,
-            items=[];
+            items=[],found=false;
         if( (len=ids.length)==0){
             return items;
         };
         for(var i=0;i<len;i++){
+            found = false;
             for(var c in clickData){
                 obj = clickData[c];
                 if(obj.page_tag===ids[i]){
                     items.push(obj);
+                    found = true;
                     break;
                 }
+            };
+            if(!found){
+                //ytag not found,we add a empty one!
+                items.push({
+                    click_num:0,
+                    click_trans_rate:0,
+                    order_num:0,
+                    page_tag:ids[i]
+                });
             };
         };//for
         return items;
@@ -169,6 +184,7 @@ J(function($,p,pub){
      */
     pub.getKeyAndClickData = function(_params,cbk){
         //获取当天主数据和点击数据
+        //TODO: cached by dateRange id
         pub['jqXHRKeyData']=pub.getKeyData(_params,function(err,data){
             //console.log(data.total.pv);
             data.status && ( data.total.pv = parseInt((data.total.pv+'').replace(/,/g,'')) );
@@ -342,6 +358,89 @@ J(function($,p,pub){
             jqXHR.abort();
         };
     };
+    /**
+     * ytag相关的数据
+     */
+    pub.ytag = (function(){
+
+        var p1 = {
+            getData:function(dataType,topCnt){
+                var rawData = J.data['CurrentClickData'],
+                    niceData = this.parseData(rawData,dataType,topCnt);
+                return niceData;
+            },
+            parseData:function(d,dataType,topCnt){
+                d = d.data;
+                var items = [];
+                for(var c in d){
+                    if(typeof(d[c])!=='object')
+                    {
+                        continue;
+                    }
+                    items.push(d[c]);
+                };//for
+                items=this.orderDataDescBy(items,dataType);
+                topCnt = topCnt||50;
+                var len = items.length,
+                    r = {empty:false,items:[]};
+                
+                len = len>=topCnt?topCnt:len;
+                if(len==0){
+                    r.empty=true;
+                    return r;
+                };
+                for(var i=0;i<len;i++){
+                    switch(dataType){
+                        case 1:
+                            items[i].val = items[i].click_num;
+                        break;
+                        case 2:
+                            items[i].val = items[i].order_num;
+                        break;
+                        case 3:
+                            items[i].val = items[i].click_trans_rate;
+                        break;
+                    };//switch
+                    r.items.push(items[i]);
+                };
+                return r;
+            },
+            /*降序排列数据*/
+            orderDataDescBy:function(arrData,dataType){
+                //new a copy of arrData
+                arrData = arrData.slice(0);
+                switch(dataType){
+                    case 1:
+                        /*do nothing，默认是按点击数排序的*/
+                    break;
+                    case 2:
+                        /*按下单量排序*/
+                        arrData.sort(function(a,b){
+                            return (b.order_num-a.order_num);
+                        });
+                    break;
+                    case 3:
+                        /*/按转化率排序
+                        //按下单量排序*/
+                        arrData.sort(function(a,b){
+                            return (parseFloat(b.click_trans_rate)-parseFloat(a.click_trans_rate));
+                        });
+                    break;
+                };
+                return arrData;
+            }
+        };
+
+        var pub1 = {
+            getTopList:function(dataType,topCnt){
+                return p1.getData(dataType,topCnt);
+            }
+        };
+
+        return pub1;
+
+    })();
+
     pub.EVT = {
         'InitKeyData':'onXDataInitKeyData',
         'InitClickData':'onXDataInitClickData',

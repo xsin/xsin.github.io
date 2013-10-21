@@ -1,8 +1,7 @@
 /* S YTAG */
 J(function($,p,pub){
     pub.id="ytag";
-    var cache = {},
-    $ytags;
+    var $ytags;
     p.main = {
         coverTpl:J.heredoc(function(){/*
             <div id="xdataCover{{id}}" class="xdata_tagcover">
@@ -12,46 +11,19 @@ J(function($,p,pub){
         */}),
         covers:{},
         $ytagTrigger:null,
+        activeNodeCssSelector:null,
         hideCovers:function(){
             for(var c in this.covers){
                 this.covers[c].addClass('xdata_hidden');
             }
         },
-        //将单个ytag或_ytag添加到缓存中
-        addToCache:function($o,attrName){
-            if($o.length===0){
-                return null;
-            }
-            attrName = attrName||'ytag';
-            var $parent = $o.parent(),
-                off = $o.offset(),
-                ytag = $o[0].getAttribute(attrName),
-                data = {
-                    id:(attrName+ytag),
-                    ytagAttr:attrName,
-                    ytagid:ytag,
-                    $dom:$o,
-                    title:$.trim($o[0].title),
-                    text:$.trim($o.text()),
-                    href:$o[0].href,
-                    selector:('[$="'+ytag+'"]').replace('$',attrName)
-                };
-            $.extend(data,J.data.getItemDimension($o)||{});
-            data.alias=data.text.length===0?(data.title.length===0?'[!!NoTitle!!]':data.title):data.text;
-            data.ytags=this.getRelatedYTags($o,ytag,attrName);
-            cache[data.id] = data;
-            return data;
-        },
-        //将自定义的单元添加到缓存
-        addCTagToCache:function(tagObj){
-            var ctag = tagObj.ytag,
+        parseData:function(tagObj){
+            var ctag = tagObj.ytagSelector,
                 isCustomTagWithCssSelector = (ctag.indexOf('#')!=-1 || ctag.indexOf('.')!=-1),
                 cssSelectors = [],
                 cssSelectors1 = [],
-                len=0,
-                ctagid = this.getCacheKey(tagObj);
+                len=0;
 
-            tagObj.cid = ctagid;
             tagObj.selector = "";
 
             if(isCustomTagWithCssSelector){
@@ -67,8 +39,6 @@ J(function($,p,pub){
                 tagObj.selector = cssSelectors1.join(',');
             }
             tagObj.$dom = $(tagObj.selector);/*NOTE:发现ytag用的很滥，同一个ytag用在多个链接上*/
-            tagObj.ytags=this.getRelatedYTags(tagObj.$dom,ctag,'ctag',isCustomTagWithCssSelector);
-            tagObj.isCustom=true;
             tagObj.top = (tagObj.$dom.offset()||{top:0}).top;
 
             /*获取每个元素的位置、高宽信息*/
@@ -76,62 +46,21 @@ J(function($,p,pub){
                 o = $(o);
                 o.data('xdatadim',J.data.getItemDimension(o));
             });
-
-            cache[tagObj.cid] = tagObj;
             return tagObj;
-        },
-        getRelatedYTags:function($tag,ytag,attrName,isCustomTagWithCssSelector){
-            var tags = [],
-                isCustomTag = (attrName==='ctag'),
-                tempCache={};
-            if (attrName==='_ytag') {
-                $tag.find('[ytag]').each(function(i1,o1){
-                    o1 = o1.getAttribute('ytag');
-                    if(!tempCache[o1]){
-                        tags.push(o1);
-                        tempCache[o1]=true;
-                    }
-                    
-                });
-                return tags;
-            };
-            if(!isCustomTag){
-                tags.push(ytag);
-                return tags;
-            };
-
-            if(!isCustomTagWithCssSelector){
-                tags = tags.concat(ytag.split('|'));
-                return tags;
-            };
-
-            $tag.find('[ytag]').each(function(i1,o1){
-                o1 = o1.getAttribute('ytag');
-                if(!tempCache[o1]){
-                    tags.push(o1);
-                    tempCache[o1]=true;
-                }
-            });
-            $tag.each(function(i1,o1){
-                o1 = o1.getAttribute('ytag');
-                if( o1 && (!tempCache[o1]) ){
-                    tags.push(o1);
-                    tempCache[o1]=true;
-                }
-            });
-            return tags;
         },
         _init:function(){
             J.$win.bind(J.ui.EVT.ModChartReset,function(e){
                 p.main.reset();
+            }).bind(J.ui.EVT.ModRankRendered,function(e){
+                if(p.main.activeNodeCssSelector){
+                    $(p.main.activeNodeCssSelector).trigger('click.ytag');
+                };
             });
-            $('[data-ytag]').live('click',function(e,d){
+            $('[data-ytag]').live('click.ytag',function(e,d){
                 p.main.onClickYTagTrigger(this,d);
             }).live('mouseenter.ytag',function(e,d){
                 p.main.onHoverIn(this,d);
             });
-            $ytags = $('[ytag]');
-            pub.rockAndRollAll();
         },
         reset:function(t){
             var clOn = 'data_list_lk_on';
@@ -142,7 +71,7 @@ J(function($,p,pub){
             this.hideCovers();
         },
         onHoverIn:function(elmTrigger,d){
-            var ytagData = J.ytag.get($(elmTrigger).data());
+            var ytagData = J.ytag.get(elmTrigger.getAttribute('data-id'));
 
             J.$body.stop().animate({
                 scrollTop:ytagData.top
@@ -153,16 +82,13 @@ J(function($,p,pub){
         onClickYTagTrigger:function(elmTrigger,d){
             var clOn = 'data_list_lk_on';
             if(this.$ytagTrigger){
-                if(this.$ytagTrigger[0].id===elmTrigger.id){
-                    return;
-                };
                 this.$ytagTrigger.removeClass(clOn);
             }
             this.$ytagTrigger = $(elmTrigger);
             this.$ytagTrigger.addClass(clOn);
+            this.activeNodeCssSelector = '#'+elmTrigger.id;
 
-            var ytagData = J.ytag.get(this.$ytagTrigger.data());
-            ytagData.val = elmTrigger.getAttribute('data-val');//.data() will cache the previous value
+            var ytagData = J.ytag.get(elmTrigger.getAttribute('data-id'));
             ytagData.treePath = pub.getTreePath();
             $.extend(ytagData,d||{});
 
@@ -177,8 +103,8 @@ J(function($,p,pub){
                 cssProps={
                     position:'fixed',
                     top:0,
-                    left:0,
-                    right:401,
+                    left:300,
+                    right:0,
                     width:'auto',
                     height:'auto',
                     color:'red'
@@ -199,24 +125,6 @@ J(function($,p,pub){
             this.covers[id] = $(coverId).css(cssProps);
         },
         showCover:function(tagData){
-            if(tagData.isCustom){
-                this.showCTagCover(tagData);
-                return;
-            };
-
-            var coverDim = {
-                top:tagData.top,
-                left:tagData.left,
-                width:(tagData.width>tagData.parentWidth?tagData.parentWidth:tagData.width),
-                height:(tagData.height>tagData.parentHeight?tagData.parentHeight:tagData.height),
-                isHidden:tagData.$dom.is(':hidden')
-            };
-            if(coverDim.isHidden){
-                pub.removeFromCache(tagData.id);
-            }
-            this._showCover(tagData.id,coverDim,true);
-        },
-        showCTagCover:function(tagData){
             this.hideCovers();
             if(tagData.$dom.length==0){
                 return;
@@ -227,34 +135,14 @@ J(function($,p,pub){
                 coverDim = o.data('xdatadim');
                 coverDim.isHidden = o.is(':hidden');
                 coverDim.alias = tagData.alias;
-                p.main._showCover(p.main.getCacheKey({
-                    id:(tagData.id+i),
-                    ytagattr:'ctag'
-                }),coverDim);
+                p.main._showCover((tagData.id+i),coverDim);
             });
-        },
-        getCacheKey:function(tagObj){
-            return (tagObj.ytagattr+tagObj.id);
         }
-    };
-    //caculate all ytag's data
-    pub.rockAndRollAll=function(){
-        $ytags.each(function(i,o){
-            p.main.addToCache($(o));
-        });
     };
     //get ytag's data
-    pub.get = function(tagCfg){
-        var isCTag = tagCfg.ytagattr==='ctag',
-            key = p.main.getCacheKey(tagCfg),
-            data = null;
-        tagCfg.ytag+='';
-        tagCfg.id+='';
-        tagCfg.val+='';
-        if( (data=cache[key]) ){
-            return data;
-        }
-        data = isCTag?p.main.addCTagToCache(tagCfg):p.main.addToCache($( ('[$="'+tagCfg.ytag+'"]').replace('$',tagCfg.ytagattr) ),tagCfg.ytagattr);
+    pub.get = function(id){
+        var data = J.modrank.getDataById(id);
+        data = p.main.parseData(data);
         return data;
     };
 
