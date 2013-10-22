@@ -7,13 +7,11 @@ J(function($,p,pub){
         isRender:false,
         instance:null,
         _init:function(){
-            J.$win.bind(J.ui.EVT.UIReady,function(e){
-                $('#xdataBtnHeatmap').bind('click',function(e){
-                    if(!p.heatmap.isRender){
-                        p.heatmap.render();
-                    }
-                    p.heatmap.toggleDisplay();
-                });
+            $('#xdataBtnHeatmap').bind('click',function(e){
+                if(!p.heatmap.isRender){
+                    p.heatmap.render();
+                }
+                p.heatmap.toggleDisplay();
             });
         },
         toggleDisplay:function(){

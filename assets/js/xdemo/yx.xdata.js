@@ -23,7 +23,6 @@ var cbk = function($s){
         $s.ready('biz',function(){
             i18n.addLng('zh-CN',yx_xdata_i18n['zh-CN']);
             J.init();
-            J.data.init();
         });
     });
 };

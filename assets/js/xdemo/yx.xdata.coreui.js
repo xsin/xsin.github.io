@@ -18,7 +18,7 @@ J(function($,p,pub){
                         </div>
                         <div class="data_box_bd">
                             <div id="xdataKeyCharts" class="data_total">
-                                <div id="xdataKeyChartTip" class="xdata_keycharttip xdata_hidden"><div class="xdata_keycharttip_bg"></div><div class="xdata_keycharttip_bd"></div></div>
+                                <div id="xdataKeyChartTip" class="xdata_keycharttip"><div class="xdata_keycharttip_bg"></div><div class="xdata_keycharttip_bd"></div></div>
                                 <div id="xdataKeyChart1" class="data_total_inner xdata_keychart xdata_visible"></div>
                                 <div id="xdataKeyChart2" class="data_total_inner xdata_keychart"></div>
                                 <div id="xdataKeyChart3" class="data_total_inner xdata_keychart"></div>
@@ -84,7 +84,6 @@ J(function($,p,pub){
     */});
 
     var EVT={
-        'UIReady':'onXDataUIReady',
         'Collapse':'onXDataCollapse',
         'Open':'onXDataOpen',
         'ModChartReset':'onXDataModChartReset',
@@ -97,40 +96,15 @@ J(function($,p,pub){
     //主UI框架
     p.main={
         visible:false,
-        $startUp:null,
         $ui:null,
-        tpl0:'<div id="xdataBootup" class="xdata_bootup xdata_show"><strong class="xdata_c1">C</strong>lick<strong class="xdata_c2">S</strong>tream<span class="xdata_loading"></span></div>',
+        tpl0:'',
         _init:function(){
-            J.$body.append(this.tpl0);
+            this.render();
             if(location.href.indexOf('xdata')>-1){
                 J.$body.addClass('xdata_admin');
             }
-            this.$startUp = $('#xdataBootup');
-            this._initEvts();
-        },
-        _initEvts:function(){
-            J.$win.bind(J.data.EVT.InitKeyData,function(e,err,data){
-                if(err){
-                    p.main.showError(err);
-                    return;
-                }
-            }).bind(J.data.EVT.InitClickData,function(e,err,data){
-                if (err) {
-                    p.main.showError(err);
-                    return;
-                };
-                //这里主数据和点击数据已经拿到
-                p.main.onDataReady();
-            });
-
-        },
-        onDataReady:function(){
-            this.$startUp.removeClass('xdata_show').onTransitioned(function(){
-                p.main.render();
-            });
         },
         render:function(){
-            this.$startUp.onTransitioned(false);
             J.$body.append(coreTpl);
             this.$ui = $('#xdataWrap').oxi18n();
             this.$uiCore = $('#xdataUI');
@@ -167,16 +141,12 @@ J(function($,p,pub){
                 J.$win.trigger(EVT.UIScroll,[p.main.$bd.scrollTop()]);
             });
 
-            J.$win.trigger(EVT.UIReady);
         },
         fixedHD:function(){
             this.$hd.addClass('xdata_fixed');
         },
         unfixedHD:function(){
             this.$hd.removeClass('xdata_fixed');
-        },
-        showError:function(txt){
-            this.$startUp.html('<span class="xdata_err">'+txt.toString()+'</span>');
         },
         show:function(){
             this.$ui.removeClass('xdata_wrap_hide');

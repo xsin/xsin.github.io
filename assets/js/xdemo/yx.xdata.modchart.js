@@ -23,35 +23,35 @@ J(function($,p,pub){
             </div>
         */}),
         _init:function(){
-            J.$win.bind(J.ui.EVT.UIReady,function(e){
-                p.modChart.$d = $('#xdataPop1').oxi18n();
-                p.modChart.$chart = $('#xdataModChart');
-                p.modChart.$tip = $('#xdataModChartTip');
-                //make the popup draggable
-                //new Draggabilly(p.modChart.$d[0]);
-                //刷新按钮
-                $('#xdataRetweet2').bind('click',function(e){
-                    if(p.modChart.isLoading){
-                        return;
-                    };
-                    p.modChart.loadData(p.modChart.tagData);
-                });
-                //数据类型切换
-                $('#xdataTypes .xdata_type').bind('click.modChart',function(e){
-                    if(this.value==(p.modChart.dataType+'')){
-                        return;
-                    };
-                    J.$win.trigger(J.ui.EVT.DataTypeChange,[this.value]);
-                });
-                //滚动条
-                $('.xdata_rank,.xdata_mods').bind('scroll.modChart',function(e){
-                    p.modChart.reset();
-                });
-                $('#xdataPop1Close').bind('click',function(e){
-                    p.modChart.reset();
-                });
 
-            }).bind(J.ui.EVT.DataTypeChange,function(e,t){
+            p.modChart.$d = $('#xdataPop1').oxi18n();
+            p.modChart.$chart = $('#xdataModChart');
+            p.modChart.$tip = $('#xdataModChartTip');
+            //make the popup draggable
+            //new Draggabilly(p.modChart.$d[0]);
+            //刷新按钮
+            $('#xdataRetweet2').bind('click',function(e){
+                if(p.modChart.isLoading){
+                    return;
+                };
+                p.modChart.loadData(p.modChart.tagData);
+            });
+            //数据类型切换
+            $('#xdataTypes .xdata_type').bind('click.modChart',function(e){
+                if(this.value==(p.modChart.dataType+'')){
+                    return;
+                };
+                J.$win.trigger(J.ui.EVT.DataTypeChange,[this.value]);
+            });
+            //滚动条
+            $('.xdata_rank,.xdata_mods').bind('scroll.modChart',function(e){
+                p.modChart.reset();
+            });
+            $('#xdataPop1Close').bind('click',function(e){
+                p.modChart.reset();
+            });
+
+            J.$win.bind(J.ui.EVT.DataTypeChange,function(e,t){
                 p.modChart.dataType=parseInt(t);
                 p.modChart.refresh();
             }).bind('resize.modChart',function(e){

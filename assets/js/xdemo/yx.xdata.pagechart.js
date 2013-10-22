@@ -13,22 +13,19 @@ J(function($,p,pub){
         keyData:null,
         clickData:null,
         _init:function(){
-            J.$win.bind(J.ui.EVT.UIReady,function(e){
-                p.keyChart.onXDataUIReady();
-            }).bind(J.ui.EVT.DataTypeChange,function(e,t){
-                p.keyChart.dataType=parseInt(t);
-                p.keyChart.render(p.keyChart.dataType,true);
-            }).bind(J.ui.EVT.Open,function(e,t){//每次打开时刷新一次数据
-                p.keyChart.$retweet.trigger('click');
-            });
-        },
-        onXDataUIReady:function(){
-            p.keyChart.render(1);
+
             this.$tip = $('#xdataKeyChartTip');
             this.$tipBD=this.$tip.find('.xdata_keycharttip_bd');
             //刷新按钮
             this.$retweet = $('#xdataRetweet1').bind('click',function(e){
                 p.keyChart.loadData();
+            });
+
+            J.$win.bind(J.ui.EVT.DataTypeChange,function(e,t){
+                p.keyChart.dataType=parseInt(t);
+                p.keyChart.render(p.keyChart.dataType,true);
+            }).bind(J.ui.EVT.Open,function(e,t){//每次打开时刷新一次数据
+                p.keyChart.$retweet.trigger('click');
             });
         },
         getChartOption:function(dataType){

@@ -31,10 +31,8 @@ J(function($,p,pub){
             </ul>
         */}),
         _init:function(){
-            J.$win.bind(J.ui.EVT.UIReady,function(e){
-                p.modRank.$d = $('#xdataList1');
-                p.modRank.reload();
-            }).bind(J.ui.EVT.DataTypeChange,function(e,t){
+            p.modRank.$d = $('#xdataList1');
+            J.$win.bind(J.ui.EVT.DataTypeChange,function(e,t){
                 p.modRank.dataType = parseInt(t);
                 p.modRank.reload();
             }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){

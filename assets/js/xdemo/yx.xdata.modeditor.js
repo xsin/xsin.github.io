@@ -13,38 +13,38 @@ J(function($,p,pub){
         isCustomYTag:false,
         tipTimer:null,
         _init:function(){
-            J.$win.bind(J.ui.EVT.UIReady,function(e){
-                p.modEditor.$d = $('#xdataPop2');
-                p.modEditor.$name = $('#xdataPop2Ipt1');
-                p.modEditor.$value = $('#xdataPop2Ipt2');
-                p.modEditor.$tip = $('#xdataPop2Tip');
-                //update
-                $('#xdataPop2Btn1').bind('click',function(e){
-                    var isOk = p.modEditor.save(this.rel);
-                    if(isOk){
-                        p.modEditor.hide();
-                    }
-                });
-                //delete
-                $('#xdataPop2Btn2').bind('click',function(e){
-                    p.modEditor.delete(this.rel);
+            
+            p.modEditor.$d = $('#xdataPop2');
+            p.modEditor.$name = $('#xdataPop2Ipt1');
+            p.modEditor.$value = $('#xdataPop2Ipt2');
+            p.modEditor.$tip = $('#xdataPop2Tip');
+            //update
+            $('#xdataPop2Btn1').bind('click',function(e){
+                var isOk = p.modEditor.save(this.rel);
+                if(isOk){
                     p.modEditor.hide();
-                });
+                }
+            });
+            //delete
+            $('#xdataPop2Btn2').bind('click',function(e){
+                p.modEditor.delete(this.rel);
+                p.modEditor.hide();
+            });
 
-                //add new
-                $('#xdataAddCTag').bind('click',function(e){
-                    p.modEditor.show({
-                        id:'',
-                        alias:'',
-                        ytagSelector:''
-                    },$(this),true);
-                });
+            //add new
+            $('#xdataAddCTag').bind('click',function(e){
+                p.modEditor.show({
+                    id:'',
+                    alias:'',
+                    ytagSelector:''
+                },$(this),true);
+            });
 
-                $('#xdataPop2Close').bind('click',function(e){
-                    p.modEditor.hide();
-                });
+            $('#xdataPop2Close').bind('click',function(e){
+                p.modEditor.hide();
+            });
 
-            }).bind(J.ui.EVT.Collapse,function(e){
+            J.$win.bind(J.ui.EVT.Collapse,function(e){
                 p.modEditor.hide();
             }).bind('resize.modEditor',function(e){
                 p.modEditor.updatePosition();

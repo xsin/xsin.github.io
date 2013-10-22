@@ -16,8 +16,6 @@
 .xdata_tagcover{position:absolute;z-index:9999;color:#fff;}
 .xdata_tagcover_bg{position: absolute;z-index: 1;top:0;left:0;right:0;bottom:0;background-color: #000;opacity: 0.6;}
 .xdata_tagcover_bd{position: relative;z-index: 2;padding:10px;text-align: center;}
-.xdata_bootup{background: #333;width:90px;border:1px solid #efefef;position: fixed;left:-105px;top: 0;padding:5px;z-index: 10000;opacity: 0.5;text-align: center;transition:all .4s ease-out;}
-    .xdata_bootup .xdata_loading{position: absolute;top:0;left:50%;margin-left: -10px;}
     .xdata_show{left:0;opacity: 1;}
 
 .xdata_wrap{position:fixed; z-index:10001; left:0; top:0; bottom:0; width:325px; transition:all .3s ease-out;}

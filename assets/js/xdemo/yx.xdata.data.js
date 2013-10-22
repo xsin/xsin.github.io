@@ -190,9 +190,7 @@ J(function($,p,pub){
             data.status && ( data.total.pv = parseInt((data.total.pv+'').replace(/,/g,'')) );
             pub["CurrentKeyData"] = data;
             pub['jqXHRKeyData'] = null;
-            if(_params===null){
-                J.$win.trigger(pub.EVT.InitKeyData,[err,data]);
-            }
+            J.$win.trigger(pub.EVT.KeyDataChange,[err,data]);
             if(err){
                 cbk&&cbk(err);
                 return;
@@ -200,11 +198,7 @@ J(function($,p,pub){
             pub['jqXHRClickData']=pub.getClickData(_params,function(err1,data1){
                 pub['CurrentClickData']=data1;
                 pub['jqXHRClickData']=null;
-                if(_params===null){
-                    J.$win.trigger(pub.EVT.InitClickData,[err1,data1]);
-                }else{
-                    J.$win.trigger(pub.EVT.ClickDataChange,[err1,data1]);
-                }
+                J.$win.trigger(pub.EVT.ClickDataChange,[err1,data1]);
                 if(err1){
                     cbk&&cbk(err1);
                     return;
@@ -442,8 +436,7 @@ J(function($,p,pub){
     })();
 
     pub.EVT = {
-        'InitKeyData':'onXDataInitKeyData',
-        'InitClickData':'onXDataInitClickData',
+        'KeyDataChange':'onXDataKeyDataChanged',
         'ClickDataChange':'onXDataClickDataChanged',
         'CTagUpdated':'onXDataCTagUpdated'
     };
