@@ -33,7 +33,7 @@ J(function($,p,pub){
         _init:function(){
             J.$win.bind(J.ui.EVT.DataTypeChangeForPage,function(e,t){
                 p.modRank.dataType = parseInt(t);
-                //TODO:这里不用每次都重新加载数据
+                //TODO这里每次都重新加载数据,是为了动态内容的更新
                 p.modRank.reload();
             }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
                 p.modRank.onCTagUpdated(opType,d);

@@ -21,6 +21,7 @@ J(function($,p,pub){
                             <table class="data_table">
                                 <tbody>
                                     <tr><th>PV</th><td><span id="xdataPV" class="data_pv"></span></td></tr>
+                                    <tr><th>UV</th><td><span id="xdataUV" class="data_pv"></span></td></tr>
                                     <tr><th data-i18n="nav.a">点击量</th><td><span id="xdataClickNum" class="data_cnum"></span></td></tr>
                                     <tr><th data-i18n="nav.b">下单量</th><td><span id="xdataOrderNum" class="data_onum"></span></td></tr>
                                     <tr><th data-i18n="nav.c">转化率</th><td><span id="xdataTransRate" class="data_transrate"></span></td></tr>
@@ -100,6 +101,7 @@ J(function($,p,pub){
         'Collapse':'onXDataCollapse',
         'Open':'onXDataOpen',
         'ModChartReset':'onXDataModChartReset',
+        'ModChartHidden':'onXDataModChartHidden',
         'UIScroll':'onXDataUIScroll',
         'UIReady':'onXDataUIReady',
         'DataTypeChange':'onXDataTypeChange',

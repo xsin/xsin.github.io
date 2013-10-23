@@ -40,6 +40,7 @@ J(function($,p,pub){
         render:function(dataType){
             var total = this.keyData.status?this.keyData.total:{};
             document.getElementById('xdataPV').innerHTML = total.pv||0;
+            document.getElementById('xdataUV').innerHTML = total.uv||'今天的UV要明天才能看哦';
             document.getElementById('xdataClickNum').innerHTML = total.click_num||0;
             document.getElementById('xdataOrderNum').innerHTML = total.order_num||0;
             document.getElementById('xdataTransRate').innerHTML = total.click_trans_rate||0;

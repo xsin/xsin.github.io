@@ -189,6 +189,7 @@ J(function($,p,pub){
             //console.log(data.total.pv);
             if(data.status){
                 data.total.pv = parseInt((data.total.pv+'').replace(/,/g,''));
+                data.total.uv = parseInt((data.total.uv+'').replace(/,/g,''));
                 data.total.click_num=parseInt((data.total.click_num+'').replace(/,/gi,''));
                 data.total.order_num=parseInt((data.total.order_num+'').replace(/,/gi,''));
                 data.total.click_trans_rate = data.total.click_num==0?0:(data.total.order_num*100/data.total.click_num).toFixed(2);

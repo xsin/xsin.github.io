@@ -109,6 +109,7 @@ J(function($,p,pub){
         hide:function(){
             this.$d.removeClass('data_pop1_on');
             this.isVisible=false;
+            J.$win.trigger(J.ui.EVT.ModChartHidden);
         },
         updatePosition:function(){
             if(!this.isVisible){
@@ -260,6 +261,10 @@ J(function($,p,pub){
                     y:niceData[i].rateByPv
                 });
             };
+
+            //是否显示pv比率曲线
+            var showPVChart = false;
+
             var baseOpts = {
                 credits : {
                   enabled : false
@@ -318,7 +323,11 @@ J(function($,p,pub){
                     },
                     dashStyle:'shortdot',
                     zIndex:1
-                },{
+                }]
+            };
+
+            if(showPVChart){
+                baseOpts.series.push({
                     name:'PV'+i18n.t('chart2.clickRate'),
                     data:niceData2,
                     yAxis:1,
@@ -327,20 +336,21 @@ J(function($,p,pub){
                     tooltip:{
                         valueSuffix:' %'
                     }
-                }]
+                });
             };
+
             switch(dataType){
                 case 1:
                 break;
                 case 2:
                     baseOpts.series[0].name=i18n.t('nav.b');
                     baseOpts.series[1].name=i18n.t('com.avg')+i18n.t('nav.b');
-                    baseOpts.series[2].name='PV'+i18n.t('chart2.orderRate');
+                    showPVChart && (baseOpts.series[2].name='PV'+i18n.t('chart2.orderRate'));
                 break;
                 case 3:
                     baseOpts.series[0].name=i18n.t('nav.c');
                     baseOpts.series[1].name=i18n.t('com.avg')+i18n.t('nav.c');
-                    baseOpts.series[2].name='PV'+i18n.t('nav.c');
+                    showPVChart && (baseOpts.series[2].name='PV'+i18n.t('nav.c'));
                 break;
             };//switch
             return baseOpts;

@@ -55,6 +55,8 @@ J(function($,p,pub){
                 if(p.main.activeNodeCssSelector){
                     $(p.main.activeNodeCssSelector).trigger('click.ytag');
                 };
+            }).bind(J.ui.EVT.ModChartHidden,function(e){
+                p.main.activeNodeCssSelector = null;
             });
             $('[data-ytag]').live('click.ytag',function(e,d){
                 p.main.onClickYTagTrigger(this,d);
