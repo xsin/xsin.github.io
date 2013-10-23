@@ -187,7 +187,13 @@ J(function($,p,pub){
         //TODO: cached by dateRange id
         pub['jqXHRKeyData']=pub.getKeyData(_params,function(err,data){
             //console.log(data.total.pv);
-            data.status && ( data.total.pv = parseInt((data.total.pv+'').replace(/,/g,'')) );
+            if(data.status){
+                data.total.pv = parseInt((data.total.pv+'').replace(/,/g,''));
+                data.total.click_num=parseInt((data.total.click_num+'').replace(/,/gi,''));
+                data.total.order_num=parseInt((data.total.order_num+'').replace(/,/gi,''));
+                data.total.click_trans_rate = data.total.click_num==0?0:(data.total.order_num*100/data.total.click_num).toFixed(2);
+                data.total.click_trans_rate = parseFloat(data.total.click_trans_rate);
+            };
             pub["CurrentKeyData"] = data;
             pub['jqXHRKeyData'] = null;
             J.$win.trigger(pub.EVT.KeyDataChange,[err,data]);

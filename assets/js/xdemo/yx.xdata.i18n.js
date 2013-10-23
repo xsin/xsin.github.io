@@ -17,7 +17,7 @@ yx_xdata_i18n['zh-CN'] = {
         "c":"\u8F6C\u5316\u7387"
     },
     chart1:{
-        "title":"\u9875\u9762\u8D8B\u52BF"
+        "title":"\u6574\u4F53\u6570\u636E"/*整体数据*/
     },
     chart2:{
         "title":"\u6A21\u5757\u8D8B\u52BF",

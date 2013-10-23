@@ -24,6 +24,20 @@ J(function($,p,pub){
         */}),
         _init:function(){
 
+            J.$win.bind(J.ui.EVT.DataTypeChange,function(e,t){
+                p.modChart.dataType=parseInt(t);
+                p.modChart.refresh();
+            }).bind('resize.modChart',function(e){
+                //p.modChart.updatePosition();
+            }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
+                p.modChart.onCTagUpdated(opType,d);
+            }).bind(J.ui.EVT.Collapse,function(e){
+                p.modChart.reset();
+            }).bind(J.ui.EVT.UIReady,function(e){
+                p.modChart.onCoreUIReady();
+            });
+        },
+        onCoreUIReady:function(){
             p.modChart.$d = $('#xdataPop1').oxi18n();
             p.modChart.$chart = $('#xdataModChart');
             p.modChart.$tip = $('#xdataModChartTip');
@@ -50,16 +64,9 @@ J(function($,p,pub){
             $('#xdataPop1Close').bind('click',function(e){
                 p.modChart.reset();
             });
-
-            J.$win.bind(J.ui.EVT.DataTypeChange,function(e,t){
-                p.modChart.dataType=parseInt(t);
-                p.modChart.refresh();
-            }).bind('resize.modChart',function(e){
-                //p.modChart.updatePosition();
-            }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
-                p.modChart.onCTagUpdated(opType,d);
-            }).bind(J.ui.EVT.Collapse,function(e){
-                p.modChart.reset();
+            //打版本
+            p.modChart.$btnTag = $('#xdataTag1').bind('click.modChart',function(e){
+                console.log('打版本',p.modChart.tagData.id);
             });
         },
         onCTagUpdated:function(opType,d){
@@ -79,11 +86,22 @@ J(function($,p,pub){
         },
         show:function(tagData,$trigger){
             this.tagData=tagData;
+            this.todayData = J.modrank.getTodayDataById(tagData.id);
             this.$trigger=$trigger;
             this.$d.addClass('data_pop1_on');
             this.isVisible=true;
             this.renderMenu();
             this.refresh();
+            //设置截屏信息
+            var tagInfo = J.ytag.get(this.tagData.id),
+                dimInfo = tagInfo.$dom.data('xdatadim');
+            this.$btnTag.attr('data-x',dimInfo.left)
+                .attr('data-y',dimInfo.top)
+                .attr('data-width',dimInfo.width)
+                .attr('data-height',dimInfo.height)
+                .attr('data-version_name',tagInfo.alias+'-'+new Date().getTime())
+                .attr('data-mod_name',tagInfo.selector)
+                .attr('data-version_mod_ytag','{}');//TODO 
         },
         refresh:function(){
             this.loadData(this.tagData);
@@ -175,7 +193,8 @@ J(function($,p,pub){
                 r =[],
                 dataByTime=null,
                 pv = J.data.CurrentKeyData.total.pv,
-                rateByPv = 0;
+                rateByPv = 0,
+                valToday = 0;
             for(var i=0;i<len;i++){
                 dataByTime={x:d[i].t,y:0,rateByPv:0};
                 switch(dataType){
@@ -192,7 +211,18 @@ J(function($,p,pub){
 
                 //如果最后一天是当天，由于接口没有数据，我们用keyChart的当天数据
                 if( ( i==(len-1)) && this.endDateIsToday() ){
-                    dataByTime.y = dataType==3?parseFloat(this.tagData.val0):parseInt(this.tagData.val0);
+                    switch(dataType){
+                        case 1:
+                            valToday = this.todayData.click_num||0;
+                        break;
+                        case 2:
+                            valToday = this.todayData.order_num||0;
+                        break;
+                        case 3:
+                            valToday = this.todayData.click_trans_rate||0;
+                        break;
+                    };
+                    dataByTime.y = dataType==3?parseFloat(valToday):parseInt(valToday);
                 };
 
                 //每pv的比率
@@ -230,8 +260,6 @@ J(function($,p,pub){
                     y:niceData[i].rateByPv
                 });
             };
-            console.log(niceData2);
-
             var baseOpts = {
                 credits : {
                   enabled : false

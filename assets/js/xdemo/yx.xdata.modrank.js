@@ -31,9 +31,9 @@ J(function($,p,pub){
             </ul>
         */}),
         _init:function(){
-            p.modRank.$d = $('#xdataList1');
-            J.$win.bind(J.ui.EVT.DataTypeChange,function(e,t){
+            J.$win.bind(J.ui.EVT.DataTypeChangeForPage,function(e,t){
                 p.modRank.dataType = parseInt(t);
+                //TODO:这里不用每次都重新加载数据
                 p.modRank.reload();
             }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
                 p.modRank.onCTagUpdated(opType,d);
@@ -42,6 +42,8 @@ J(function($,p,pub){
                 p.modRank.reload();
             }).bind(J.ui.EVT.UIScroll,function(e,sTop){
                 //J.$win.trigger('oxmenuPositionNeedUpdating');
+            }).bind(J.ui.EVT.UIReady,function(e){
+                p.modRank.$d = $('#xdataList1');
             });
         },
         onCTagUpdated:function(opType,d){
@@ -129,6 +131,8 @@ J(function($,p,pub){
                 break;
             };
             tempItem = this.parseSingleItemToday(tempItem);
+            //综合分值
+            tempItem.grade = xData.score.init(J.data.CurrentKeyData.total.click_trans_rate,tempItem.click_trans_rate,1).toFixed(1);
             return tempItem;
         },
         parseSingleItemToday:function(tempItem){
@@ -156,6 +160,7 @@ J(function($,p,pub){
         parseData:function(items){//TODO:挪到J.data中去
 
             items = items||[];
+            
 
             var len = items.length,
                 tempItem = null,
@@ -234,6 +239,10 @@ J(function($,p,pub){
 
     pub.getDataById = function(id){
         return p.modRank.getDataById(p.modRank.data||[],id);
+    };
+
+    pub.getTodayDataById = function(id){
+        return p.modRank.todayDataCache[id]||{};
     };
 
 });
