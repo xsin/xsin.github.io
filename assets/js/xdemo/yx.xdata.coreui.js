@@ -86,9 +86,9 @@ J(function($,p,pub){
                         <input id="xdataPop1Date1" class="xdata_date xdata_sdate1" type="date" /><span class="c_tx3">-</span><input id="xdataPop1Date2" class="xdata_date xdata_edate" type="date" />
                         <button id="xdataRetweet2" class="data_btn" data-i18n="com.refresh">刷新</button>
                         <div id="xdataTypes" class="data_time_col">
-                            <label><input class="xdata_type" type="radio" value="1" name="xdata_type" checked="checked"/><span data-i18n="nav.a">点击量</span></label>
-                            <label><input class="xdata_type" type="radio" value="2" name="xdata_type"/><span data-i18n="nav.b">下单量</span></label>
-                            <label><input class="xdata_type" type="radio" value="3" name="xdata_type"/><span data-i18n="nav.c">转化率</span></label>
+                            <label><input id="xdataTypeForMod1" class="xdata_type" type="radio" value="1" name="xdata_type" checked="checked"/><span data-i18n="nav.a">点击量</span></label>
+                            <label><input id="xdataTypeForMod2" class="xdata_type" type="radio" value="2" name="xdata_type"/><span data-i18n="nav.b">下单量</span></label>
+                            <label><input id="xdataTypeForMod3" class="xdata_type" type="radio" value="3" name="xdata_type"/><span data-i18n="nav.c">转化率</span></label>
                         </div>
                     </div>
                 </div>

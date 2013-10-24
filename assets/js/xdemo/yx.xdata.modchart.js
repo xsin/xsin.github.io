@@ -51,11 +51,14 @@ J(function($,p,pub){
                 p.modChart.loadData(p.modChart.tagData);
             });
             //数据类型切换
-            $('#xdataTypes .xdata_type').bind('click.modChart',function(e){
+            $('#xdataTypes .xdata_type').bind('click.modChart',function(e,noTriggerDataTypeEvent){
                 if(this.value==(p.modChart.dataType+'')){
                     return;
                 };
-                J.$win.trigger(J.ui.EVT.DataTypeChange,[this.value]);
+                if (!noTriggerDataTypeEvent) {
+                    J.$win.trigger(J.ui.EVT.DataTypeChange,[this.value]);
+                };
+                
             });
             //滚动条
             $('.xdata_rank,.xdata_mods').bind('scroll.modChart',function(e){
@@ -84,13 +87,21 @@ J(function($,p,pub){
             this.$trigger=null;
             J.$win.trigger(J.ui.EVT.ModChartReset);
         },
-        show:function(tagData,$trigger){
+        setDataType:function(t){
+            if(!t) return;
+            this.dataType = t;
+            $('#xdataTypeForMod'+t).trigger('click.modChart',[true]);
+        },
+        show:function(tagData,$trigger,dataTypeForPage){
             this.tagData=tagData;
             this.todayData = J.modrank.getTodayDataById(tagData.id);
             this.$trigger=$trigger;
             this.$d.addClass('data_pop1_on');
             this.isVisible=true;
             this.renderMenu();
+
+            this.setDataType(dataTypeForPage);
+
             this.refresh();
             //设置截屏信息
             var tagInfo = J.ytag.get(this.tagData.id),
@@ -303,6 +314,12 @@ J(function($,p,pub){
                     valueSuffix: ''
                 },
                 legend: {
+                    align:'center',
+                    verticalAlign:'top',
+                    itemStyle:{
+                        fontWeight:'bold',
+                        fontSize:'13px'
+                    }
                 },
                 series: [{
                     name: i18n.t('nav.a'),
@@ -428,8 +445,8 @@ J(function($,p,pub){
         }
     };
 
-    pub.show = function(tagData,$trigger){
-        p.modChart.show(tagData,$trigger);
+    pub.show = function(tagData,$trigger,dataType){
+        p.modChart.show(tagData,$trigger,dataType);
     };
 
     pub.isVisible = function(){

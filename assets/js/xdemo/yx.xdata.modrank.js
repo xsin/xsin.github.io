@@ -8,12 +8,12 @@ J(function($,p,pub){
         dataInited:false,
         todayDataCache:{},
         tpl:J.heredoc(function(){/*
-            <ul id="dataList{{pid}}" class="data_list_con">
+            <ul id="dataList{{id}}" class="data_list_con{{clListSub}}">
                 {{#babies}}
                 <li id="xdataCTag{{id}}" data-pid="{{pid}}" class="data_list_item{{cl1}}" data-id="{{id}}" data-alias="{{alias}}" data-val="{{val}}" data-val0="{{val0}}">
                     {{#hasChildren}}
                         <i class="data_list_ico"></i>
-                        <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">{{alias}}<span>{{val}}</span><span>({{click_trans_rate}})</span></a>
+                        <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">{{alias}}<span class="data_val">{{val}}</span></a>
                         <p class="data_list_control">
                             <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
                         </p>
@@ -21,7 +21,7 @@ J(function($,p,pub){
                     {{/hasChildren}}
                     {{^hasChildren}}
                     <i class="data_list_ico"></i>
-                    <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">{{alias}}<span>{{val}}</span><span>({{click_trans_rate}})</span></a>
+                    <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">{{alias}}<span class="data_val">{{val}}</span></a>
                     <p class="data_list_control">
                         <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
                     </p>
@@ -43,7 +43,9 @@ J(function($,p,pub){
             }).bind(J.ui.EVT.UIScroll,function(e,sTop){
                 //J.$win.trigger('oxmenuPositionNeedUpdating');
             }).bind(J.ui.EVT.UIReady,function(e){
-                p.modRank.$d = $('#xdataList1');
+                p.modRank.$d = $('#xdataList1').bind('mouseleave.modrank',function(e){
+                    J.ytag.hideCovers();
+                });
             });
         },
         onCTagUpdated:function(opType,d){
@@ -90,6 +92,7 @@ J(function($,p,pub){
             tempItem.order_num=0;
             tempItem.click_trans_rate=0;
             tempItem.cl1="";
+            tempItem.clListSub = "";
             tempItem.hasChildren = false;
             if(tempItem.isCustomYTag){
                 switch(tempItem.type){
@@ -109,6 +112,7 @@ J(function($,p,pub){
             //含子级模块
             if(tempItem.babies&&tempItem.babies.length>0){
                 tempItem.cl1+=' data_list_child';
+                tempItem.clListSub =tempItem.id=='0'?'':' data_list_con1';
                 tempItem.hasChildren = true;
             }
             ytagLen = tempItem.ytags.length;
@@ -175,6 +179,18 @@ J(function($,p,pub){
             };
             return cItems;
         },
+        sort:function(items,asc){
+            asc = asc || false;
+            items.sort(function(a,b){
+                return (asc?(a.val-b.val):(b.val-a.val));
+            });
+            var len = items.length;
+            for(var i=0;i<len;i++){
+                if(items[i].babies&&items[i].babies.length>0){
+                    this.sort(items[i].babies,asc);
+                };
+            };
+        },
         render:function(cItems,isPrepend){
             this.$d.find('.xdata_alert').remove();
             if(!isPrepend){
@@ -190,6 +206,9 @@ J(function($,p,pub){
                 isCustomYTag:true
             };
             this.parseTreeData(d,"-1");
+
+            //排序
+            this.sort(d.babies,false);
 
             var html = J.toHtml(this.tpl,d,{children:this.tpl});
 

@@ -12,6 +12,7 @@ J(function($,p,pub){
         covers:{},
         $ytagTrigger:null,
         activeNodeCssSelector:null,
+        dataType:1,
         hideCovers:function(){
             for(var c in this.covers){
                 this.covers[c].addClass('xdata_hidden');
@@ -57,6 +58,8 @@ J(function($,p,pub){
                 };
             }).bind(J.ui.EVT.ModChartHidden,function(e){
                 p.main.activeNodeCssSelector = null;
+            }).bind(J.ui.EVT.DataTypeChangeForPage,function(e,t){
+                p.main.dataType = parseInt(t);
             });
             $('[data-ytag]').live('click.ytag',function(e,d){
                 p.main.onClickYTagTrigger(this,d);
@@ -94,7 +97,7 @@ J(function($,p,pub){
             ytagData.treePath = pub.getTreePath();
             $.extend(ytagData,d||{});
 
-            J.modchart.show(ytagData,p.main.$ytagTrigger);
+            J.modchart.show(ytagData,p.main.$ytagTrigger,this.dataType);
         },
         _showCover:function(id,dim,hideOthers){
             if(hideOthers){
@@ -150,6 +153,10 @@ J(function($,p,pub){
 
     pub.reset = function(){
         p.main.reset();
+    };
+
+    pub.hideCovers = function(){
+        p.main.hideCovers();
     };
 
     pub.removeFromCache=function(id){
