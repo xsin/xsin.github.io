@@ -187,7 +187,7 @@ J(function($,p,pub){
         //TODO: cached by dateRange id
         pub['jqXHRKeyData']=pub.getKeyData(_params,function(err,data){
             //console.log(data.total.pv);
-            if(data.status){
+            if(data&&data.status){
                 data.total.pv = parseInt((data.total.pv+'').replace(/,/g,''));
                 data.total.uv = parseInt((data.total.uv+'').replace(/,/g,''));
                 data.total.click_num=parseInt((data.total.click_num+'').replace(/,/gi,''));
@@ -359,6 +359,33 @@ J(function($,p,pub){
             jqXHR.abort();
         };
     };
+
+    pub.getSafeCurrentKeyData = function(dataType){
+        var item = {
+            id:'-1',
+            click_num:0,
+            order_num:0,
+            click_trans_rate:0,
+            val:0
+        };
+
+        var total = (J.data.CurrentKeyData&&J.data.CurrentKeyData.status)?J.data.CurrentKeyData.total:item;
+        $.extend(item,total);
+
+        switch(dataType){
+            case 1:
+                item.val = item.click_num;
+            break;
+            case 2:
+                item.val = item.order_num;
+            break;
+            case 3:
+                item.val = item.click_trans_rate;
+            break;
+        };
+        return item;
+    };
+
     /**
      * ytag相关的数据
      */

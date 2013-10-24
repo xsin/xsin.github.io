@@ -13,7 +13,7 @@ J(function($,p,pub){
                 <li id="xdataCTag{{id}}" data-pid="{{pid}}" class="data_list_item{{cl1}}" data-id="{{id}}" data-alias="{{alias}}" data-val="{{val}}" data-val0="{{val0}}">
                     {{#hasChildren}}
                         <i class="data_list_ico"></i>
-                        <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">{{alias}}<span class="data_val">{{val}}</span></a>
+                        <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">{{alias}}<span class="data_val data_val0">{{val}}</span><span class="data_val data_val1">{{percent}}%</span></a>
                         <p class="data_list_control">
                             <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
                         </p>
@@ -21,7 +21,7 @@ J(function($,p,pub){
                     {{/hasChildren}}
                     {{^hasChildren}}
                     <i class="data_list_ico"></i>
-                    <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">{{alias}}<span class="data_val">{{val}}</span></a>
+                    <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">{{alias}}<span class="data_val data_val0">{{val}}</span><span class="data_val data_val1">{{percent}}%</span></a>
                     <p class="data_list_control">
                         <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
                     </p>
@@ -72,19 +72,19 @@ J(function($,p,pub){
                 cbk(items);
             });
         },
-        parseTreeData:function(ctag,pid){
-            ctag.pid = pid;
-            ctag = this.parseSingleItem(ctag);
+        parseTreeData:function(ctag,ptag){
+            ctag.pid = ptag.id;
+            ctag = this.parseSingleItem(ctag,ptag);
             if ( (!ctag.babies) || (ctag.babies.length===0) ) {
                 return ctag;
             };
             var len = ctag.babies.length;
             for(var i =0;i<len;i++){
-                this.parseTreeData(ctag.babies[i],ctag.id);
+                this.parseTreeData(ctag.babies[i],ctag);
             };//for
             return ctag;
         },
-        parseSingleItem:function(tempItem){
+        parseSingleItem:function(tempItem,parentItem){
             tempItem.id = tempItem.isCustomYTag?tempItem.id:tempItem.ytagSelector;
             tempItem.ytags = [];
             tempItem.ytagIds =[];
@@ -135,6 +135,16 @@ J(function($,p,pub){
                 break;
             };
             tempItem = this.parseSingleItemToday(tempItem);
+
+            //根节点
+            if(tempItem.isRoot){
+                delete parentItem['id'];
+                $.extend(tempItem,parentItem);
+            };
+
+            //比例
+            tempItem.percent = (parentItem.val==0?0:tempItem.val*100/parentItem.val).toFixed(2);
+
             //综合分值
             tempItem.grade = xData.score.init(J.data.CurrentKeyData.total.click_trans_rate,tempItem.click_trans_rate,1).toFixed(1);
             return tempItem;
@@ -169,10 +179,12 @@ J(function($,p,pub){
             var len = items.length,
                 tempItem = null,
                 cItems = [],
-                ytagLen = 0;
+                ytagLen = 0,
+                parentItem = J.data.getSafeCurrentKeyData(this.dataType);
+
             for(var i=0;i<len;i++){
                 tempItem = items[i];
-                tempItem = this.parseSingleItem(tempItem);
+                tempItem = this.parseSingleItem(tempItem,parentItem);
                 if(tempItem.isCustomYTag){
                     cItems.push(tempItem);
                 };
@@ -200,12 +212,15 @@ J(function($,p,pub){
                 this.$d.html('<div class="xdata_alert" data-i18n="ajax.noData">无数据</div>').oxi18n();
                 return;
             };
-            var d = {
+
+            var d0= J.data.getSafeCurrentKeyData(this.dataType),
+                d = {
                 id:'0',
                 babies:cItems,
-                isCustomYTag:true
+                isCustomYTag:true,
+                isRoot:true
             };
-            this.parseTreeData(d,"-1");
+            this.parseTreeData(d,d0);
 
             //排序
             this.sort(d.babies,false);

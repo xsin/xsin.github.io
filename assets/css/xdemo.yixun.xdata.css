@@ -167,7 +167,8 @@
 ===================================*/
 /*===== 布局 =====*/
 	.data_ui{position:absolute; left:0; top:0; bottom:0; width:300px; border-top:3px solid #386A8A; background-color:#F6F5EF; box-shadow:2px 2px 3px rgba(0,0,0,0.3);}
-		.data_ui_hd{position:absolute; z-index:2; left:0; top:0; width:100%; height:54px; border-bottom:1px dotted #CCC; background-color:#F2EDE0;}
+	.data_ui * {-webkit-user-select: none;}
+    	.data_ui_hd{position:absolute; z-index:2; left:0; top:0; width:100%; height:54px; border-bottom:1px dotted #CCC; background-color:#F2EDE0;}
 		.data_ui_bd{overflow:auto; position:absolute; left:0; top:54px; bottom:0; width:100%;}
 
 	.data_exhaled{position:absolute; left:300px; top:50%; margin-top:-30px; background-color:#F6F5EF; box-shadow:2px 2px 2px rgba(0,0,0,0.3);}
@@ -182,6 +183,9 @@
 		.xdata_wrap_hide .data_exhaled_btn{
 			background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAAbklEQVQ4jd3TMQ6CABBE0RcIR6AQOR1IYgUH0itZaAEexhgbCxIxgSU0TDnJ/1Nslt8kE93fpBPdBQfclojGyXFHFxWMJe1+JI/NJHNv/sYLWWS9QI8mCg84ReDjF66j8BNVBC7XwHDFOQqz8J0/q3QTM1KVhVQAAAAASUVORK5CYII=") no-repeat 50% 50%;
 		}
+
+    .data_ui_1.data_ui_dblclick .data_val0,.data_ui_2.data_ui_dblclick .data_val0{display: none!important;}
+    .data_ui_1.data_ui_dblclick .data_val1,.data_ui_2.data_ui_dblclick .data_val1{display: block!important;}
 
 /*===== 选项卡 =====*/
 	.data_tab{}
@@ -291,7 +295,8 @@
 
 					.data_list_lk{display:block; margin:0 0 8px 10px; padding:0 5px; line-height:24px;}
 					.data_list_lk .data_val{float:right;display:inline;margin-right:5px; color:hsla(33, 100%, 49%, 1);/*#FB8800*/;}
-					.data_list_lk:hover{text-decoration:none;}
+					.data_list_lk .data_val1{display: none;}
+                    .data_list_lk:hover{text-decoration:none;}
 
 					.data_list_control{position:absolute; right:15px; top:4px;display: none;}
 				.data_list_item:hover .data_list_control,.data_list_item_editing .data_list_control{display: block;}

@@ -3,7 +3,7 @@ J(function($,p,pub){
     pub.id='ui';
     var coreTpl = J.heredoc(function(){/*
         <div id="xdataWrap" class="xdata_wrap xdata_wrap_hide">
-            <div id="xdataUI" class="data_ui">
+            <div id="xdataUI" class="data_ui data_ui_1">
                 <div id="xdataUIHD" class="data_ui_hd xdata_fixed">
                     <div class="data_time">
                         <input class="xdata_date xdata_sdate" id="xdataKeyChartDate1" type="date"/><span class="c_tx3">-</span><input class="xdata_date xdata_edate" id="xdataKeyChartDate2" type="date" />
@@ -114,6 +114,7 @@ J(function($,p,pub){
     p.main={
         visible:false,
         $ui:null,
+        dataType:1,
         tpl0:'',
         _init:function(){
             this.render();
@@ -123,6 +124,12 @@ J(function($,p,pub){
             setTimeout(function(){
                 J.$win.trigger(EVT.UIReady);
             },100);
+
+            J.$win.bind(J.ui.EVT.DataTypeChangeForPage,function(e,t){
+                p.main.dataType = parseInt(t)||1;
+                p.main.$uiCore.removeClass('data_ui_1 data_ui_2 data_ui_3')
+                    .addClass('data_ui_'+t);
+            });
         },
         render:function(){
             J.$body.append(coreTpl);
@@ -159,6 +166,11 @@ J(function($,p,pub){
             //UICOre的scroll事件
             p.main.$bd.bind('scroll.modChart',function(e){
                 J.$win.trigger(EVT.UIScroll,[p.main.$bd.scrollTop()]);
+            });
+
+            //双击切换百分比
+            this.$uiCore.bind('dblclick',function(e){
+                p.main.$uiCore.toggleClass('data_ui_dblclick');
             });
 
         },
