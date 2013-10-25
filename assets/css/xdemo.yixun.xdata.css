@@ -205,18 +205,18 @@
 
 /*===== 切换 =====*/
 	.data_filter{margin-bottom:10px;}
-	.data_filter label{cursor:pointer; position:relative; display:inline-block; margin-right:5px; padding:0 8px;}
+	.data_filter label{cursor:pointer; position:relative; display:inline-block; margin-right:5px; padding:1px 8px;}
 	.data_filter label.on{border-color:#C9C186; background-color:#393F48; color:#FFF;}
 	.data_filter label.on:after{
 		overflow:hidden;
 		position:absolute;
 		left:50%;
-		bottom:-12px;
+		bottom:-10px;
 		content:" ";
-		margin-left:-5px;
+		margin-left:-4px;
 		width:0;
 		height:0;
-		border-width:5px;
+		border-width:4px;
 		border-color:#393F48 transparent transparent transparent;
 		border-style:solid dashed dashed dashed;
 		font-size:0;
@@ -233,7 +233,7 @@
 
 
 /*===== 时间切换 =====*/
-	.data_time{overflow:hidden; padding:15px;}
+	.data_time{overflow:hidden; padding:15px 0 15px 15px;}
 		.data_time span,
 		.data_time label,
 		.data_time input,
@@ -245,7 +245,7 @@
 		.data_time input[type="date"]::-webkit-inner-spin-button{display:none;}
 		.data_time input[type="date"]::-webkit-clear-button{display:none;}
 		.data_time span{margin:0 5px;}
-		.data_time .data_btn,.data_time_col,.data_action .data_btn{margin-left:4px; padding:2px 8px;}
+		.data_time .data_btn,.data_time_col,.data_action .data_btn{margin-left:6px; padding:2px 8px;}
 		.data_time_col label{margin-right: 6px;}
 		.data_time_col input[type="radio"]{margin-top: 3px;}
 
@@ -305,7 +305,7 @@
 					.data_list_lk{display:block; margin:0 0 8px 10px; padding:0 5px; line-height:24px;}
 					.data_list_lk .data_val{float:right;display:inline;margin-right:30px; color:hsla(33, 100%, 49%, 1);/*#FB8800*/;}
 					.data_list_lk .data_val1{display: none;}
-                    .data_list_lk:hover{text-decoration:none;}
+					.data_list_lk:hover{text-decoration:none;}
 
 					.data_list_control{position:absolute; right:5px; top:4px;display: none;}
 				.data_list_item:hover .data_list_control,.data_list_item_editing .data_list_control{display: block;}
