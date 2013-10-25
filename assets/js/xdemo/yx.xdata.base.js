@@ -431,6 +431,21 @@ J.colorLighten=function(hex, lum) {
     };
     return rgb;
 };
+/*
+ * format number to a more readable format
+ * @author feeling
+ */
+J.formatNum=function(strNum){
+    var newNum=strNum.split("").reverse().join("");
+    var newStr="";
+    var returnStr="";
+    for(var i=0; i<newNum.length; i+=3){
+        newStr += newNum.substr(i,3).split("").reverse().join("") + ",";
+    }
+
+    returnStr=newStr.split(",").reverse().splice(1).join(",");
+    return returnStr;
+};
 /* E J */
 Highcharts.setOptions({
     global: {

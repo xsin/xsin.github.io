@@ -236,7 +236,7 @@
 		.data_time input[type="date"]::-webkit-inner-spin-button{display:none;}
 		.data_time input[type="date"]::-webkit-clear-button{display:none;}
 		.data_time span{margin:0 5px;}
-		.data_time .data_btn,.data_time_col,.data_action .data_btn{margin-left:6px; padding:2px 8px;}
+		.data_time .data_btn,.data_time_col,.data_action .data_btn{margin-left:4px; padding:2px 8px;}
 		.data_time_col label{margin-right: 6px;}
 		.data_time_col input[type="radio"]{margin-top: 3px;}
 
