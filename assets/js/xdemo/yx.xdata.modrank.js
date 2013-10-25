@@ -13,7 +13,11 @@ J(function($,p,pub){
                 <li id="xdataCTag{{id}}" data-pid="{{pid}}" class="data_list_item{{cl1}}" data-id="{{id}}" data-alias="{{alias}}" data-val="{{val}}" data-val0="{{val0}}">
                     {{#hasChildren}}
                         <i class="data_list_ico"></i>
-                        <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">{{alias}}<span class="data_val data_val0">{{val1}}</span><span class="data_val data_val1">{{percent}}%</span></a>
+                        <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">
+                            {{alias}}
+                            <span class="data_val data_val1">{{val1}}</span>
+                            <span class="data_val data_val2">{{percent}}%</span>
+                        </a>
                         <p class="data_list_control">
                             <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
                         </p>
@@ -21,7 +25,11 @@ J(function($,p,pub){
                     {{/hasChildren}}
                     {{^hasChildren}}
                     <i class="data_list_ico"></i>
-                    <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">{{alias}}<span class="data_val data_val0">{{val1}}</span><span class="data_val data_val1">{{percent}}%</span></a>
+                    <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">
+                        {{alias}}
+                        <span class="data_val data_val1">{{val1}}</span>
+                        <span class="data_val data_val2">{{percent}}%</span>
+                    </a>
                     <p class="data_list_control">
                         <a href="javascript:;" class="data_btn_edit" rel="{{id}}" data-i18n="com.edit">编辑</a>
                     </p>
@@ -33,8 +41,7 @@ J(function($,p,pub){
         _init:function(){
             J.$win.bind(J.ui.EVT.DataTypeChangeForPage,function(e,t){
                 p.modRank.dataType = parseInt(t);
-                //TODO这里每次都重新加载数据,是为了动态内容的更新
-                p.modRank.reload();
+                p.modRank.reload(true);//排序不一样，所以要重新渲染下树形菜单
             }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
                 p.modRank.onCTagUpdated(opType,d);
             }).bind(J.data.EVT.ClickDataChange,function(e,d){
@@ -238,7 +245,11 @@ J(function($,p,pub){
             };
 
         },
-        reload:function(){
+        reload:function(fromCache){
+            if(fromCache){
+                this.render(this.data);
+                return;
+            };
             this.getData(function(d){
                 p.modRank.data = d = p.modRank.parseData(d);
                 p.modRank.render(d);

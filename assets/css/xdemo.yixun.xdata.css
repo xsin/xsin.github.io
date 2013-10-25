@@ -193,8 +193,8 @@
 			background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAAbklEQVQ4jd3TMQ6CABBE0RcIR6AQOR1IYgUH0itZaAEexhgbCxIxgSU0TDnJ/1Nslt8kE93fpBPdBQfclojGyXFHFxWMJe1+JI/NJHNv/sYLWWS9QI8mCg84ReDjF66j8BNVBC7XwHDFOQqz8J0/q3QTM1KVhVQAAAAASUVORK5CYII=") no-repeat 50% 50%;
 		}
 
-    .data_ui_1.data_ui_dblclick .data_val0,.data_ui_2.data_ui_dblclick .data_val0{display: none!important;}
-    .data_ui_1.data_ui_dblclick .data_val1,.data_ui_2.data_ui_dblclick .data_val1{display: block!important;}
+    .data_ui_1.data_ui_dblclick .data_val1,.data_ui_2.data_ui_dblclick .data_val1{display: none!important;}
+    .data_ui_1.data_ui_dblclick .data_val2,.data_ui_2.data_ui_dblclick .data_val2{display: block!important;}
 
 /*===== 选项卡 =====*/
 	.data_tab{}
@@ -304,8 +304,8 @@
 
 					.data_list_lk{display:block; margin:0 0 8px 10px; padding:0 5px; line-height:24px;}
 					.data_list_lk .data_val{float:right;display:inline;margin-right:30px; color:hsla(33, 100%, 49%, 1);/*#FB8800*/;}
-					.data_list_lk .data_val1{display: none;}
-					.data_list_lk:hover{text-decoration:none;}
+					.data_list_lk .data_val2{display: none;}
+                    .data_list_lk:hover{text-decoration:none;}
 
 					.data_list_control{position:absolute; right:5px; top:4px;display: none;}
 				.data_list_item:hover .data_list_control,.data_list_item_editing .data_list_control{display: block;}

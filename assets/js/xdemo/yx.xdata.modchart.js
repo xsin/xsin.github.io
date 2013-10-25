@@ -52,9 +52,7 @@ J(function($,p,pub){
             });
             //数据类型切换
             $('#xdataTypes .xdata_type').bind('click.modChart',function(e,noTriggerDataTypeEvent){
-                if(this.value==(p.modChart.dataType+'')){
-                    return;
-                };
+                if(this.value==(p.modChart.dataType+'')) return;
                 if (!noTriggerDataTypeEvent) {
                     J.$win.trigger(J.ui.EVT.DataTypeChange,[this.value]);
                 };
@@ -171,6 +169,7 @@ J(function($,p,pub){
                 edate=tempDate;
             };
             //结束日期往后推一天
+            //Note:new Date('2013-10-01')和new Date(2013,9,1)是不等的哦，前者多了8个小时
             edate.setDate(edate.getDate()+1);
             while(sdate<edate){
                 dates.push(new Date(sdate.getFullYear(),sdate.getMonth(),sdate.getDate()));
@@ -188,7 +187,7 @@ J(function($,p,pub){
             
             this.data=[];
             //从服务器取数据
-            //TODO:需要开发提供一个取多天数据的接口
+            //采用按maxDateCountPerTime天分割轮询查询的方式，提升查询性能
             this.getDataByDates(tagData.ytagIds,dates,function(err,d){
                 me.isLoading=false;
                 me.jqXHR=null;
@@ -198,7 +197,7 @@ J(function($,p,pub){
                 }
                 me.showTip(null);
                 me.render(d);
-            });
+            },8/*maxDateCountPerTime*/);
         },
         parseData:function(d,dataType){
             var len = d.length,
@@ -211,13 +210,13 @@ J(function($,p,pub){
                 dataByTime={x:d[i].t,y:0,rateByPv:0};
                 switch(dataType){
                     case 1:
-                        dataByTime.y=d[i].d.status===true?d[i].d.data.data[0].click_num:0;
+                        dataByTime.y=d[i].click_num;
                     break;
                     case 2:
-                        dataByTime.y=d[i].d.status===true?d[i].d.data.data[0].order_num:0;
+                        dataByTime.y=d[i].order_num;
                     break;
                     case 3://转化率
-                        dataByTime.y=d[i].d.status===true?parseFloat(d[i].d.data.data[0].click_trans_rate):0;
+                        dataByTime.y=parseFloat(d[i].click_trans_rate)||0;
                     break;
                 };//switch
 
@@ -406,35 +405,43 @@ J(function($,p,pub){
             this.tagData.treePath[this.tagData.treePath.length-1].clActive="";
             return true;
         },
-        getDataByDates:function(tagids,dates,cbk){
+        getDataByDates:function(tagids,dates,cbk,maxDateCountPerTime){
+            maxDateCountPerTime = maxDateCountPerTime ||5;
             if(dates.length==0){
                 cbk(null,this.data);
                 return;
             };
-            var date = dates.splice(0,1)[0],
-                timeStamp = date.getTime(),
-                sdate = J.data.getDateTimeStr(date),
-                edate = sdate,
+            var dates1 = dates.splice(0,maxDateCountPerTime),
+                sdate = J.data.getDateTimeStr(dates1[0]),
+                edate = J.data.getDateTimeStr(dates1[dates1.length-1]),
                 _params = {
                     date_type:'custom',
                     start_date:sdate,
                     end_date:edate,
                     page_tag_ids:tagids.join(',')
                 },
-                me = this;
+                me = this,
+                tempItem,tempDate;
 
             this.jqXHR=J.data.getRangeClickData(_params,function(err,d){
-                if(err){
+
+                err = err || ( (d&&d.status)?null:'DragClickData数据接口发生错误:'+ (d?d.errmsg:'') );
+
+                if (err){
                     me.hasAjaxError=true;
                     cbk(err);
                     return;
                 }
-                me.data.push({
-                    t:timeStamp,
-                    d:d
-                });
+
+                for(var c in d.data.data){
+                    tempItem = d.data.data[c];
+                    tempDate = new Date(c);
+                    tempDate = new Date(tempDate.getFullYear(),tempDate.getMonth(),tempDate.getDate());
+                    tempItem.t = tempDate.getTime();
+                    me.data.push(tempItem);
+                };
                 //递归
-                me.getDataByDates(tagids,dates,cbk);
+                me.getDataByDates(tagids,dates,cbk,maxDateCountPerTime);
             });
         },
         endDateIsToday:function(){

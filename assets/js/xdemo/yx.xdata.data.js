@@ -157,7 +157,8 @@ J(function($,p,pub){
             page_id:pid, 
             warehouse_id:wsid, 
             areasInfo:areaid,
-            page_tag_ids:"-1"
+            page_tag_ids:"-1",
+            sumByDate:1
         },_params||{});
         return clickStreamData('DragClickData',_params,cbk);
     };
