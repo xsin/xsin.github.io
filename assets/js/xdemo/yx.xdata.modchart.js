@@ -110,6 +110,10 @@ J(function($,p,pub){
                 .attr('data-height',dimInfo.height)
                 .attr('data-version_name',tagInfo.alias+'-'+new Date().getTime())
                 .attr('data-mod_name',tagInfo.selector)
+                .attr('data-version_mod_wsid',J.data.bizInfo.wsid)
+                .attr('data-version_mod_areaid',J.data.bizInfo.areaid)
+                .attr('data-version_mod_pageid',J.data.bizInfo.pid)
+                .attr('data-version_mod_id',tagInfo.id)
                 .attr('data-version_mod_ytag','{}');//TODO 
         },
         refresh:function(){
