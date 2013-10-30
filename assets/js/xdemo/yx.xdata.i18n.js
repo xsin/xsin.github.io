@@ -25,6 +25,7 @@ yx_xdata_i18n['zh-CN'] = {
         "btnAdminMod":"\u6A21\u5757\u7EF4\u62A4",
         "btnSetVersion":"\u8BBE\u7F6E\u7248\u672C\u70B9",
         "btnModHis":"\u7248\u672C\u5386\u53F2",
+        "btnModCompare":"\u6DFB\u52A0\u5BF9\u6BD4",
         "clickRate":"\u70B9\u51FB\u7387",
         "orderRate":"\u8BA2\u5355\u7387"
     },

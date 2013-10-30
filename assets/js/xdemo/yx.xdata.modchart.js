@@ -66,9 +66,7 @@ J(function($,p,pub){
                 p.modChart.reset();
             });
             //打版本
-            p.modChart.$btnTag = $('#xdataTag1').bind('click.modChart',function(e){
-                console.log('打版本',p.modChart.tagData.id);
-            });
+            p.modChart.$btnTag = $('#xdataTag1');
         },
         onCTagUpdated:function(opType,d){
             if(this.isVisible){
@@ -115,7 +113,6 @@ J(function($,p,pub){
                 ytagDimData.y = ytagDimData.top - dimInfo.top;
                 ytagData.push(ytagDimData);
             };
-
 
             this.$btnTag.attr('data-x',dimInfo.left)
                 .attr('data-y',dimInfo.top)
@@ -233,7 +230,14 @@ J(function($,p,pub){
                 rateByPv = 0,
                 valToday = 0;
             for(var i=0;i<len;i++){
-                dataByTime={x:d[i].t,y:0,rateByPv:0};
+                dataByTime={
+                    x:d[i].t,
+                    y:0,
+                    rateByPv:0,
+                    click_num:d[i].click_num,
+                    order_num:d[i].order_num,
+                    click_trans_rate:(parseFloat(d[i].click_trans_rate)||0)
+                };
                 switch(dataType){
                     case 1:
                         dataByTime.y=d[i].click_num;
@@ -242,7 +246,7 @@ J(function($,p,pub){
                         dataByTime.y=d[i].order_num;
                     break;
                     case 3://转化率
-                        dataByTime.y=parseFloat(d[i].click_trans_rate)||0;
+                        dataByTime.y=dataByTime.click_trans_rate;
                     break;
                 };//switch
 
@@ -260,6 +264,9 @@ J(function($,p,pub){
                         break;
                     };
                     dataByTime.y = dataType==3?parseFloat(valToday):parseInt(valToday);
+                    dataByTime.click_num = this.todayData.click_num;
+                    dataByTime.order_num = this.todayData.order_num;
+                    dataByTime.click_trans_rate = parseFloat(this.todayData.click_trans_rate)||0;
                 };
 
                 //每pv的比率
@@ -279,12 +286,24 @@ J(function($,p,pub){
             //平均线
             var niceData1 = [],
                 totalVal = 0,
+                totalValClickNum=0,
+                totalValOrderNum=0,
+                totalValCORate = 0,
                 avgVal = 0,
+                avgValClickNum = 0,
+                avgValOrderNum = 0,
+                avgValCORate = 0,
                 len = niceData.length;
             for(var i =0;i<len;i++){
                 totalVal+=niceData[i].y;
+                totalValClickNum+=niceData[i].click_num;
+                totalValOrderNum+=niceData[i].order_num;
+                totalValCORate+=niceData[i].click_trans_rate;
             };
             avgVal = parseFloat(len==0?0:(totalVal/len).toFixed(2));
+            avgValClickNum = parseFloat(len==0?0:(totalValClickNum/len).toFixed(2));
+            avgValOrderNum = parseFloat(len==0?0:(totalValOrderNum/len).toFixed(2));
+            avgValCORate = parseFloat(len==0?0:(totalValCORate/len).toFixed(2));
             for(var i =0;i<len;i++){
                 niceData1.push({x:niceData[i].x,y:avgVal});
             };
@@ -302,6 +321,11 @@ J(function($,p,pub){
             var showPVChart = false;
 
             var baseOpts = {
+                avgData:{
+                    avgClick:avgValClickNum,
+                    avgOrder:avgValOrderNum,
+                    avgCORate:avgValCORate
+                },
                 credits : {
                   enabled : false
                 },
@@ -402,6 +426,12 @@ J(function($,p,pub){
             var chartOpts = this.getChartOption(data,this.dataType),
                 seriesLen = chartOpts.series.length;
             this.chartOpts = chartOpts;
+
+            //更新设置版本点按钮的属性
+            this.$btnTag
+                .attr('data-version_mod_avg_click',chartOpts.avgData.avgClick)
+                .attr('data-version_mod_avg_order',chartOpts.avgData.avgOrder)
+                .attr('data-version_mod_avg_corate',chartOpts.avgData.avgCORate);
 
             if(!this.chart){
                 this.$chart.highcharts(chartOpts);
