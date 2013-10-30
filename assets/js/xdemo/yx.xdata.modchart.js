@@ -111,6 +111,8 @@ J(function($,p,pub){
             for(var i =0;i<len;i++){
                 ytagDimData = J.data.getItemDimension($('[ytag="$"]'.replace('$',tagInfo.ytags[i].page_tag)));
                 ytagDimData = $.extend(ytagDimData,tagInfo.ytags[i]);
+                ytagDimData.x = ytagDimData.left - dimInfo.left;
+                ytagDimData.y = ytagDimData.top - dimInfo.top;
                 ytagData.push(ytagDimData);
             };
 
@@ -126,6 +128,15 @@ J(function($,p,pub){
                 .attr('data-version_mod_pageid',J.data.bizInfo.pid)
                 .attr('data-version_mod_id',tagInfo.id)
                 .attr('data-version_mod_ytag',JSON.stringify(ytagData));
+
+            var lkHis = document.getElementById('xdataLkTagList');
+            lkHis.href=lkHis.getAttribute('data-href')+'?'+
+                $.param({
+                    wsid:J.data.bizInfo.wsid,
+                    areaid:J.data.bizInfo.areaid,
+                    pageid:J.data.bizInfo.pid,
+                    modid:tagInfo.id
+                });
         },
         refresh:function(){
             this.loadData(this.tagData);
