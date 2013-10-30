@@ -103,7 +103,18 @@ J(function($,p,pub){
             this.refresh();
             //设置截屏信息
             var tagInfo = J.ytag.get(this.tagData.id),
-                dimInfo = tagInfo.$dom.data('xdatadim');
+                dimInfo = tagInfo.$dom.data('xdatadim'),
+                ytagData = [],
+                len = tagInfo.ytags.length,
+                ytagDimData = null;
+
+            for(var i =0;i<len;i++){
+                ytagDimData = J.data.getItemDimension($('[ytag="$"]'.replace('$',tagInfo.ytags[i].page_tag)));
+                ytagDimData = $.extend(ytagDimData,tagInfo.ytags[i]);
+                ytagData.push(ytagDimData);
+            };
+
+
             this.$btnTag.attr('data-x',dimInfo.left)
                 .attr('data-y',dimInfo.top)
                 .attr('data-width',dimInfo.width)
@@ -114,7 +125,7 @@ J(function($,p,pub){
                 .attr('data-version_mod_areaid',J.data.bizInfo.areaid)
                 .attr('data-version_mod_pageid',J.data.bizInfo.pid)
                 .attr('data-version_mod_id',tagInfo.id)
-                .attr('data-version_mod_ytag','{}');//TODO 
+                .attr('data-version_mod_ytag',JSON.stringify(ytagData));
         },
         refresh:function(){
             this.loadData(this.tagData);
