@@ -165,7 +165,7 @@
 
 /* xdata capturing ui by hugo 
 ===================================*/
-.ox_pop{position: fixed; top: 200px; left: 50%; margin-left: -300px;}
+.ox_pop{position: fixed; top: 200px; left: 50%; margin-left: -300px;z-index:10009; }
         .ox_pop_img{ width: 200px; height: 200px; float: left; margin-right: 20px;}
         .ox_pop_img img{display: block; width: 200px; height: 200px;}
         .ox_pop_cnt{overflow: hidden;}
