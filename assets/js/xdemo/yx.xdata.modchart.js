@@ -10,7 +10,7 @@ J(function($,p,pub){
         isLoading:false,
         isVisible:false,
         hasAjaxError:false,
-        data:[],
+        data:{},
         tagData:null,
         dataType:1,
         chartOpts:null,
@@ -167,23 +167,50 @@ J(function($,p,pub){
             this.$chart.addClass('xdata_hidden');
         },
         loadData:function(tagData){
-
-            if(this.isLoading&&this.jqXHR&& this.jqXHR.readyState != 4){
-                this.jqXHR.abort();
-                this.isLoading=false;
-            }
-
-            var me = this,
-                dates=[],
-                tempDate = null,
+            var dates = [],
+                datesCache = {},
                 sdate = document.getElementById('xdataPop1Date1').value,
-                edate = document.getElementById('xdataPop1Date2').value;
+                edate = document.getElementById('xdataPop1Date2').value,
+                dateRange1 = this.validateDateRange(sdate,edate);
 
-            if(sdate==''||edate==''){
-                me.showTip(i18n.t('tip.beginDateEndDateRequired'));
+            p.modCompare.updateDateRange0(sdate,edate);
+
+            if (!dateRange1) {
                 return;
             };
+            dates.push(dateRange1);
+            datesCache[dateRange1.id] = true;
 
+            //获取对比时间段
+            var dates1 = p.modCompare.getDateRangeData(),
+                len = dates1.length;
+            for(var i=0;i<len;i++){
+                dateRange1 = this.validateDateRange(dates1[i].sdate,dates1[i].edate);
+                if( (!dateRange1) || datesCache[dateRange1.id] ){
+                    continue;
+                }
+                dates.push(dateRange1);
+            };
+            var me = this;
+            //reset data
+            this.data={};
+            this.loadDateRangeData(tagData,dates,function(err,d){
+
+                if(err){
+                    me.showTip(err);
+                    return;
+                };
+                me.render(d);
+            });
+
+        },
+        //校验开始时间和结束时间
+        validateDateRange:function(sdate,edate){
+            if(sdate==''||edate==''){
+                this.showTip(i18n.t('tip.beginDateEndDateRequired'));
+                return false;
+            };
+            var tempDate = null;
             sdate = new Date(sdate);
             edate = new Date(edate);
             if(sdate>edate){
@@ -194,13 +221,36 @@ J(function($,p,pub){
             //结束日期往后推一天
             //Note:new Date('2013-10-01')和new Date(2013,9,1)是不等的哦，前者多了8个小时
             edate.setDate(edate.getDate()+1);
+            return ({sdate:sdate,edate:edate,id:(sdate.getTime()+'-'+edate.getTime())});
+        },
+        loadDateRangeData:function(tagData,dateRanges,cbk){
+
+            if(dateRanges.length===0){
+                cbk(null,this.data);
+                return;
+            };
+
+            var dateRangeObj = dateRanges.splice(0,1)[0];
+
+            if(this.isLoading&&this.jqXHR&& this.jqXHR.readyState != 4){
+                this.jqXHR.abort();
+                this.isLoading=false;
+            }
+
+            var me = this,
+                sdate = dateRangeObj.sdate,
+                edate = dateRangeObj.edate,
+                dateKey = dateRangeObj.id,
+                dates=[];
+
             while(sdate<edate){
                 dates.push(new Date(sdate.getFullYear(),sdate.getMonth(),sdate.getDate()));
                 sdate.setDate(sdate.getDate()+1);
             };//while
 
             if(dates.length>J.ui.maxDateRange){
-                me.showTip(i18n.t('tip.dateRangeOvertop').replace('$',J.ui.maxDateRange));
+                //me.showTip(i18n.t('tip.dateRangeOvertop').replace('$',J.ui.maxDateRange));
+                cbk(i18n.t('tip.dateRangeOvertop').replace('$',J.ui.maxDateRange));
                 return;
             }
 
@@ -208,21 +258,22 @@ J(function($,p,pub){
             this.isLoading=true;
             this.hasAjaxError=false;
             
-            this.data=[];
+            this.data[dateKey]=[];
             //从服务器取数据
             //采用按maxDateCountPerTime天分割轮询查询的方式，提升查询性能
-            this.getDataByDates(tagData.ytagIds,dates,function(err,d){
+            this.getDataByDates(tagData.ytagIds,dates,dateKey,function(err,d){
                 me.isLoading=false;
                 me.jqXHR=null;
                 if(err){
-                    me.showTip('<div class="xdata_error">'+i18n.t('ajax.serverError')+err.toString()+'</div>');
+                    cbk(i18n.t('ajax.serverError')+err.toString());
+                    //me.showTip('<div class="xdata_error">'+i18n.t('ajax.serverError')+err.toString()+'</div>');
                     return;
                 }
                 me.showTip(null);
-                me.render(d);
+                me.loadDateRangeData(tagData,dateRanges,cbk);
             },8/*maxDateCountPerTime*/);
         },
-        parseData:function(d,dataType){
+        parseData:function(d,dateKey,dataType){
             var len = d.length,
                 r =[],
                 dataByTime=null,
@@ -251,7 +302,7 @@ J(function($,p,pub){
                 };//switch
 
                 //如果最后一天是当天，由于接口没有数据，我们用keyChart的当天数据
-                if( ( i==(len-1)) && this.endDateIsToday() ){
+                if( ( i==(len-1)) && this.endDateIsToday(dateKey) ){
                     switch(dataType){
                         case 1:
                             valToday = this.todayData.click_num||0;
@@ -279,12 +330,11 @@ J(function($,p,pub){
             };
             return r;
         },
-        getChartOption:function(rawData,dataType){
-            dataType = parseInt(dataType);
-            var niceData = this.parseData(rawData,dataType);
-
-            //平均线
-            var niceData1 = [],
+        getChartSerie:function(rawData,dateKey,dataType){
+            var niceData = this.parseData(rawData,dateKey,dataType),
+                len = niceData.length,
+                serieSubTitle = rawData[0].s_date+'~'+( rawData[len-1].s_date||J.data.getDateTimeStr(new Date(),{len:10}) ),
+                niceData1 = [],//平均线
                 totalVal = 0,
                 totalValClickNum=0,
                 totalValOrderNum=0,
@@ -317,15 +367,80 @@ J(function($,p,pub){
                 });
             };
 
+            var series = [{
+                    name: i18n.t('nav.a')+serieSubTitle,
+                    data: niceData,
+                    yAxis:0,
+                    zIndex: 1,
+                    marker: {
+                        lineWidth: 2
+                    }
+                },{
+                    name:i18n.t('com.avg')+i18n.t('nav.a')+serieSubTitle,
+                    data:niceData1,
+                    yAxis:0,
+                    type:'spline',
+                    marker:{
+                        enabled:false
+                    },
+                    dashStyle:'shortdot',
+                    zIndex:1
+                }];
+
             //是否显示pv比率曲线
             var showPVChart = false;
+            if(showPVChart){
+                series.push({
+                    name:'PV'+i18n.t('chart2.clickRate')+serieSubTitle,
+                    data:niceData2,
+                    yAxis:1,
+                    type:'spline',
+                    zIndex:1,
+                    tooltip:{
+                        valueSuffix:' %'
+                    }
+                });
+            };
 
-            var baseOpts = {
+            switch(dataType){
+                case 1:
+                break;
+                case 2:
+                    series[0].name=i18n.t('nav.b')+serieSubTitle;
+                    series[1].name=i18n.t('com.avg')+i18n.t('nav.b')+serieSubTitle;
+                    showPVChart && (series[2].name='PV'+i18n.t('chart2.orderRate')+serieSubTitle);
+                break;
+                case 3:
+                    series[0].name=i18n.t('nav.c')+serieSubTitle;
+                    series[1].name=i18n.t('com.avg')+i18n.t('nav.c')+serieSubTitle;
+                    showPVChart && (series[2].name='PV'+i18n.t('nav.c')+serieSubTitle);
+                break;
+            };//switch
+
+            return ({
+                serieData:series,
                 avgData:{
                     avgClick:avgValClickNum,
                     avgOrder:avgValOrderNum,
                     avgCORate:avgValCORate
-                },
+                }
+            });
+
+        },
+        getChartOption:function(rawData,dataType){
+            dataType = parseInt(dataType);
+
+            var series = [],
+                avgData = [];
+
+            for(var c in rawData){
+                c = this.getChartSerie(rawData[c],c,dataType);
+                series = series.concat(c.serieData);
+                avgData.push(c.avgData);
+            };
+
+            var baseOpts = {
+                avgData:avgData[0],
                 credits : {
                   enabled : false
                 },
@@ -363,6 +478,7 @@ J(function($,p,pub){
                     valueSuffix: ''
                 },
                 legend: {
+                    enabled:false,
                     align:'center',
                     verticalAlign:'top',
                     itemStyle:{
@@ -370,58 +486,12 @@ J(function($,p,pub){
                         fontSize:'13px'
                     }
                 },
-                series: [{
-                    name: i18n.t('nav.a'),
-                    data: niceData,
-                    yAxis:0,
-                    zIndex: 1,
-                    marker: {
-                        lineWidth: 2,
-                        lineColor: Highcharts.getOptions().colors[dataType-1]
-                    }
-                },{
-                    name:i18n.t('com.avg')+i18n.t('nav.a'),
-                    data:niceData1,
-                    yAxis:0,
-                    type:'spline',
-                    marker:{
-                        enabled:false
-                    },
-                    dashStyle:'shortdot',
-                    zIndex:1
-                }]
+                series: series
             };
-
-            if(showPVChart){
-                baseOpts.series.push({
-                    name:'PV'+i18n.t('chart2.clickRate'),
-                    data:niceData2,
-                    yAxis:1,
-                    type:'spline',
-                    zIndex:1,
-                    tooltip:{
-                        valueSuffix:' %'
-                    }
-                });
-            };
-
-            switch(dataType){
-                case 1:
-                break;
-                case 2:
-                    baseOpts.series[0].name=i18n.t('nav.b');
-                    baseOpts.series[1].name=i18n.t('com.avg')+i18n.t('nav.b');
-                    showPVChart && (baseOpts.series[2].name='PV'+i18n.t('chart2.orderRate'));
-                break;
-                case 3:
-                    baseOpts.series[0].name=i18n.t('nav.c');
-                    baseOpts.series[1].name=i18n.t('com.avg')+i18n.t('nav.c');
-                    showPVChart && (baseOpts.series[2].name='PV'+i18n.t('nav.c'));
-                break;
-            };//switch
             return baseOpts;
         },
         render:function(data){
+
             //this.$chart.find('.xdata_loading1').remove();
             var chartOpts = this.getChartOption(data,this.dataType),
                 seriesLen = chartOpts.series.length;
@@ -438,9 +508,15 @@ J(function($,p,pub){
                 this.chart=this.$chart.highcharts();
                 return;
             };
-            for(var i =0;i<seriesLen;i++){
-                this.chart.series[i].update(chartOpts.series[i]);
+
+            while(this.chart.series.length>0){
+                this.chart.series[0].remove(false);
             };
+
+            for(var i =0;i<seriesLen;i++){
+                this.chart.addSeries(chartOpts.series[i],false);
+            };
+            this.chart.redraw();
         },
         renderMenu:function(){
             if(this.tagData.norender){
@@ -461,10 +537,10 @@ J(function($,p,pub){
             this.tagData.treePath[this.tagData.treePath.length-1].clActive="";
             return true;
         },
-        getDataByDates:function(tagids,dates,cbk,maxDateCountPerTime){
+        getDataByDates:function(tagids,dates,dateKey,cbk,maxDateCountPerTime){
             maxDateCountPerTime = maxDateCountPerTime ||5;
             if(dates.length==0){
-                cbk(null,this.data);
+                cbk(null,this.data[dateKey]);
                 return;
             };
             var dates1 = dates.splice(0,maxDateCountPerTime),
@@ -494,19 +570,126 @@ J(function($,p,pub){
                     tempDate = new Date(c);
                     tempDate = new Date(tempDate.getFullYear(),tempDate.getMonth(),tempDate.getDate());
                     tempItem.t = tempDate.getTime();
-                    me.data.push(tempItem);
+                    me.data[dateKey].push(tempItem);
                 };
                 //递归
-                me.getDataByDates(tagids,dates,cbk,maxDateCountPerTime);
+                me.getDataByDates(tagids,dates,dateKey,cbk,maxDateCountPerTime);
             });
         },
-        endDateIsToday:function(){
-            var edateStr = document.getElementById('xdataPop1Date2').value,
-                todayStr = J.data.getDateTimeStr(new Date());
-            var is = todayStr.indexOf(edateStr)!==-1;
+        endDateIsToday:function(dateKey){
+            //请参考validateDateRange
+            var today = new Date(J.data.getDateTimeStr(new Date(),{len:10})),
+                todayStr;
+                
+            today.setDate(today.getDate()+1);
+                //today0 = new Date(today.getFullYear(),today.getMonth(),today.getDate()),
+            todayStr = today.getTime()+'';
+            var is = dateKey.indexOf(todayStr)!==-1;
             return is;
         }
     };
+
+    //对比模块
+    p.modCompare = {
+        timerAutoHide:null,
+        tplDateRange:J.heredoc(function(){/*
+            <li class="data_compare_item">
+                <div class="data_time1 clearfix">
+                    <div class="data_time_col">
+                        <input class="xdata_date xdata_sdate" max={{max}} value={{val1}} type="date" data-datediff="-14"/>
+                    </div>
+                    <div class="data_time_col">
+                        <span class="c_tx3">-</span>
+                    </div>
+                    <div class="data_time_col">
+                        <input class="xdata_date xdata_edate" max={{max}} value={{val2}} type="date" data-datediff="-7"/>
+                    </div>
+                    <div class="data_time_col">
+                        <i class="data_ico data_ico_add">+</i>
+                        <i class="data_ico data_ico_minus">-</i>
+                    </div>
+                </div>
+            </li>
+        */}),
+        _init:function(){
+            this.$dom = $('#xdataCompare');
+            this.$list = $('#xdataCompareList');
+            $('#xdataModCompare').hover(function(e){
+                p.modCompare.resetAutoHide();
+                p.modCompare.show();
+            },function(e){
+                p.modCompare.autoHide();
+            });
+            this.$dom.hover(function(e){
+                p.modCompare.resetAutoHide();
+            },function(e){
+                p.modCompare.autoHide();
+            });
+
+            $('.data_ico_add').live('click',function(e){
+                p.modCompare.addDateRangeUI();
+            });
+
+            $('.data_ico_minus').live('click',function(e){
+                $(this).parents('li').remove();
+                p.modCompare.assertLastItem();
+            });
+
+            $('#btnBeginModCompare').bind('click',function(e){
+                p.modChart.refresh();
+            });
+
+            J.$win.bind(J.ui.EVT.ModChartHidden,function(e){
+                p.modCompare.reset();
+            });
+
+        },
+        updateDateRange0:function(sdate,edate){
+            document.getElementById('iptCompareSDate0').value = sdate;
+            document.getElementById('iptCompareEDate0').value = edate;
+        },
+        assertLastItem:function(){
+            if(this.$list.find('li').length==1){
+                this.$list.addClass('data_comparelist1');
+            }
+        },
+        addDateRangeUI:function(){
+            this.$list.append(J.toHtml(this.tplDateRange,{
+                max:J.data.getDateTimeStr(new Date(),{len:10}),
+                val1:J.data.getDateTimeStr(new Date(),{len:10,dayDiff:-14}),
+                val2:J.data.getDateTimeStr(new Date(),{len:10,dayDiff:-7})
+            })).removeClass('data_comparelist1');
+        },
+        getDateRangeData:function(){
+            var d = [];
+            this.$list.find('li').each(function(i,o){
+                o  = $(o);
+                d.push({
+                    sdate:o.find('.xdata_sdate').val(),
+                    edate:o.find('.xdata_edate').val()
+                });
+            });
+            return d;
+        },
+        autoHide:function(){
+            this.timerAutoHide = setTimeout(function(){
+                p.modCompare.hide();
+            },200);
+        },
+        resetAutoHide:function(){
+            clearTimeout(this.timerAutoHide);
+        },
+        hide:function(){
+            this.$dom.addClass('xdata_hidden');
+        },
+        show:function(){
+            this.$dom.removeClass('xdata_hidden');
+        },
+        reset:function(){
+            this.$list.find('.data_compare_item').remove();
+        }
+    };
+
 
     pub.show = function(tagData,$trigger,dataType){
         p.modChart.show(tagData,$trigger,dataType);

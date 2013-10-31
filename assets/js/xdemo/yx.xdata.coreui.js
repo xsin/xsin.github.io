@@ -71,9 +71,33 @@ J(function($,p,pub){
         <div id="xdataPop1" class="data_pop data_pop1">
             <div class="data_pop_bd">
                 <div class="data_action">
-                    <button id="xdataTag2" class="ox_compare_link data_btn" data-i18n="chart2.btnModCompare">添加对比</button>
+                    <button id="xdataModCompare" class="ox_compare_link data_btn" data-i18n="chart2.btnModCompare">添加对比</button>
                     <button id="xdataTag1" class="ox_add_link data_btn" data-i18n="chart2.btnSetVersion">设置版本点</button>
                     <a id="xdataLkTagList" class="data_btn" data-href="http://ecd.oa.com/xdata/timeline/" target="_blank" data-i18n="chart2.btnModHis">版本历史</a>
+                </div>
+                <div id="xdataCompare" class="data_compare xdata_hidden">
+                    <ul id="xdataCompareList" class="data_comparelist data_comparelist1">
+                        <li>
+                            <div class="data_time1 clearfix">
+                                <div class="data_time_col">
+                                    <input id="iptCompareSDate0" disabled="disabled" class="xdata_date xdata_sdate" type="date" data-datediff="-7"/>
+                                </div>
+                                <div class="data_time_col">
+                                    <span class="c_tx3">-</span>
+                                </div>
+                                <div class="data_time_col">
+                                    <input id="iptCompareEDate0" disabled="disabled" class="xdata_date xdata_edate" type="date"/>
+                                </div>
+                                <div class="data_time_col">
+                                    <i class="data_ico data_ico_add">+</i>
+                                    <i class="data_ico data_ico_minus">-</i>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="data_compare_action clearfix">
+                        <button id="btnBeginModCompare" type="button" class="data_btn" data-i18n="chart2.btnBeginCompare">开始对比</button>
+                    </div>
                 </div>
                 <div id="dataCrumbs" class="data_crumbs"></div>
                 <div class="data_pop_con">
@@ -84,7 +108,7 @@ J(function($,p,pub){
                 </div>
                 <div class="data_pop_filter">
                     <div class="data_time">
-                        <input id="xdataPop1Date1" class="xdata_date xdata_sdate1" type="date" /><span class="c_tx3">-</span><input id="xdataPop1Date2" class="xdata_date xdata_edate" type="date" />
+                        <input id="xdataPop1Date1" class="xdata_date xdata_sdate" data-datediff="-7" type="date" /><span class="c_tx3">-</span><input id="xdataPop1Date2" class="xdata_date xdata_edate" type="date" />
                         <button id="xdataRetweet2" class="data_btn" data-i18n="com.refresh">刷新</button>
                         <div id="xdataTypes" class="data_time_col">
                             <label><input id="xdataTypeForMod1" class="xdata_type" type="radio" value="1" name="xdata_type" checked="checked"/><span data-i18n="nav.a">点击量</span></label>
@@ -146,17 +170,17 @@ J(function($,p,pub){
             var today=new Date(),
                 todayStr = J.data.getDateTimeStr(today,{len:10});
             $('.xdata_date').attr('max',todayStr)
-                .filter('.xdata_sdate').val(todayStr)
-                .end()
-                .filter('.xdata_edate').val(todayStr)
-                .end()
-                .filter('.xdata_sdate1').val(J.data.getDateTimeStr(new Date(),{len:10,dayDiff:-7}))
-                .end()
+                .each(function(i,o){
+                    o.value = J.data.getDateTimeStr(
+                        new Date(),
+                        {
+                            len:10,
+                            dayDiff:parseInt(o.getAttribute('data-datediff')||0)
+                        });
+                })
                 .bind('mouseenter',function(e){
                     clearTimeout(p.main.autoHideTimer);
-                })/*.bind('mouseleave',function(e){
-                    p.main.autoHide();
-                })*/;
+                });
             this.$ui.onTransitioned(function(){
                 if(p.main.visible){
                     p.main.fixedHD();

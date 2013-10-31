@@ -241,9 +241,9 @@
 		.data_time .data_btn,
 		.data_time_col,
         .data_action .data_btn{display:inline; float:left;}
-		.data_time input[type=date]{width:92px;}
-		.data_time input[type="date"]::-webkit-inner-spin-button{display:none;}
-		.data_time input[type="date"]::-webkit-clear-button{display:none;}
+		.data_time input[type=date],.data_time_col input[type=date]{width:92px;}
+		.data_time input[type="date"]::-webkit-inner-spin-button,.data_time_col input[type="date"]::-webkit-inner-spin-button{display:none;}
+		.data_time input[type="date"]::-webkit-clear-button,.data_time_col input[type="date"]::-webkit-clear-button{display:none;}
 		.data_time span{margin:0 5px;}
 		.data_time .data_btn,.data_time_col,.data_action .data_btn{margin-left:6px; padding:2px 8px;}
 		.data_time_col label{margin-right: 6px;}
@@ -367,3 +367,14 @@
 		.data_pop_add li:last-child{margin-bottom:0;}
 		.data_pop_add li input{padding:10px; width:278px;}
 		.data_pop_add .data_btn{margin-left:10px; padding:3px 15px;}
+
+    /*===== 模块对比 =====*/
+        .data_compare{position: absolute;z-index:10;right:183px;top:24px;border:1px solid #eeeeee;background-color: #fff;box-shadow:-2px 2px 4px rgba(0,0,0,0.3);padding:5px 10px 10px;}
+        .data_compare .data_time_col{margin:0;padding:2px;}
+        .data_compare li{margin-bottom:5px;}
+        .data_compare_action .data_btn{float:right;display: inline;margin-right: 3px;}
+        .data_compare .data_ico{display: inline-block;text-align:center;color:#fff;background-color:#FB8800;width:16px;height:24px;line-height: 24px;font-size:14px;cursor:pointer; }
+        .data_compare .data_ico:hover{background-color: #FA9D34;}
+        .data_compare .data_ico_add{display: none;}
+        .data_compare li:last-child .data_ico_add{display: inline-block;}
+        .data_comparelist1 .data_ico_minus,.data_compare li:first-child .data_ico_minus{display: none;}
