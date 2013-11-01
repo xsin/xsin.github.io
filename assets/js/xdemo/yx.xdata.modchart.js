@@ -67,6 +67,26 @@ J(function($,p,pub){
             });
             //打版本
             p.modChart.$btnTag = $('#xdataTag1');
+
+            var langMonth = [1+i18n.t('com.month'), 2+i18n.t('com.month'), 3+i18n.t('com.month'), 4+i18n.t('com.month'), 5+i18n.t('com.month'), 6+i18n.t('com.month'), 7+i18n.t('com.month'), 8+i18n.t('com.month'), 9+i18n.t('com.month'), 10+i18n.t('com.month'), 11+i18n.t('com.month'), 12+i18n.t('com.month')];
+
+            Highcharts.setOptions({
+                lang: {
+                    months: langMonth,
+                    shortMonths: langMonth,
+                    weekdays: [i18n.t('com.week')+i18n.t('com.day'), i18n.t('com.week')+i18n.t('com.n1'), i18n.t('com.week')+i18n.t('com.n2'), i18n.t('com.week')+i18n.t('com.n3'), i18n.t('com.week')+i18n.t('com.n4'), i18n.t('com.week')+i18n.t('com.n5'), i18n.t('com.week')+i18n.t('com.n6')],
+                    resetZoom: i18n.t('chart.resetZoom'),
+                    resetZoomTitle: i18n.t('chart.resetZoom'),
+                    downloadPNG: i18n.t('chart.downloadPNG'),
+                    downloadJPEG: i18n.t('chart.downloadJPEG'),
+                    downloadPDF: i18n.t('chart.downloadPDF'),
+                    downloadSVG: i18n.t('chart.downloadSVG'),
+                    exportButtonTitle: i18n.t('chart.exportButtonTitle'),
+                    printChart: i18n.t('chart.printChart'),
+                    loading: i18n.t('chart.loading')
+                }
+            });
+
         },
         onCTagUpdated:function(opType,d){
             if(this.isVisible){
@@ -441,29 +461,66 @@ J(function($,p,pub){
 
             var baseOpts = {
                 avgData:avgData[0],
+                colors: ['#1bd0dc', '#f9b700', '#eb6100', '#009944', '#eb6877', '#5674b9', '#a98fc2', '#9999ff', '#1c95bd', '#9dd30d'],
                 credits : {
-                  enabled : false
+                    enabled : false,
+                    href: 'http://oxox.io',
+                    text: 'oxox.io',
+                    position: {
+                        align: 'right',
+                        x: -10,
+                        verticalAlign: 'bottom',
+                        y: 0
+                    }
                 },
                 chart:{
-                    type:'line',
-                    zoomType: 'xy'
+                    type:'areaspline',
+                    zoomType: 'xy',
+                    selectionMarkerFill: 'rgba(122, 201, 67, 0.25)',
+                    resetZoomButton: {
+                        theme: {
+                            fill: 'white',
+                            stroke: 'silver',
+                            r: 0,
+                            states: {
+                                hover: {
+                                    fill: '#41739D',
+                                    style: {
+                                        color: 'white'
+                                    }
+                                }
+                            }
+                        }
+                    }
                 },
                 title: {
                     text: ' '
                 },
                 xAxis: {
-                    type: 'datetime'//datetime
+                    startOnTick: false,
+                    lineColor: '#6a7791',
+                    lineWidth: 1,
+                    tickPixelInterval: 140,
+                    tickmarkPlacement: 'on',
+                    type: 'datetime',//datetime
+                    dateTimeLabelFormats: {
+                        day: '%b%e'+i18n.t('com.day1')
+                    }
                 },
                 yAxis: [{
                     title: {
                         text: null
                     },
-                    min:0
+                    min:0,
+                    gridLineColor: '#eae9e9',
+                    showFirstLabel: false
                 },{
                     title:{
                         text:null
                     },
                     min:0,
+                    gridLineColor: '#eae9e9',
+                    showFirstLabel: false,
                     labels:{
                         formatter:function(){
                             return this.value+' %';
@@ -473,18 +530,48 @@ J(function($,p,pub){
                 }],
                 tooltip: {
                     xDateFormat: '%Y-%m-%d',
-                    crosshairs: true,
+                    useHTML: true,
+                    crosshairs: {
+                        color: '#7ac943',
+                        dashStyle: 'shortdot'
+                    },
                     shared: true,
                     valueSuffix: ''
                 },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        innerSize: '45%',
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: false,
+                            color: '#000000',
+                            connectorColor: '#000000'
+                        }
+                    },
+                    series: {
+                        fillOpacity: 0.1,
+                        shadow: false,
+                        marker: {
+                            enabled: true,
+                            radius: 4,
+                            fillColor: null,
+                            lineWidth: 2,
+                            lineColor: '#FFFFFF',
+                            states: {
+                                hover: {
+                                    enabled: true
+                                }
+                            }
+                        }
+                    }
+                },
                 legend: {
                     enabled:false,
-                    align:'center',
-                    verticalAlign:'top',
-                    itemStyle:{
-                        fontWeight:'bold',
-                        fontSize:'13px'
-                    }
+                    borderWidth: 0,
+                    y: 8,
+                    floating: true,
+                    align: 'left'
                 },
                 series: series
             };

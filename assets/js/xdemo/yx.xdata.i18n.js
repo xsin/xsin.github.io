@@ -9,12 +9,38 @@ yx_xdata_i18n['zh-CN'] = {
         "avg":"\u5E73\u5747",//平均
         "total":"\u5171",//共
         "ci":"\u6B21",//次
-        "dan":"\u5355"//单
+        "dan":"\u5355",//单
+        "n1":"\u4E00",//一
+        "n2":"\u4E8C",
+        "n3":"\u4E09",
+        "n4":"\u56DB",
+        "n5":"\u4E94",
+        "n6":"\u516D",
+        "n7":"\u4E03",
+        "n8":"\u516B",
+        "n9":"\u4E5D",
+        "n10":"\u5341",
+        "n11":"\u5341\u4E00",
+        "n12":"\u5341\u4E8C",
+        "month":"\u6708",
+        "week":"\u661F\u671F",
+        "day":"\u5929",
+        "day1":"\u65E5"
     },
     nav:{
         "a":"\u70B9\u51FB\u91CF",
         "b":"\u4E0B\u5355\u91CF",
         "c":"\u8F6C\u5316\u7387"
+    },
+    chart:{
+        resetZoom: '\u67E5\u770B\u5168\u56FE',
+        downloadPNG: '\u4E0B\u8F7DPNG',
+        downloadJPEG: '\u4E0B\u8F7DJPEG',
+        downloadPDF: '\u4E0B\u8F7DPDF',
+        downloadSVG: '\u4E0B\u8F7DSVG',
+        exportButtonTitle: '\u5BFC\u51FA\u6210\u56FE\u7247',
+        printChart: '\u6253\u5370\u56FE\u8868',
+        loading: '\u6570\u636E\u52A0\u8F7D\u4E2D\uFF0C\u8BF7\u7A0D\u5019...'
     },
     chart1:{
         "title":"\u6574\u4F53\u6570\u636E"/*整体数据*/
