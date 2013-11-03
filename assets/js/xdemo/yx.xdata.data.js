@@ -11,7 +11,8 @@ J(function($,p,pub){
     try{
         uid = ck.split('yx_uid=')[1].split(';')[0];
         wsid=ck.split('wsid=')[1].split(';')[0];
-        areaid=ck.split('areasInfo=')[1].split(';')[0];
+        areaid=ck.split('areasInfo=');/*11/03 areaid 不再使用,为了保证接口完整性使用默认的S0001_1001*/
+        areaid = areaid.length>1?(areaid[1].split(';')[0]||"S0001_1001"):"S0001_1001";
         pub.bizInfo={
             uid:uid,
             wsid:wsid,
