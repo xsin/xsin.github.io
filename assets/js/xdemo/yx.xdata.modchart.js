@@ -138,7 +138,7 @@ J(function($,p,pub){
                 .attr('data-y',dimInfo.top)
                 .attr('data-width',dimInfo.width)
                 .attr('data-height',dimInfo.height)
-                .attr('data-version_name',tagInfo.alias+'-'+new Date().getTime())
+                .attr('data-version_name',tagInfo.alias)
                 .attr('data-mod_name',tagInfo.selector)
                 .attr('data-version_mod_wsid',J.data.bizInfo.wsid)
                 .attr('data-version_mod_areaid',J.data.bizInfo.areaid)
