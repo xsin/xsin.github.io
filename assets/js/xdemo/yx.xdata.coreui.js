@@ -33,8 +33,8 @@ J(function($,p,pub){
                         <div class="data_box_hd">
                             <h3 data-i18n="chart2.title">模块趋势</h3>
                             <a id="xdataShowChart3" href="javascript:;" class="data_btn data_btn_bg1 xdata_btn_chart3 xdata_hidden">模块占比</a>
-                            <a id="xdataAddCTag" href="javascript:;" class="data_btn data_btn_bg1 xdata_btn_addmod">新增私有模块</a>
-                            <a id="xdataCTagAdmin" target="_blank" href="http://oxox.io/tools/oxtree/" class="data_btn data_btn_bg1 xdata_btn_addmod">模块维护</a>
+                            <a id="xdataAddCTag" href="javascript:;" class="data_btn data_btn_bg1 xdata_btn_addmod" data-i18n="chart2.btnAddPrivateMod">新增私有模块</a>
+                            <a id="xdataCTagAdmin" target="_blank" href="http://oxox.io/tools/oxtree/" class="data_btn data_btn_bg1 xdata_btn_addmod" data-i18n="chart2.btnAdminMod">模块维护</a>
                         </div>
                         <div class="data_box_bd">
                             <div id="xdataChart1Filter" class="data_filter">
