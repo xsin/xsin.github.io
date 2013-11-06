@@ -63,14 +63,16 @@ J(function($,p,pub){
                 break;
                 case 0:
                     //add
-                    var items = this.parseData([d]);
-                    this.render(items,true);
+                    //var items = this.parseData([d]);
+                    //this.render(items,true);
+                    this.reload();
                 break;
                 case 1:
                     //update
-                    $('#xdataCTag'+d.id).remove();
-                    var items = this.parseData([d]);
-                    this.render(items,true);
+                    //$('#xdataCTag'+d.id).remove();
+                    //var items = this.parseData([d]);
+                    //this.render(items,true);
+                    this.reload();
                 break;
             };//switch
         },
