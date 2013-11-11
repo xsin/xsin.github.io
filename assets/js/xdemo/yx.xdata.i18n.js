@@ -25,7 +25,8 @@ yx_xdata_i18n['zh-CN'] = {
         "month":"\u6708",
         "week":"\u661F\u671F",
         "day":"\u5929",
-        "day1":"\u65E5"
+        "day1":"\u65E5",
+        "date":"\u65E5\u671F"//日期
     },
     nav:{
         "a":"\u70B9\u51FB\u91CF",
@@ -46,7 +47,8 @@ yx_xdata_i18n['zh-CN'] = {
         "title":"\u6574\u4F53\u6570\u636E"/*整体数据*/
     },
     chart2:{
-        "title":"\u6A21\u5757\u8D8B\u52BF",
+        "title":"\u6A21\u5757\u8D8B\u52BF",/*模块趋势*/
+        "title1":"\u8BE6\u7EC6\u6570\u636E",/*详细数据*/
         "btnAddPrivateMod":"\u65B0\u589E\u79C1\u6709\u6A21\u5757",
         "btnAdminMod":"\u6A21\u5757\u7EF4\u62A4",
         "btnSetVersion":"\u8BBE\u7F6E\u7248\u672C\u70B9",
@@ -54,7 +56,12 @@ yx_xdata_i18n['zh-CN'] = {
         "btnModCompare":"\u6DFB\u52A0\u5BF9\u6BD4",
         "btnBeginCompare":"\u5F00\u59CB\u5BF9\u6BD4",
         "clickRate":"\u70B9\u51FB\u7387",
-        "orderRate":"\u8BA2\u5355\u7387"
+        "orderRate":"\u8BA2\u5355\u7387",
+        "transRateByClick":"\u6BCF\u70B9\u51FB\u8F6C\u5316\u7387",//每点击转化率
+        "transRateByPV":"\u6BCFPV\u8F6C\u5316\u7387",//每PV转化率
+        "clickNumByPV":"\u6BCFPV\u70B9\u51FB\u7387",//每PV点击率
+        "orderNumByPV":"\u6BCFPV\u4E0B\u5355\u7387",//每PV订单率
+        "summary":"\u5168\u90E8\u6C47\u603B",//全部汇总
     },
     tip:{
         modNameRequired:"\u8BF7\u8F93\u5165\u6A21\u5757\u540D\u79F0",

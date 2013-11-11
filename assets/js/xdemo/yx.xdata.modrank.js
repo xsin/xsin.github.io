@@ -10,10 +10,10 @@ J(function($,p,pub){
         tpl:J.heredoc(function(){/*
             <ul id="dataList{{id}}" class="data_list_con{{clListSub}}">
                 {{#babies}}
-                <li id="xdataCTag{{id}}" data-pid="{{pid}}" class="data_list_item{{cl1}}" data-id="{{id}}" data-alias="{{alias}}" data-val="{{val}}" data-val0="{{val0}}">
+                <li id="dataCTag{{id}}" data-pid="{{pid}}" class="data_list_item{{cl1}}" data-id="{{id}}" data-alias="{{alias}}" data-val="{{val}}" data-val0="{{val0}}">
                     {{#hasChildren}}
                         <i class="data_list_ico"></i>
-                        <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">
+                        <a id="dataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">
                             {{alias}}
                             <span class="data_val data_val1">{{val1}}</span>
                             <span class="data_val data_val2">{{percent}}%</span>
@@ -25,7 +25,7 @@ J(function($,p,pub){
                     {{/hasChildren}}
                     {{^hasChildren}}
                     <i class="data_list_ico"></i>
-                    <a id="xdataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">
+                    <a id="dataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">
                         {{alias}}
                         <span class="data_val data_val1">{{val1}}</span>
                         <span class="data_val data_val2">{{percent}}%</span>
@@ -50,7 +50,7 @@ J(function($,p,pub){
             }).bind(J.ui.EVT.UIScroll,function(e,sTop){
                 //J.$win.trigger('oxmenuPositionNeedUpdating');
             }).bind(J.ui.EVT.UIReady,function(e){
-                p.modRank.$d = $('#xdataList1').bind('mouseleave.modrank',function(e){
+                p.modRank.$d = $('#dataList1').bind('mouseleave.modrank',function(e){
                     J.ytag.hideCovers();
                 });
             });
@@ -59,7 +59,7 @@ J(function($,p,pub){
             switch(opType){
                 case -1:
                     //delete
-                    $('#xdataCTag'+d).remove();
+                    $('#dataCTag'+d).remove();
                 break;
                 case 0:
                     //add
@@ -69,7 +69,7 @@ J(function($,p,pub){
                 break;
                 case 1:
                     //update
-                    //$('#xdataCTag'+d.id).remove();
+                    //$('#dataCTag'+d.id).remove();
                     //var items = this.parseData([d]);
                     //this.render(items,true);
                     this.reload();
@@ -216,12 +216,12 @@ J(function($,p,pub){
             };
         },
         render:function(cItems,isPrepend){
-            this.$d.find('.xdata_alert').remove();
+            this.$d.find('.data_alert').remove();
             if(!isPrepend){
                 this.$d.find('.data_list_item').remove();
             }
             if(cItems.length===0){
-                this.$d.html('<div class="xdata_alert" data-i18n="ajax.noData">无数据</div>').oxi18n();
+                this.$d.html('<div class="data_alert" data-i18n="ajax.noData">无数据</div>').oxi18n();
                 return;
             };
 
@@ -256,7 +256,7 @@ J(function($,p,pub){
                 p.modRank.data = d = p.modRank.parseData(d);
                 p.modRank.render(d);
                 if(!p.modRank.dataInited){
-                    $('#xdataLoading2').remove();
+                    $('#dataLoading2').remove();
                     p.modRank.dataInited=true;
                 }
             });

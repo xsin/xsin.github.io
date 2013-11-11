@@ -4,9 +4,9 @@ J(function($,p,pub){
     var $ytags;
     p.main = {
         coverTpl:J.heredoc(function(){/*
-            <div id="xdataCover{{id}}" class="xdata_tagcover">
-                <div class="xdata_tagcover_bg"></div>
-                <div class="xdata_tagcover_bd">{{coverTip}}</div>
+            <div id="dataCover{{id}}" class="data_tagcover">
+                <div class="data_tagcover_bg"></div>
+                <div class="data_tagcover_bd">{{coverTip}}</div>
             </div>
         */}),
         covers:{},
@@ -15,7 +15,7 @@ J(function($,p,pub){
         dataType:1,
         hideCovers:function(){
             for(var c in this.covers){
-                this.covers[c].addClass('xdata_hidden');
+                this.covers[c].addClass('data_hidden');
             }
         },
         parseData:function(tagObj){
@@ -45,7 +45,7 @@ J(function($,p,pub){
             /*获取每个元素的位置、高宽信息*/
             tagObj.$dom.each(function(i,o){
                 o = $(o);
-                o.data('xdatadim',J.data.getItemDimension(o));
+                o.data('datadim',J.data.getItemDimension(o));
             });
             return tagObj;
         },
@@ -103,7 +103,7 @@ J(function($,p,pub){
             if(hideOthers){
                 this.hideCovers();
             }
-            var coverId = '#xdataCover'+id,
+            var coverId = '#dataCover'+id,
                 $cover= $(coverId),
                 cssProps={
                     position:'fixed',
@@ -118,9 +118,9 @@ J(function($,p,pub){
             var coverTip = dim.alias+(isHidden?','+i18n.t('tip.hidden'):'');
 
             if($cover.length===1){
-                $cover.removeClass('xdata_hidden');
+                $cover.removeClass('data_hidden');
                 if(isHidden){
-                    $cover.css(cssProps).find('.xdata_tagcover_bd').html(coverTip);
+                    $cover.css(cssProps).find('.data_tagcover_bd').html(coverTip);
                 }
                 this.covers[id]=$cover;
                 return;
@@ -137,7 +137,7 @@ J(function($,p,pub){
             var coverDim = null;
             tagData.$dom.each(function(i,o){
                 o = $(o);
-                coverDim = o.data('xdatadim');
+                coverDim = o.data('datadim');
                 coverDim.isHidden = o.is(':hidden');
                 coverDim.alias = tagData.alias;
                 p.main._showCover((tagData.id+i),coverDim);

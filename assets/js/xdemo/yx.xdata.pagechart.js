@@ -2,6 +2,9 @@ J(function($,p,pub){
 
     pub.id = "pagechart";
 
+    var today=new Date(),
+        todayStr = J.data.getDateTimeStr(today,{len:10});
+
     //概要图表
     p.keyChart = {
         dataType:1,
@@ -12,48 +15,68 @@ J(function($,p,pub){
         $tip:null,
         keyData:null,
         clickData:null,
+        dateRangeData:{
+            sdate0:todayStr,
+            edate0:todayStr
+        },
         _init:function(){
             J.$win.bind(J.ui.EVT.DataTypeChangeForPage,function(e,t){
                 p.keyChart.dataType=parseInt(t);
                 p.keyChart.render(p.keyChart.dataType,true);
             }).bind(J.ui.EVT.Open,function(e,t){//每次打开时刷新一次数据
-                p.keyChart.$retweet.trigger('click.xdata');
+                p.keyChart.$retweet.trigger('click.data');
             }).bind(J.ui.EVT.UIReady,function(e){
                 p.keyChart.onCoreUIReady();
             });
         },
         onCoreUIReady:function(){
-            this.$tip = $('#xdataCharttip1');
-            this.$tipBD=this.$tip.find('.xdata_charttip1_bd');
+            this.$tip = $('#dataCharttip1');
+            this.$tipBD=this.$tip.find('.data_charttip1_bd');
             //刷新按钮
-            this.$retweet = $('#xdataRetweet1').bind('click.xdata',function(e){
+            this.$retweet = $('#dataRetweet1').bind('click.data',function(e){
                 p.keyChart.loadData();
             });
 
-            this.$filters = $('#xdataChart1Filter label').bind('click.xdata',function(e){
+            this.$filters = $('#dataChart1Filter label').bind('click.data',function(e){
                 p.keyChart.$filters.removeClass('on');
                 $(this).addClass('on');
                 J.$win.trigger(J.ui.EVT.DataTypeChangeForPage,[this.getAttribute('data-type')]);
                 return false;
             });
+
+            //日期控件设置
+            new pickerDateRange('txtDateRange1', {
+                startDate: todayStr,
+                endDate: todayStr,
+                compareCheckboxId:'data_cbx_compare1',
+                startDateId: "data_start_date1",
+                endDateId: "data_end_date1",
+                target: 'dataDatePicker1',
+                isTodayValid: true,
+                success: function (obj) {
+                    p.keyChart.dateRangeData = obj.getValue();
+                    p.keyChart.$retweet.trigger('click');
+                }
+            });
+
         },
         render:function(dataType){
             var total = this.keyData.status?this.keyData.total:{};
-            document.getElementById('xdataPV').innerHTML = total.pv||0;
-            document.getElementById('xdataUV').innerHTML = total.uv||i18n.t('tip.uvTip');
-            document.getElementById('xdataClickNum').innerHTML = total.click_num||0;
-            document.getElementById('xdataOrderNum').innerHTML = total.order_num||0;
-            document.getElementById('xdataTransRate').innerHTML = total.click_trans_rate||0;
+            document.getElementById('dataPV').innerHTML = total.pv||0;
+            document.getElementById('dataUV').innerHTML = total.uv||i18n.t('tip.uvTip');
+            document.getElementById('dataClickNum').innerHTML = total.click_num||0;
+            document.getElementById('dataOrderNum').innerHTML = total.order_num||0;
+            document.getElementById('dataTransRate').innerHTML = total.click_trans_rate||0;
         },
         showTip:function(txt){
             if(txt===null){
-                this.$tip.addClass('xdata_hidden');
+                this.$tip.addClass('data_hidden');
                 return;
             };
-            txt = txt || '<img class="xdata_loading1" src="http://static.gtimg.com/icson/img/common/loading.gif"/>';
-            txt = txt.indexOf('<span')==0?txt:('<span class="xdata_error">'+txt+'</span>');
+            txt = txt || '<img class="data_loading1" src="http://static.gtimg.com/icson/img/common/loading.gif"/>';
+            txt = txt.indexOf('<span')==0?txt:('<span class="data_error">'+txt+'</span>');
             this.$tipBD.html(txt);
-            this.$tip.removeClass('xdata_hidden');
+            this.$tip.removeClass('data_hidden');
         },
         loadData:function(){
 
@@ -65,8 +88,8 @@ J(function($,p,pub){
             var me = this,
                 dates=[],
                 tempDate = null,
-                sdate = document.getElementById('xdataKeyChartDate1').value,
-                edate = document.getElementById('xdataKeyChartDate2').value;
+                sdate = this.dateRangeData.sdate0,
+                edate = this.dateRangeData.edate0;
 
             this.dateRange = sdate+'-'+edate;
 
