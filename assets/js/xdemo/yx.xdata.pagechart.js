@@ -2,9 +2,6 @@ J(function($,p,pub){
 
     pub.id = "pagechart";
 
-    var today=new Date(),
-        todayStr = J.data.getDateTimeStr(today,{len:10});
-
     //概要图表
     p.keyChart = {
         dataType:1,
@@ -16,8 +13,8 @@ J(function($,p,pub){
         keyData:null,
         clickData:null,
         dateRangeData:{
-            sdate0:todayStr,
-            edate0:todayStr
+            sdate0:null,
+            edate0:null
         },
         _init:function(){
             J.$win.bind(J.ui.EVT.DataTypeChangeForPage,function(e,t){
@@ -43,6 +40,12 @@ J(function($,p,pub){
                 J.$win.trigger(J.ui.EVT.DataTypeChangeForPage,[this.getAttribute('data-type')]);
                 return false;
             });
+
+            var today=new Date(),
+                todayStr = J.data.getDateTimeStr(today,{len:10});
+
+            this.dateRangeData.sdate0 = todayStr;
+            this.dateRangeData.edate0 = todayStr;
 
             //日期控件设置
             new pickerDateRange('txtDateRange1', {
