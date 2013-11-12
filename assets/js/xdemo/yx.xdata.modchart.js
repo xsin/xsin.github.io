@@ -128,7 +128,7 @@ J(function($,p,pub){
                 success: function (obj) {
                     p.modChart.dateRangeData = obj.getValue();
                     p.modChart.loadData(p.modChart.tagData);
-                    console.log('dateRangeData',p.modChart.dateRangeData);
+                    //console.log('dateRangeData',p.modChart.dateRangeData);
                 }
             });
 
@@ -413,6 +413,7 @@ J(function($,p,pub){
                 len = niceData.length;
             for(var i =0;i<len;i++){
                 totalVal+=niceData[i].y;
+                niceData[i].dateRange = serieSubTitle;
                 totalValClickNum+=niceData[i].click_num;
                 totalValOrderNum+=niceData[i].order_num;
                 totalValCORate+=niceData[i].click_trans_rate;
@@ -422,7 +423,11 @@ J(function($,p,pub){
             avgValOrderNum = parseFloat(len==0?0:(totalValOrderNum/len).toFixed(2));
             avgValCORate = parseFloat(len==0?0:(totalValCORate/len).toFixed(2));
             for(var i =0;i<len;i++){
-                niceData1.push({x:niceData[i].x,y:avgVal});
+                niceData1.push({
+                    x:niceData[i].x,
+                    y:avgVal,
+                    dateRange:serieSubTitle
+                });
             };
 
             //每pv比率
@@ -430,12 +435,13 @@ J(function($,p,pub){
             for(var i=0;i<len;i++){
                 niceData2.push({
                     x:niceData[i].x,
-                    y:niceData[i].rateByPv
+                    y:niceData[i].rateByPv,
+                    dateRange:serieSubTitle
                 });
             };
 
             var series = [{
-                    name: i18n.t('nav.a')+serieSubTitle,
+                    name: i18n.t('nav.a'),
                     dateRange:serieSubTitle,
                     data: niceData,
                     yAxis:0,
@@ -444,7 +450,7 @@ J(function($,p,pub){
                         lineWidth: 2
                     }
                 },{
-                    name:i18n.t('com.avg')+i18n.t('nav.a')+serieSubTitle,
+                    name:i18n.t('com.avg')+i18n.t('nav.a'),
                     dateRange:serieSubTitle,
                     data:niceData1,
                     yAxis:0,
@@ -460,7 +466,8 @@ J(function($,p,pub){
             var showPVChart = false;
             if(showPVChart){
                 series.push({
-                    name:'PV'+i18n.t('chart2.clickRate')+serieSubTitle,
+                    name:'PV'+i18n.t('chart2.clickRate'),
+                    dateRange:serieSubTitle,
                     data:niceData2,
                     yAxis:1,
                     type:'spline',
@@ -475,14 +482,14 @@ J(function($,p,pub){
                 case 1:
                 break;
                 case 2:
-                    series[0].name=i18n.t('nav.b')+serieSubTitle;
-                    series[1].name=i18n.t('com.avg')+i18n.t('nav.b')+serieSubTitle;
-                    showPVChart && (series[2].name='PV'+i18n.t('chart2.orderRate')+serieSubTitle);
+                    series[0].name=i18n.t('nav.b');
+                    series[1].name=i18n.t('com.avg')+i18n.t('nav.b');
+                    showPVChart && (series[2].name='PV'+i18n.t('chart2.orderRate'));
                 break;
                 case 3:
-                    series[0].name=i18n.t('nav.c')+serieSubTitle;
-                    series[1].name=i18n.t('com.avg')+i18n.t('nav.c')+serieSubTitle;
-                    showPVChart && (series[2].name='PV'+i18n.t('nav.c')+serieSubTitle);
+                    series[0].name=i18n.t('nav.c');
+                    series[1].name=i18n.t('com.avg')+i18n.t('nav.c');
+                    showPVChart && (series[2].name='PV'+i18n.t('nav.c'));
                 break;
             };//switch
 
@@ -534,7 +541,7 @@ J(function($,p,pub){
                     }
                 },
                 chart:{
-                    type:'areaspline',
+                    type:'area',
                     zoomType: 'xy',
                     selectionMarkerFill: 'rgba(122, 201, 67, 0.25)',
                     resetZoomButton: {
@@ -595,8 +602,10 @@ J(function($,p,pub){
                         color: '#7ac943',
                         dashStyle: 'shortdot'
                     },
+                    borderRadius: 0,
                     shared: true,
-                    valueSuffix: ''
+                    headerFormat:'<h4>{point.key} ({series.name})</h4>',
+                    pointFormat:'<div><span style="color:{series.color}">{point.dateRange}</span>:{point.y}</div>'
                 },
                 plotOptions: {
                     pie: {
@@ -629,9 +638,11 @@ J(function($,p,pub){
                 legend: {
                     enabled:false,
                     borderWidth: 0,
-                    y: 8,
+                    y:0,
+                    x:45,
                     floating: true,
-                    align: 'left'
+                    align: 'left',
+                    verticalAlign:'top'
                 },
                 series: series
             };
@@ -656,15 +667,25 @@ J(function($,p,pub){
                 p.detail.render(chartOpts.series);
                 return;
             };
-
-            while(this.chart.series.length>0){
-                this.chart.series[0].remove(false);
-            };
-
+            var seriesLen0 = this.chart.series.length,
+                seriesToBeRemoved = [];
+            //移除多余的图表
+            if(seriesLen0>seriesLen){
+                for(var i=(seriesLen0-seriesLen);i<seriesLen0;i++){
+                    seriesToBeRemoved.push(this.chart.series[i]);
+                }
+            }
+            while(seriesToBeRemoved.length>0){
+                seriesToBeRemoved.splice(0,1)[0].remove(true);
+            };//while
+            seriesLen0=seriesLen0-1;
             for(var i =0;i<seriesLen;i++){
-                this.chart.addSeries(chartOpts.series[i],false);
+                if (i<=seriesLen0) {
+                    this.chart.series[i].update(chartOpts.series[i]);
+                }else{
+                    this.chart.addSeries(chartOpts.series[i]);
+                };
             };
-            this.chart.redraw();
             p.detail.render(chartOpts.series);
         },
         renderMenu:function(){
@@ -793,7 +814,7 @@ J(function($,p,pub){
             </tbody>
             <tfoot>
                 <tr class="data_detail_sum">
-                    <td rowspan="3">&nbsp;</td>
+                    <td rowspan="{{rowspanSum}}">&nbsp;</td>
                     <td class="hl" data-i18n="chart2.summary">全部汇总</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
@@ -850,6 +871,7 @@ J(function($,p,pub){
         parseData:function(series){
             var data = {
                 lblDataPerPV:this.lblDataPerPV,
+                rowspanSum:2,
                 items:[]
             },
             hasCompare = series.length>2,
@@ -907,6 +929,7 @@ J(function($,p,pub){
             if(hasCompare){
                 total2.dateRange = series[2].dateRange;
                 data.total.push(total2);
+                data.rowspanSum=3;
             }
 
             return data;

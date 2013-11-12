@@ -308,12 +308,12 @@
         background-color: #eaf2fa;
     }
     /*==tablesorter样式==*/
-    .tablesorter-headerRow .tablesorter-header-inner{position: relative;}
+    .tablesorter-headerRow .tablesorter-header-inner{position: relative;display: inline-block;}
     .tablesorter-headerRow .tablesorter-header-inner:before{
         content: ' ';
         position: absolute;
         top:50%;
-        right:10px;
+        right:-15px;
         margin-top:-3px;
         width: 0;
         font-size: 0;
