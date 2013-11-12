@@ -128,6 +128,7 @@ J(function($,p,pub){
                 success: function (obj) {
                     p.modChart.dateRangeData = obj.getValue();
                     p.modChart.loadData(p.modChart.tagData);
+                    console.log('dateRangeData',p.modChart.dateRangeData);
                 }
             });
 
