@@ -400,7 +400,7 @@ J(function($,p,pub){
         getChartSerie:function(rawData,dateKey,dataType){
             var niceData = this.parseData(rawData,dateKey,dataType),
                 len = niceData.length,
-                serieSubTitle = rawData[0].s_date+' \u81F3 '+( rawData[len-1].s_date||J.data.getDateTimeStr(new Date(),{len:10}) ),
+                serieSubTitle = rawData[0].s_date+'\u81F3'+( rawData[len-1].s_date||J.data.getDateTimeStr(new Date(),{len:10}) ),
                 niceData1 = [],//平均线
                 totalVal = 0,
                 totalValClickNum=0,
@@ -508,10 +508,13 @@ J(function($,p,pub){
 
             var series = [],
                 avgData = [],
+                colors = ['#1bd0dc', '#f9b700', '#eb6100', '#009944', '#eb6877', '#5674b9', '#a98fc2', '#9999ff', '#1c95bd', '#9dd30d'],
                 cnt=1,len;
 
             for(var c in rawData){
                 c = this.getChartSerie(rawData[c],c,dataType);
+                c.serieData[0].color=colors[cnt-1];
+                c.serieData[1].color=J.colorLighten(colors[cnt-1],0.3);
                 //对比的数据，时间轴以第一组数据为准
                 if(cnt>1){
                     len = c.serieData[0].data.length;
@@ -528,7 +531,7 @@ J(function($,p,pub){
 
             var baseOpts = {
                 avgData:avgData[0],
-                colors: ['#1bd0dc', '#f9b700', '#eb6100', '#009944', '#eb6877', '#5674b9', '#a98fc2', '#9999ff', '#1c95bd', '#9dd30d'],
+                colors: colors,
                 credits : {
                     enabled : false,
                     href: 'http://oxox.io',
@@ -541,6 +544,7 @@ J(function($,p,pub){
                     }
                 },
                 chart:{
+                    marginBottom: 60,
                     type:'area',
                     zoomType: 'xy',
                     selectionMarkerFill: 'rgba(122, 201, 67, 0.25)',
@@ -570,6 +574,7 @@ J(function($,p,pub){
                     tickPixelInterval: 140,
                     tickmarkPlacement: 'on',
                     type: 'datetime',//datetime
+                    minTickInterval: 24 * 3600 * 1000,
                     dateTimeLabelFormats: {
                         day: '%b%e'+i18n.t('com.day1')
                     }
@@ -623,10 +628,14 @@ J(function($,p,pub){
                         shadow: false,
                         marker: {
                             enabled: true,
-                            radius: 4,
                             fillColor: null,
-                            lineWidth: 2,
-                            lineColor: '#FFFFFF',
+                            lineColor: '#FCFCFC',
+                            //radius: 4,
+                            //lineWidth: 2,
+                            //symbol:'square',
+                            radius:6,
+                            lineWidth:1,
+                            symbol:'diamond',
                             states: {
                                 hover: {
                                     enabled: true
@@ -636,13 +645,21 @@ J(function($,p,pub){
                     }
                 },
                 legend: {
-                    enabled:false,
+                    enabled:true,
                     borderWidth: 0,
-                    y:0,
-                    x:45,
-                    floating: true,
-                    align: 'left',
-                    verticalAlign:'top'
+                    align: 'center',
+                    verticalAlign: 'bottom',
+                    labelFormatter:function(){
+                        var name = this.name;
+                        //如果是平均xx，则显示平均值
+                        //console.log(this);
+                        if(this.name.indexOf(i18n.t('com.avg'))===0){
+                            name=i18n.t('com.avgValue');//+' ('+this.userOptions.dateRange+')';
+                        }else{
+                            //name+=' ('+this.userOptions.dateRange+')';
+                        }
+                        return name;
+                    }
                 },
                 series: series
             };
@@ -664,6 +681,8 @@ J(function($,p,pub){
             if(!this.chart){
                 this.$chart.highcharts(chartOpts);
                 this.chart=this.$chart.highcharts();
+                //平均线默认隐藏
+                this.unselectAvgSeries();
                 p.detail.render(chartOpts.series);
                 return;
             };
@@ -686,7 +705,19 @@ J(function($,p,pub){
                     this.chart.addSeries(chartOpts.series[i]);
                 };
             };
+            //平均线默认隐藏
+            this.unselectAvgSeries();
             p.detail.render(chartOpts.series);
+        },
+        unselectAvgSeries:function(){
+            var len = this.chart.series.length,
+                serie;
+            for(var i=0;i<len;i++){
+                serie=this.chart.series[i];
+                if(serie.name.indexOf(i18n.t('com.avg'))===0){
+                    serie.hide();
+                }
+            };//for
         },
         renderMenu:function(){
             if(this.tagData.norender){

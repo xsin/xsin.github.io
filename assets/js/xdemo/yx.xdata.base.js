@@ -511,6 +511,7 @@ J.textToHex=function (str) {
     return rStr;
 };
 //http://www.sitepoint.com/javascript-generate-lighter-darker-color/
+//J.colorLighten('#333',.5);
 J.colorLighten=function(hex, lum) {
     // validate hex string
     hex = String(hex).replace(/[^0-9a-f]/gi, '');

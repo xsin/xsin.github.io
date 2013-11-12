@@ -7,6 +7,7 @@ yx_xdata_i18n['zh-CN'] = {
         "delete":"\u5220\u9664",
         "showHeatmap":"\u663E\u793A\u70ED\u533A\u56FE",
         "avg":"\u5E73\u5747",//平均
+        "avgValue":"\u5E73\u5747\u503C",//平均值
         "total":"\u5171",//共
         "ci":"\u6B21",//次
         "dan":"\u5355",//单

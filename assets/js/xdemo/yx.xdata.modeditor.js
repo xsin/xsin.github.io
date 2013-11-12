@@ -14,25 +14,25 @@ J(function($,p,pub){
         tipTimer:null,
         _init:function(){
             
-            p.modEditor.$d = $('#xdataPop2');
-            p.modEditor.$name = $('#xdataPop2Ipt1');
-            p.modEditor.$value = $('#xdataPop2Ipt2');
-            p.modEditor.$tip = $('#xdataPop2Tip');
+            p.modEditor.$d = $('#dataPop2');
+            p.modEditor.$name = $('#dataPop2Ipt1');
+            p.modEditor.$value = $('#dataPop2Ipt2');
+            p.modEditor.$tip = $('#dataPop2Tip');
             //update
-            $('#xdataPop2Btn1').bind('click',function(e){
+            $('#dataPop2Btn1').bind('click',function(e){
                 var isOk = p.modEditor.save(this.rel);
                 if(isOk){
                     p.modEditor.hide();
                 }
             });
             //delete
-            $('#xdataPop2Btn2').bind('click',function(e){
+            $('#dataPop2Btn2').bind('click',function(e){
                 p.modEditor.delete(this.rel);
                 p.modEditor.hide();
             });
 
             //add new
-            $('#xdataAddCTag').bind('click',function(e){
+            $('#dataAddCTag').bind('click',function(e){
                 p.modEditor.show({
                     id:'',
                     alias:'',
@@ -40,7 +40,7 @@ J(function($,p,pub){
                 },$(this),true);
             });
 
-            $('#xdataPop2Close').bind('click',function(e){
+            $('#dataPop2Close').bind('click',function(e){
                 p.modEditor.hide();
             });
 
@@ -54,7 +54,7 @@ J(function($,p,pub){
 
             $('.data_btn_edit').live('click',function(e){
                 //tagData,$trigger,isCustomYTag
-                var $trigger = $('#xdataCTag'+this.rel),
+                var $trigger = $('#dataCTag'+this.rel),
                     isCustomYTag = $trigger.find('.data_list_lk')[0].getAttribute('data-ytagattr')=='ctag';
                 p.modEditor.show(J.data.getCTag(this.rel),$trigger,isCustomYTag);
                 return false;
@@ -64,11 +64,11 @@ J(function($,p,pub){
         showTip:function(txt,duration){
             clearTimeout(this.tipTimer);
             if(!txt){
-                this.$tip.addClass('xdata_hidden');
+                this.$tip.addClass('data_hidden');
                 return;
             };
-            this.$tip.removeClass('xdata_hidden');
-            this.$tip.html('<span class="xdata_error">'+txt+'</span>');
+            this.$tip.removeClass('data_hidden');
+            this.$tip.html('<span class="data_error">'+txt+'</span>');
             if(duration){
                 this.tipTimer = setTimeout(function(){
                     p.modEditor.showTip(null);
@@ -133,7 +133,7 @@ J(function($,p,pub){
             this.isCustomYTag = isCustomYTag||false;
             this.tagData=tagData;
             this.$trigger=$trigger.addClass(clEditOn);
-            this.$d.removeClass('xdata_hidden');
+            this.$d.removeClass('data_hidden');
             this.isVisible=true;
             this.updatePosition();
             this.loadData(tagData);
@@ -142,7 +142,7 @@ J(function($,p,pub){
             if(!this.isVisible){
                 return;
             };
-            this.$d.addClass('xdata_hidden');
+            this.$d.addClass('data_hidden');
             this.$name[0].value = '';
             this.$value[0].value = '';
             this.isVisible=false;
@@ -179,11 +179,11 @@ J(function($,p,pub){
         loadData:function(tagData){
             this.$name[0].value = tagData.alias;
             this.$value[0].value = tagData.ytagSelector;
-            document.getElementById('xdataPop2Btn1').rel = document.getElementById('xdataPop2Btn2').rel = tagData.id;
+            document.getElementById('dataPop2Btn1').rel = document.getElementById('dataPop2Btn2').rel = tagData.id;
             if(tagData.readonly){
-                this.$d.addClass('xdata_readonly');
+                this.$d.addClass('data_readonly');
             }else{
-                this.$d.removeClass('xdata_readonly');
+                this.$d.removeClass('data_readonly');
             }
         }
     };

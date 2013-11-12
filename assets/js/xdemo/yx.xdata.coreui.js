@@ -81,7 +81,7 @@ J(function($,p,pub){
                 <div class="data_filter1">
                     <div class="data_time clearfix">
                         <div id="dataDateRange2" class="data_fl data_daterange">
-                            <div class="drp_date" id="div_dataLabelDateRange2">
+                            <div class="drp_date drp_date1" id="div_dataLabelDateRange2">
                                 <span class="drp_date_title" id="dataLabelDateRange2"></span>
                                 <a class="drp_trigger" id="drpTrigger2" href="javascript:;">
                                     <i class="drp_trigger_ico"></i>
@@ -121,7 +121,9 @@ J(function($,p,pub){
                     </div>
                 </div>
             </div>
-            <a id="dataPop1Close" href="javascript:;" class="data_pop_close">+</a>
+            <div class="data_exhaled data_exhaled1">
+                <a id="dataPop1Close" href="javascript:;" class="data_exhaled_btn data_exhaled_btn_on"></a>
+            </div>
         </div>
     */});
 
