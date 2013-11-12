@@ -157,7 +157,7 @@
     color:#fff;
 }
 
-.data_capturing .data_wrap,.data_capturing .data_pop,.data_capturing .data_tagcover{visibility: hidden!important;}
+.data_capturing .data_wrap,.data_capturing .data_pop,.data_capturing .data_tagcover{visibility: hidden!important;opacity: 0!important;}
 
 /* data capturing ui by hugo 
 ===================================*/
