@@ -122,6 +122,12 @@ J(function($,p,pub){
                 endDateId: "data_end_date2",
                 target: 'dataDateRange2',
                 isTodayValid: true,
+                periodObj:{
+                    drpRecentDays1: 6,//最近7天
+                    drpRecentDays2: 14,//最近15天
+                    drpRecentDays3: 29//最近30天
+                },
+                clPeriodActive:'data_datepreset_item1',
                 // isSingleDay: false,
                 success: function (obj) {
                     p.modChart.dateRangeData = obj.getValue();

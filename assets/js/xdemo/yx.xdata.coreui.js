@@ -90,9 +90,9 @@ J(function($,p,pub){
                         </div>
                         <div class="data_fr data_datepreset">
                             <ul class="clearfix">
-                                <li class="data_datepreset_item data_datepreset_item1" id="dataRecentDays1" data-v="1"><a href="javascript:;">最近7天</a></li>
-                                <li class="data_datepreset_item" id="dataRecentDays2" data-v="2"><a href="javascript:;">最近15天</a></li>
-                                <li class="data_datepreset_item" id="dataRecentDays3" data-v="3"><a href="javascript:;">最近30天</a></li>
+                                <li class="data_datepreset_item data_datepreset_item1" id="drpRecentDays1" data-v="1"><a href="javascript:;">最近7天</a></li>
+                                <li class="data_datepreset_item" id="drpRecentDays2" data-v="2"><a href="javascript:;">最近15天</a></li>
+                                <li class="data_datepreset_item" id="drpRecentDays3" data-v="3"><a href="javascript:;">最近30天</a></li>
                                 <li>
                                     <button id="dataBtnMoreFilter" class="data_btnB"><i class="data_ico_chart"></i>更多条件</button>
                                     <div id="dataTypes" class="data_types data_hidden">
