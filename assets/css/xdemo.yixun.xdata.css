@@ -162,11 +162,13 @@
 /* data capturing ui by hugo 
 ===================================*/
 .ox_pop{position: fixed; top: 200px; left: 50%; margin-left: -300px;z-index:10009; }
-        .ox_pop_img{ width: 200px; height: 200px; float: left; margin-right: 20px;}
-        .ox_pop_img img{display: block; width: 200px; height: 200px;}
+.ox_pop .mod_pop_bd{padding: 20px;}
+        .ox_pop_img{ width: 600px; max-height: 300px; margin-bottom: 20px;}
+        .ox_pop_img a{display: block;}
+        .ox_pop_img img{display: block; width: 100%; height: 100%;}
         .ox_pop_cnt{overflow: hidden;}
         .ox_pop_btn{ margin-right: 20px;}
-        .ox_pop_textarea{border: 1px solid #ccc; border-radius: 10px; padding: 10px; font-size: 14px;}
+        .ox_pop_textarea{border: 1px solid #ccc; padding: 10px; font-size: 14px; width: 100%; box-sizing:border-box; height: 50px;}
 
 /* data ui by feeling -v10.08
 ===================================*/
