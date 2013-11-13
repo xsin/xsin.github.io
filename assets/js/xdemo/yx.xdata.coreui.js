@@ -74,7 +74,7 @@ J(function($,p,pub){
         <div id="dataPop1" class="data_pop data_pop1">
             <div class="data_pop_hd">
                 <div class="data_action">
-                    <button id="dataTag1" class="ox_add_link data_btn" data-i18n="chart2.btnSetVersion">设置版本点</button>
+                    <button id="dataTag1" class="data_btn ox_add_link" data-i18n="chart2.btnSetVersion">设置版本点</button>
                     <a id="dataLkTagList" class="data_btn" data-href="http://ecd.oa.com/xdata/timeline/" target="_blank" data-i18n="chart2.btnModHis">版本历史</a>
                 </div>
                 <div id="dataCrumbs" class="data_crumbs"></div>

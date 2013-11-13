@@ -41,7 +41,7 @@
 .data_charttip1_bg{z-index: 1;background-color: #FFF;opacity: 0.8;}
 .data_charttip1_bd{position: absolute;z-index: 2;left:0;top:30%;right:0;text-align: center;}
 .data_btn_addmod{display: none!important;}
-.data_admin .data_btn_addmod{display: inline-block!important;}
+.data_admin .data_btn_addmod,.data_admin .ox_add_link{display: inline-block!important;}
 
 .data_crumbs{position:absolute;left:20px;top:10px;height:28px;overflow: hidden;}
 .data_breadcrumb {
@@ -455,7 +455,7 @@
 
 /*===== 数据趋势 =====*/
     .data_chart{position:relative; text-align:center;min-height:355px;}
-        .data_chart_bd{margin:auto;height:300px;background-color:#FFF;padding:10px 0 0 0; }
+        .data_chart_bd{margin:auto;height:300px;background-color:#FFF;padding:10px 0 0 0; border:1px solid #e1e1e1;}
 
 
 /*===== 按钮 =====*/
@@ -514,6 +514,7 @@
         .data_pop1 .data_pop_bd{top:117px;bottom:0;left:0;right:0;}
         .data_pop1 .data_action{text-align: right;padding: 10px 20px 20px;background:#F2EDE0;border-bottom: 1px dotted #ccc;}
         .data_pop1 .data_action .data_btn{float:none;display: inline-block;}
+        .data_pop1 .data_action .ox_add_link{display: none;}
         .data_pop1 .data_time{padding-left: 20px;padding-right: 20px;overflow: visible;}
         .data_pop1 .data_filter1{border-bottom:1px dotted #ededed;box-shadow:3px 1px 3px #ededed;}
         .data_pop1 .drp_date_title{color:#f9b700;}/* 与图表曲线颜色一致 */
