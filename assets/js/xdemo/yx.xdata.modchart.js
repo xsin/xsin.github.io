@@ -29,8 +29,6 @@ J(function($,p,pub){
             J.$win.bind(J.ui.EVT.DataTypeChange,function(e,t){
                 p.modChart.dataType=parseInt(t);
                 p.modChart.refresh();
-            }).bind('resize.modChart',function(e){
-                //p.modChart.updatePosition();
             }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
                 p.modChart.onCTagUpdated(opType,d);
             }).bind(J.ui.EVT.Collapse,function(e){
@@ -694,6 +692,8 @@ J(function($,p,pub){
                 this.chart=this.$chart.highcharts();
                 //平均线默认隐藏
                 this.unselectAvgSeries();
+                //触发一次resize事件，防止出现滚动条时highchart没有做自适应resize
+                //J.$win.trigger('resize.modChart');
                 return;
             };
             //明细图表
@@ -720,6 +720,8 @@ J(function($,p,pub){
             };
             //平均线默认隐藏
             this.unselectAvgSeries();
+            //触发一次resize事件，防止出现滚动条时highchart没有做自适应resize
+            J.$win.trigger('resize.modChart');
             
         },
         unselectAvgSeries:function(){
