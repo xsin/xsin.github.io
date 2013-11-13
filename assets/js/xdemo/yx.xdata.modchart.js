@@ -773,7 +773,7 @@ J(function($,p,pub){
 
             this.jqXHR=J.data.getRangeClickData(_params,function(err,d){
 
-                err = err || ( (d&&d.status)?null:'DragClickData数据接口发生错误:'+ (d?d.errmsg:'') );
+                err = err || ( (d&&d.status)?null:'DragClickData:'+i18n.t('ajax.serverError')+ (d?d.errmsg:'') );
 
                 if (err){
                     me.hasAjaxError=true;
@@ -872,8 +872,8 @@ J(function($,p,pub){
                     <td class="hl">{{dateRange}}</td>
                     <td>{{click}}</td>
                     <td>{{order}}</td>
-                    <td>{{transRate}}</td>
-                    <td>{{valueByPV}}</td>
+                    <td>{{transRate}}%</td>
+                    <td>{{valueByPV}}%</td>
                 </tr>
                 {{/total}}
             </tfoot>
