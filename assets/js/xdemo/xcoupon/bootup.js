@@ -3,15 +3,25 @@
 var cbk = function($s){
     var prefix = "http://oxox.io/assets/js/xdemo/xcoupon/",
             t = new Date().getTime();
+    //加载基础代码
     $s([prefix+"base.js?t="+t
     ],"base");
     $s.ready('base',function(){
+        //加载主UI模块
         $s([
             prefix+"ui.js?t="+t
         ],"biz");
         $s.ready('biz',function(){
+            //加载业务逻辑模块
             //i18n.addLng('zh-CN',yx_xdata_i18n['zh-CN']);
-            JJ.init();
+            $s([
+                prefix+"joy.js?t="+t,
+                prefix+"aron.js?t="+t,
+                prefix+"lv.js?t="+t
+            ],"main");
+            $s.ready('main',function(){
+                JJ.init();
+            })
         });
     });
 };

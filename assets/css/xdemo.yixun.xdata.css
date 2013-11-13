@@ -521,6 +521,7 @@
         .data_pop1 .drp_date1 .drp_date_title{color:#1bd0dc;}
             .data_datepreset li{float:left;display: inline;margin-left: 10px;position: relative;}
             .data_datepreset a{display: inline-block;height:28px;line-height: 28px;}
+                .data_datepreset_item1 a{color:hsla(33, 100%, 49%, 1);}
             .data_types{
                 position: absolute;
                 right:0;

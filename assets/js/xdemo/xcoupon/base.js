@@ -174,3 +174,8 @@ JJ('GOD',function(M,V,C){
     JJ.init = this.init;
 
 });
+
+JJ.heredoc = function(fn){return (fn.toString().split('\n').slice(1,-1).join('\n') + '\n');};
+JJ.log = function(obj){(window['console']||{log:function(x){alert(x);}}).log(obj);};
+JJ.$win = $(window);
+JJ.$body=$('body');
