@@ -226,12 +226,12 @@ J(function($,p,pub){
         showTip:function(txt){
             if(txt===null){
                 this.$tip.addClass('data_hidden');
-                this.$chart.removeClass('data_hidden');
+                this.$d.removeClass('data_pop1_loading');
                 return;
             };
             txt = txt || '<img class="data_loading1" src="http://static.gtimg.com/icson/img/common/loading.gif"/>';
             this.$tip.html(txt).removeClass('data_hidden');
-            this.$chart.addClass('data_hidden');
+            this.$d.addClass('data_pop1_loading');
         },
         loadData:function(tagData){
             var dates = [],
@@ -514,7 +514,7 @@ J(function($,p,pub){
             for(var c in rawData){
                 c = this.getChartSerie(rawData[c],c,dataType);
                 c.serieData[0].color=colors[cnt-1];
-                c.serieData[1].color=J.colorLighten(colors[cnt-1],0.3);
+                c.serieData[1].color=J.colorLighten(colors[cnt-1],0.1);
                 //对比的数据，时间轴以第一组数据为准
                 if(cnt>1){
                     len = c.serieData[0].data.length;
@@ -571,12 +571,15 @@ J(function($,p,pub){
                     startOnTick: false,
                     lineColor: '#6a7791',
                     lineWidth: 1,
-                    tickPixelInterval: 140,
+                    //tickPixelInterval: 140,
                     tickmarkPlacement: 'on',
                     type: 'datetime',//datetime
                     minTickInterval: 24 * 3600 * 1000,
                     dateTimeLabelFormats: {
                         day: '%b%e'+i18n.t('com.day1')
+                    },
+                    labels:{
+                        overflow:"justify"
                     }
                 },
                 yAxis: [{
@@ -609,8 +612,14 @@ J(function($,p,pub){
                     },
                     borderRadius: 0,
                     shared: true,
-                    headerFormat:'<h4>{point.key} ({series.name})</h4>',
-                    pointFormat:'<div><span style="color:{series.color}">{point.dateRange}</span>:{point.y}</div>'
+                    headerFormat:'<table style="text-align:right;width:190px;">',
+                    footerFormat:'</table>',
+                    pointFormat:'<tr>'+
+                                    '<th rowspan="2" style="padding:3px 5px;">{point.date}</span></th>'+
+                                '</tr>'+
+                                '<tr style="border-bottom:1px solid #e8e8e8;"><td style="padding:1px 5px;width:90px;"><span style="color:{series.color}">{series.name}</td>'+
+                                    '<td style="padding:1px 5px;width:90px;text-align:left">{point.y}</td>'+
+                                '</tr>'
                 },
                 plotOptions: {
                     pie: {
@@ -679,13 +688,17 @@ J(function($,p,pub){
                 .attr('data-version_mod_avg_corate',chartOpts.avgData.avgCORate);
 
             if(!this.chart){
+                //明细图表
+                p.detail.render(chartOpts.series);
                 this.$chart.highcharts(chartOpts);
                 this.chart=this.$chart.highcharts();
                 //平均线默认隐藏
                 this.unselectAvgSeries();
-                p.detail.render(chartOpts.series);
                 return;
             };
+            //明细图表
+            p.detail.render(chartOpts.series);
+
             var seriesLen0 = this.chart.series.length,
                 seriesToBeRemoved = [];
             //移除多余的图表
@@ -707,7 +720,7 @@ J(function($,p,pub){
             };
             //平均线默认隐藏
             this.unselectAvgSeries();
-            p.detail.render(chartOpts.series);
+            
         },
         unselectAvgSeries:function(){
             var len = this.chart.series.length,

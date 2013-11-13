@@ -36,7 +36,7 @@
     .data_loading2{display: block;width:16px;margin:50px auto;}
 
 .data_charttip1 .data_loading1,.data_ytagchart .data_loading,.data_ytagcharttip .data_loading1{display: block;margin:10px auto;}
-.data_ytagcharttip{position: fixed;z-index:10;top:200px;left:0;right:0;text-align: center;}
+.data_ytagcharttip{position: fixed;z-index:10;top:50%;margin-top:-8px;left:0;right:0;text-align: center;}
 .data_charttip1,.data_charttip1_bg{position: absolute;top:0;left:0;bottom: 0;right:0;}
 .data_charttip1_bg{z-index: 1;background-color: #FFF;opacity: 0.8;}
 .data_charttip1_bd{position: absolute;z-index: 2;left:0;top:30%;right:0;text-align: center;}
@@ -177,7 +177,7 @@
         .data_ui_bd{overflow:auto; position:absolute; left:0; top:54px; bottom:0; width:100%;}
 
     .data_exhaled{position:absolute; left:300px; top:50%; margin-top:-70px; background-color:#F6F5EF; box-shadow:2px 2px 2px rgba(0,0,0,0.3);}
-    .data_exhaled1{left:-25px;margin-top:10px;box-shadow: -2px 2px 2px rgba(0,0,0,0.3);}
+    .data_exhaled1{left:-25px;margin-top:10px;box-shadow: -2px 2px 2px rgba(0,0,0,0.3);display: none;}
         .data_exhaled_btn{
             overflow:hidden;
             display:block;
@@ -453,7 +453,7 @@
 
 /*===== 数据趋势 =====*/
     .data_chart{position:relative; text-align:center;min-height:355px;}
-        .data_chart_bd{margin:auto;height:300px;background-color:#FFF;padding:10px 0 0; }
+        .data_chart_bd{margin:auto;height:300px;background-color:#FFF;padding:10px 0 0 0; }
 
 
 /*===== 按钮 =====*/
@@ -500,19 +500,20 @@
     /*===== 详情 =====*/
         .data_pop{position:fixed!important;z-index:3; left:310px; bottom:0;border:1px solid #648BA4; box-shadow:0 0 10px rgba(0,0,0,0.3); background-color:#FFF;}
         .data_pop_section{margin-bottom: 20px;}
-        .data_pop_tit{font: 400 16px/30px 'Microsoft YaHei';height: 30px;text-align: left;margin-bottom: 15px;}
+        .data_pop_tit{font: 400 16px/30px 'Microsoft YaHei';height: 30px;text-align: left;margin-bottom: 5px;}
         .data_pop_hd{position: fixed;z-index:2;left:0;right:0;top:0;}
         .data_pop_bd{position:absolute;overflow-y: auto;}
         .data_pop_inner{position: relative;padding:0 20px 20px;}
-        .data_pop1{z-index:10000;left:335px; top:0;bottom:0;right:0;border:0;border-top: 3px solid #386A8A;box-shadow:0 2px 8px rgba(0,0,0,0.3);-webkit-transition:all .25s ease-out;-webkit-transform:translateX(100%);background-color:#F6F5EF;}
+        .data_pop1{z-index:10000;left:370px; top:0;bottom:0;right:0;border:0;border-top: 3px solid #386A8A;box-shadow:0 2px 8px rgba(0,0,0,0.3);-webkit-transition:all .25s ease-out;-webkit-transform:translateX(100%);background-color:#F6F5EF;}
         .data_pop1_on{-webkit-transform:translateX(0);}
+        .data_pop1_on .data_exhaled1{display: block;}
         .data_pop1 .data_pop_close{left:auto;right:0px;top:0px;}
         .data_pop1_on .data_pop_close{visibility: visible;}
         .data_pop1 .data_pop_bd{top:117px;bottom:0;left:0;right:0;}
         .data_pop1 .data_action{text-align: right;padding: 10px 20px 20px;background:#F2EDE0;border-bottom: 1px dotted #ccc;}
         .data_pop1 .data_action .data_btn{float:none;display: inline-block;}
         .data_pop1 .data_time{padding-left: 20px;padding-right: 20px;overflow: visible;}
-        .data_pop1 .data_filter1{border-bottom:1px solid #f5f5f5;}
+        .data_pop1 .data_filter1{border-bottom:1px dotted #ededed;box-shadow:3px 1px 3px #ededed;}
         .data_pop1 .drp_date_title{color:#f9b700;}/* 与图表曲线颜色一致 */
         .data_pop1 .drp_date1 .drp_date_title{color:#1bd0dc;}
             .data_datepreset li{float:left;display: inline;margin-left: 10px;position: relative;}
@@ -530,6 +531,7 @@
             .data_types label{float:left;display: inline;margin-right: 10px;}
             .data_types input,.data_types span{float:left;display: inline;}
             .data_types input{margin-top:3px;margin-right:3px;}
+        .data_pop1_loading .data_chart,.data_pop1_loading .data_detail{visibility: hidden;opacity: 0;}
         .data_pop2{width:300px;padding:10px 20px;}
         .data_pop2:after{
             overflow:hidden;
