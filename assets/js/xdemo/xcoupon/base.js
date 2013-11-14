@@ -28,6 +28,7 @@
 var JJ = (function(){
 
     var modUtil = {
+        J:"2.0.0",
         //export global event
         EVT:function(name){
             JJ.EVT[this.id][name]=this.id+'_'+name+'.'+this.id;
@@ -68,9 +69,12 @@ var JJ = (function(){
 JJ.__mode="silent";
 JJ.EVT={};
 JJ.proxy=function(_this,func){
-    return (function(){
-        return func.apply(_this,arguments);
-    });
+    if(typeof(func)==='function'){
+        return (function(){
+            return func.apply(_this,arguments);
+        });
+    };
+    return func;
 };
 
 /**
@@ -111,17 +115,19 @@ JJ('GOD',function(M,V,C){
      */
     C.execSub = function(sub,action){
         if(typeof(sub)!=='object') return;
+        if(sub[action]&&C.isFunc(sub[action])){
+            sub[action].call(sub);
+            delete sub[action];
+        };
         for (var c in sub) {
             c = sub[c];
-            if (!c) {
+            if ( (!c) || (c.jquery) || (!c[action]) ) {
                 continue;
             };
             if ( C.isFunc(c[action]) ) {
                 c[action].call(c);
                 delete c[action];
             };
-            //sub sub module
-            C.execSub(c,action);
         };
     };
     /**
@@ -131,18 +137,16 @@ JJ('GOD',function(M,V,C){
      */
     C.exec = function(action,destroyMVCAfterExec){
         for (var m in JJ) {
-            if(typeof(JJ[m])!=='object') continue;
-            //skip special objects
-            if ( m==='GOD' || m==='EVT' || m==='init'/*jquery compatibility*/||m==='onLoad') {continue;};
             m = JJ[m];
+            if( (!m.J) || typeof(m)!=='object') continue;
             if( C.isFunc(m[action]) ) {
                 m[action].call(m);
                 delete m[action];
             };
-            var mvc = ['_M','_V','_C'],len=mvc.length;
-            for(var i=0;i<len;i++){
-                m[mvc[i]] && C.execSub(m[mvc[i]],action);
-                destroyMVCAfterExec && (delete m[mvc[i]]);
+            var mvc = {'_M':1,'_V':1,'_C':1};
+            for(var c in mvc){
+                m[c] && C.execSub(m[c],action);
+                destroyMVCAfterExec && (delete m[c]);
             };
         };
     };

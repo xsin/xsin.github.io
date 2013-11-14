@@ -4,12 +4,16 @@ var cbk = function($s){
     var prefix = "http://oxox.io/assets/js/xdemo/xcoupon/",
             t = new Date().getTime();
     //加载基础代码
-    $s([prefix+"base.js?t="+t
+    $s([
+        prefix+"base.js?t="+t,
+        "http://twitter.github.com/hogan.js/builds/2.0.0/hogan-2.0.0.js?t="+t
     ],"base");
     $s.ready('base',function(){
+        JJ.toHtml = function(tpl,obj,ext){tpl = Hogan.compile(tpl);return (tpl.render(obj,ext));};
         //加载主UI模块
         $s([
-            prefix+"ui.js?t="+t
+            prefix+"ui.js?t="+t,
+            prefix+'data.js?t='+t
         ],"biz");
         $s.ready('biz',function(){
             //加载业务逻辑模块
