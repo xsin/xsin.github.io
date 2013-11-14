@@ -55,7 +55,7 @@ J(function($,p,pub){
                 });
             }).bind(J.data.EVT.KeyDataChange,function(e,err,d){
                 if(err){
-                    p.modRank.$d.html('<div class="data_error data_errorB">'+err+'</div>');
+                    p.modRank.$d.html('');
                 }
             });
         },
@@ -225,7 +225,7 @@ J(function($,p,pub){
                 this.$d.find('.data_list_item').remove();
             }
             if(cItems.length===0){
-                this.$d.html('<div class="data_alert data_alertB" data-i18n="tip.noDataAdvice">无数据</div>').oxi18n();
+                this.$d.empty().html('<div class="data_alert data_alertB" data-i18n="tip.noDataAdvice">无数据</div>').oxi18n({},true);
                 return;
             };
 

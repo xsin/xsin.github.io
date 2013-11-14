@@ -2,7 +2,7 @@
 .data_error,.data_warning{text-align: center;}
 .data_error{color:#d70000;}
 .data_warning,.data_alert{color:#ff7300;}
-.data_errorB,.data_alertB{display: block;text-align: left;padding:2px 3px;border-radius: 2px;background: #444;}
+.data_errorB,.data_alertB{display: block;text-align: left;padding:5px;border-radius: 2px;background: #444;}
 .data_fl{float:left;display: inline;}
 .data_fr{float:right;display: inline;}
 .data_c1{color:#F70;}
