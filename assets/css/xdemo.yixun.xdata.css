@@ -1,9 +1,10 @@
 .data_display,.data_display body{overflow: hidden!important;}
 .data_error,.data_warning{text-align: center;}
 .data_error{color:#d70000;}
+.data_warning,.data_alert{color:#ff7300;}
+.data_errorB,.data_alertB{display: block;text-align: left;padding:2px 3px;border-radius: 2px;background: #444;}
 .data_fl{float:left;display: inline;}
 .data_fr{float:right;display: inline;}
-.data_warning,.data_alert{color:#ff7300;}
 .data_c1{color:#F70;}
 .data_c2{color:#1d7ad9;}
 .data_hidden{display: none !important;}
@@ -369,6 +370,7 @@
         .data_box_hd{overflow:hidden; zoom:1; padding-bottom:10px; text-align:right;position:relative;}
         .data_box_hd h3{float:left; font-weight:bold;}
         .data_box_bd{position: relative;}
+    .data_box2 .data_error,.data_box2 .data_alert{margin:20px 15px;}
 
 
 /*===== 图标 =====*/

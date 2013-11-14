@@ -55,6 +55,7 @@ J(function($,p,pub){
                 startDateId: "data_start_date1",
                 endDateId: "data_end_date1",
                 target: 'dataDatePicker1',
+                hideOnDocClick:(location.href.indexOf('jiadian.yixun')>0?false:true),
                 isTodayValid: true,
                 success: function (obj) {
                     p.keyChart.dateRangeData = obj.getValue();
@@ -76,8 +77,9 @@ J(function($,p,pub){
                 this.$tip.addClass('data_hidden');
                 return;
             };
+            var isLoading = typeof(txt)==='undefined';
             txt = txt || '<img class="data_loading1" src="http://static.gtimg.com/icson/img/common/loading.gif"/>';
-            txt = txt.indexOf('<span')==0?txt:('<span class="data_error">'+txt+'</span>');
+            txt = isLoading?txt:(txt.indexOf('<span')==0?txt:('<span class="data_error data_errorB">'+txt+'</span>'));
             this.$tipBD.html(txt);
             this.$tip.removeClass('data_hidden');
         },
@@ -129,8 +131,12 @@ J(function($,p,pub){
             this.getDataByDates(dates,function(err,d1,d2){
                 me.isLoading=false;
                 if(err){
+                    err = err.toString();
+                    if(err.indexOf('permission deny')>-1){
+                        err = i18n.t('tip.permissionDeny');
+                    }
                     me.hasAjaxError=true;
-                    me.showTip(i18n.t('ajax.serverError')+err.toString());
+                    me.showTip(i18n.t('ajax.serverError')+err);
                     return;
                 }
                 me.keyData=d1;

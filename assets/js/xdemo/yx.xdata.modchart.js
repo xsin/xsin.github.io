@@ -122,6 +122,7 @@ J(function($,p,pub){
                 endDateId: "data_end_date2",
                 target: 'dataDateRange2',
                 isTodayValid: true,
+                hideOnDocClick:(location.href.indexOf('jiadian.yixun')>0?false:true),
                 periodObj:{
                     drpRecentDays1: 6,//最近7天
                     drpRecentDays2: 14,//最近15天
@@ -917,7 +918,7 @@ J(function($,p,pub){
             this.$body.empty();
             var data = this.parseData(series),
                 html = J.toHtml(this.tplTable,data);
-            this.$body.html(html).oxi18n();
+            this.$body.html(html).oxi18n({},true);
             $('#dataSorter').tablesorter();
         },
         parseData:function(series){

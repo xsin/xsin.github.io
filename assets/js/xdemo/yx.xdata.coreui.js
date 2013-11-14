@@ -14,7 +14,7 @@ J(function($,p,pub){
                     </div>
                 </div>
                 <div id="dataUIBD" class="data_ui_bd">
-                    <div class="data_box">
+                    <div class="data_box data_box1">
                         <div class="data_box_hd">
                             <h3 data-i18n="chart1.title">整体数据</h3>
                             <a href="javascript:;" id="dataBtnHeatmap" class="data_btn data_btn_bg1 data_hidden" data-i18n="com.showHeatmap">显示热区图</a>
@@ -32,7 +32,7 @@ J(function($,p,pub){
                             </table>
                         </div>
                     </div><!--/data_box-->
-                    <div class="data_box">
+                    <div class="data_box data_box2">
                         <div class="data_box_hd">
                             <h3 data-i18n="chart2.title">模块趋势</h3>
                             <a id="dataShowChart3" href="javascript:;" class="data_btn data_btn_bg1 data_btn_chart3 data_hidden">模块占比</a>
@@ -90,11 +90,11 @@ J(function($,p,pub){
                         </div>
                         <div class="data_fr data_datepreset">
                             <ul class="clearfix">
-                                <li class="data_datepreset_item data_datepreset_item1" id="drpRecentDays1" data-v="1"><a href="javascript:;">最近7天</a></li>
-                                <li class="data_datepreset_item" id="drpRecentDays2" data-v="2"><a href="javascript:;">最近15天</a></li>
-                                <li class="data_datepreset_item" id="drpRecentDays3" data-v="3"><a href="javascript:;">最近30天</a></li>
+                                <li class="data_datepreset_item data_datepreset_item1" id="drpRecentDays1" data-v="1"><a href="javascript:;"><span data-i18n="com.recent">最近</span>7<span data-i18n="com.day">天</span></a></li>
+                                <li class="data_datepreset_item" id="drpRecentDays2" data-v="2"><a href="javascript:;"><span data-i18n="com.recent">最近</span>15<span data-i18n="com.day">天</span></a></li>
+                                <li class="data_datepreset_item" id="drpRecentDays3" data-v="3"><a href="javascript:;"><span data-i18n="com.recent">最近</span>30<span data-i18n="com.day">天</span></a></li>
                                 <li>
-                                    <button id="dataBtnMoreFilter" class="data_btnB"><i class="data_ico_chart"></i>更多条件</button>
+                                    <button id="dataBtnMoreFilter" class="data_btnB"><i class="data_ico_chart"></i><span data-i18n="com.moreCondition">更多条件</span></button>
                                     <div id="dataTypes" class="data_types data_hidden">
                                         <label><input id="dataTypeForMod1" class="data_type" type="radio" value="1" name="data_type" checked="checked"/><span data-i18n="nav.a">点击量</span></label>
                                         <label><input id="dataTypeForMod2" class="data_type" type="radio" value="2" name="data_type"/><span data-i18n="nav.b">下单量</span></label>
