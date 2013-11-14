@@ -83,7 +83,7 @@ J(function($,p,pub){
                         <div id="dataDateRange2" class="data_fl data_daterange">
                             <div class="drp_date drp_date1" id="div_dataLabelDateRange2">
                                 <span class="drp_date_title" id="dataLabelDateRange2"></span>
-                                <a class="drp_trigger" id="drpTrigger2" href="javascript:;">
+                                <a class="drp_trigger" id="drp_dataLabelDateRange2Trigger" href="javascript:;">
                                     <i class="drp_trigger_ico"></i>
                                 </a>
                             </div>

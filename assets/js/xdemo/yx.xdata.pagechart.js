@@ -51,9 +51,6 @@ J(function($,p,pub){
             new pickerDateRange('txtDateRange1', {
                 startDate: todayStr,
                 endDate: todayStr,
-                compareCheckboxId:'data_cbx_compare1',
-                startDateId: "data_start_date1",
-                endDateId: "data_end_date1",
                 target: 'dataDatePicker1',
                 hideOnDocClick:(location.href.indexOf('jiadian.yixun')>0?false:true),
                 isTodayValid: true,
