@@ -1,5 +1,5 @@
 .xbar{position:fixed;top:0px;right:0px;width:50px;height:100%;z-index:9999}
-    .xbar_hd{position:absolute;z-index:2;left:0;top:0;width:50px;;height:100%;background-color:#fff;box-shadow: -2px 0px 3px rgba(0,0,0,.2);border-left:1px solid #C3C3C3;}
+    .xbar_hd{position:absolute;z-index:2;left:0;top:0;width:50px;;height:100%;background-color:#fff;box-shadow: 0px 0px 5px rgba(0,0,0,.2);border-left:1px solid #C3C3C3;}
     .xbar_lists{position:absolute;top:50%;left:0px;height:380px;margin-top:-190px;}
         .xbar_lk{display:block;text-align:center;text-decoration:none !important;padding:10px 0;}
             .xbar_lk i{display:block;margin:0 14px;width:21px;height:21px;}
@@ -26,7 +26,7 @@
             .xbar_guang.xbar_lk_current i{background-position:-102px -25px;}
             .xbar_lk_current .xbar_name{color:#fff;}
 
-    .xbar_bd{display:block;position:absolute;right:-170px;top:0px;height:100%;width:170px;border:1px solid #C3C3C3;border-right:0 none;background-color:#fff;box-shadow: -2px 0px 3px rgba(0,0,0,.2);border-left:1px solid #C3C3C3;}
+    .xbar_bd{display:block;position:absolute;right:-170px;top:0px;height:100%;width:170px;border:1px solid #C3C3C3;border-right:0 none;background-color:#fff;box-shadow: 0px 0px 5px rgba(0,0,0,.2);border-left:1px solid #C3C3C3;}
         .xbar_close{position:absolute;top:8px;right:8px;width:18px;height:18px;background-color:#C3C3C3;display:block;text-align: center;line-height:18px;color:#fff;border-radius:9px;text-decoration:none !important;font-family:"\5B8B\4F53";}
             .xbar_close:hover{background-color:#1d7ad9;}
         .xbar_item{}
