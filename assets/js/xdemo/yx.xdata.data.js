@@ -96,13 +96,18 @@ J(function($,p,pub){
     };
     //根据css选择器获取该选择器下ytag的数据
     pub.getClickDataBySelector = function(cssSelector){
-        var ids = [],tempCache={},id;
-        $(cssSelector).find('[ytag]').each(function(i,o){
-            id = o.getAttribute('ytag');
-            if(!tempCache[id]){
-                ids.push(id);
-                tempCache[id]=true;
+        var ids = [],tempCache={},id,
+            addTag = function(o){
+                id = o.getAttribute('ytag');
+                if(!tempCache[id]){
+                    ids.push(id);
+                    tempCache[id]=true;
+                };
             };
+        $(cssSelector).find('[ytag]').each(function(i,o){
+            addTag(o);
+        }).end().each(function(i,o){
+            addTag(o);
         });
         return pub.getClickDataByIds(ids);
     };
