@@ -140,7 +140,7 @@ J(function($,p,pub){
         'ModRankRendered':'onXDataModRankRendered'
     };
     pub.EVT=EVT;
-    pub.maxDateRange = 90;
+    pub.maxDateRange = 100;
     //主UI框架
     p.main={
         visible:false,
