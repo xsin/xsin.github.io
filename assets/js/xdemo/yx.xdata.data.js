@@ -99,7 +99,7 @@ J(function($,p,pub){
         var ids = [],tempCache={},id,
             addTag = function(o){
                 id = o.getAttribute('ytag');
-                if(!tempCache[id]){
+                if( id && (!tempCache[id]) ){
                     ids.push(id);
                     tempCache[id]=true;
                 };
@@ -109,6 +109,7 @@ J(function($,p,pub){
         }).end().each(function(i,o){
             addTag(o);
         });
+        console.log(ids);
         return pub.getClickDataByIds(ids);
     };
     //根据id获取多个ytag的点击数据
