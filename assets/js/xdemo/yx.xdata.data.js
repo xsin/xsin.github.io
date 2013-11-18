@@ -109,7 +109,7 @@ J(function($,p,pub){
         }).end().each(function(i,o){
             addTag(o);
         });
-        console.log(ids);
+        //console.log(ids);
         return pub.getClickDataByIds(ids);
     };
     //根据id获取多个ytag的点击数据
@@ -223,6 +223,66 @@ J(function($,p,pub){
         });
     };
     /**
+     * 获取公共模块信息
+     */
+    pub.getPublicMods = function(cbk){
+        var _params = {
+            "act":"query",
+            "xn":"xdata",
+            "xk":"mods_-J8cz2Qpn7_rKE2jiImK",
+            "t":new Date().getTime()
+        };
+        var url = 'http://log.oxox.io/api.php',
+            xhr;
+
+        //获取所有页面
+        xhr = $.ajax({
+            url:url,
+            dataType:'json',
+            data:_params
+        });
+        xhr.done(function(d,txtStatus,jqXhr){
+            if(d.code!=="1"){
+                cbk(d.info);
+                return;
+            }
+            pub.publicMods = d.info.xv;
+            cbk(null,pub.publicMods);
+        }).fail(function(jqXhr,txtStatus,err){
+            cbk(err);
+        });
+    };
+    /**
+     * 获取页面配置信息
+     */
+    pub.getPageConfigs = function(cbk){
+        var _params = {
+            "act":"query",
+            "xn":"xdata",
+            "xk":"pages",
+            "t":new Date().getTime()
+        };
+        var url = 'http://log.oxox.io/api.php',
+            xhr;
+
+        //获取所有页面
+        xhr = $.ajax({
+            url:url,
+            dataType:'json',
+            data:_params
+        });
+        xhr.done(function(d,txtStatus,jqXhr){
+            if(d.code!=="1"){
+                cbk(d.info);
+                return;
+            }
+            pub.pages = d.info.xv;
+            cbk(null,pub.pages);
+        }).fail(function(jqXhr,txtStatus,err){
+            cbk(err);
+        });
+    };
+    /**
      * 获取预配置的tag信息
      */
     pub.getDefaultCTags = function(cbk){
@@ -237,23 +297,65 @@ J(function($,p,pub){
         var _params = {
             "act":"query",
             "xn":"xdata",
-            "xk":"mods_"+pub.bizInfo.pid
+            "t":new Date().getTime()
         };
-        var url = 'http://log.oxox.io/api.php'
-        var xhr = $.ajax({
-            url:url,
-            dataType:'json',
-            data:_params
-        });
-        xhr.done(function(d,txtStatus,jqXhr){
-            if(d.code!=="1"){
-                cbk(d.info);
+        var url = 'http://log.oxox.io/api.php',
+            xhr;
+
+        //获取所有页面
+        pub.getPageConfigs(function(err,msg){
+            if(err){
+                cbk(err);
                 return;
-            }
-            cbk(null,d.info.xv);
-        }).fail(function(jqXhr,txtStatus,err){
-            cbk(err);
+            };
+            //获取当前页面的mods
+            var page = pub.getPageConfigByUrl(location.href);
+            if(!page){
+                cbk('getDefaultCTags error');
+                return;
+            };
+            //获取公共模块
+            pub.getPublicMods(function(err1,msg1){
+                if(err1){
+                    cbk(err1);
+                    return;
+                }
+                //获取当前页面的模块
+                xhr = $.ajax({
+                    url:url,
+                    dataType:'json',
+                    data:$.extend({},_params,{xk:'mods_'+page.$id})
+                });
+                xhr.done(function(d2,txtStatus2,jqXhr2){
+                    if(d2.code!=="1"){
+                        cbk(d2.info);
+                        return;
+                    }
+                    cbk(null,msg1.concat(d2.info.xv));
+                }).fail(function(jqXhr2,txtStatus2,err2){
+                    cbk(err2);
+                });
+            });
         });
+    };
+    /**
+     * 获取指定URL的页面配置数据
+     */
+    pub.getPageConfigByUrl = function(url){
+        var len =0,tempPage,page;
+        if(!this.pages || (len=this.pages.length)==0){
+            return null;
+        }
+        for(var i=0;i<len;i++){
+            tempPage = this.pages[i];
+            //console.log(tempPage.url);
+            //new RegExp(tempPage.url,'i').test(url)
+            if(url.toLowerCase().indexOf(tempPage.url)>-1){
+                page = tempPage;
+                //break;//不加break，使用最后一个匹配项
+            }
+        };
+        return page;
     };
     /**
      * 获取指定编号的预设tag
