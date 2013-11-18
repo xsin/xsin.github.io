@@ -37,6 +37,7 @@ JJ('data',function(M,V,C){
     C.coupon = {
         _init:function(){
             JJ.data.getMyCoupon('10281283',function(err,data){
+                console.log('okkk11')
                 console.log('getMyCoupon',err,data);
                 /*
                 if(!err){

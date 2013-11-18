@@ -26,7 +26,10 @@ JJ('joy',function(M,V,C){
                 <a href="javascript:;" class="xbar_close">&rarr;</a> 
                 <div class="xbar_item"> 
                     <div class="xbar_tit"></div> 
-                    <div class="xbar_iframe"></div> 
+                    <div class="xbar_iframe">
+                        <ul class="Xcoupon_list clearfix" id="xbarCoupon"></ul>
+                        <a href="#" class="xbar_morecoupon" id="J_moreCoupon">查看更多优惠券&gt;&gt;</a>
+                    </div> 
                 </div> 
             </div> 
         </div>
@@ -51,7 +54,7 @@ JJ('joy',function(M,V,C){
 
     var hideBd = function(title){
         $(".xbar_bd").animate({ 
-            right : '-170px'
+            right : '-305px'
         },300,'linear',function(){ 
             $('.xbar_tit').html(); 
         })
@@ -68,4 +71,5 @@ JJ('joy',function(M,V,C){
             $('.xbar_lk').removeClass('xbar_lk_current');
         }); 
     };
+ 
 });

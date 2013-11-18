@@ -26,12 +26,12 @@
             .xbar_guang.xbar_lk_current i{background-position:-102px -25px;}
             .xbar_lk_current .xbar_name{color:#fff;}
 
-    .xbar_bd{display:block;position:absolute;right:-170px;top:0px;height:100%;width:170px;border:1px solid #C3C3C3;border-right:0 none;background-color:#fff;box-shadow: 0px 0px 5px rgba(0,0,0,.2);border-left:1px solid #C3C3C3;}
+    .xbar_bd{display:block;position:absolute;right:-305px;top:0px;height:100%;width:305px;border:1px solid #C3C3C3;border-right:0 none;background-color:#fff;box-shadow: 0px 0px 5px rgba(0,0,0,.2);border-left:1px solid #C3C3C3;}
         .xbar_close{position:absolute;top:8px;right:8px;width:18px;height:18px;background-color:#C3C3C3;display:block;text-align: center;line-height:18px;color:#fff;border-radius:9px;text-decoration:none !important;font-family:"\5B8B\4F53";}
             .xbar_close:hover{background-color:#1d7ad9;}
         .xbar_item{}
             .xbar_tit{height:36px;line-height:36px;padding-left:10px;font-size:14px;font-weight:bold;color:#333;font-family:"\5FAE\8F6F\96C5\9ED1";border-bottom:1px solid #C3C3C3;}
-            .xbar_iframe{background-color:#fff;height:100%;}
+            .xbar_iframe{background-color:#fff;height:100%;padding: 15px 10px;}
 
 
 
