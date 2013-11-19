@@ -385,7 +385,7 @@
     /*--ico按钮--*/
     .data_btnB{
         display: inline-block;
-        padding: 4px 10px 4px;
+        padding: 3px 8px;
         margin-bottom: 0;
         font:normal 12px/17px "微软雅黑";
         color: #333333;
@@ -522,12 +522,12 @@
         .data_pop1 .drp_date_title{color:#f9b700;}/* 与图表曲线颜色一致 */
         .data_pop1 .drp_date1 .drp_date_title{color:#1bd0dc;}
             .data_datepreset li{float:left;display: inline;margin-left: 10px;position: relative;}
-            .data_datepreset a{display: inline-block;height:28px;line-height: 28px;}
+            .data_datepreset a{display: inline-block;height:26px;line-height: 26px;}
                 .data_datepreset_item1 a{color:hsla(33, 100%, 49%, 1);text-decoration: underline;}
             .data_types{
                 position: absolute;
                 right:0;
-                top:28px;
+                top:26px;
                 width:200px;
                 border: 1px solid #eeeeee;
                 background-color: #fff;
@@ -788,3 +788,7 @@
 .drp_cbxcompare { vertical-align: -2px; margin:2px }
 
 /*=====日历控件结束=========*/
+
+@media (max-width:1180px){
+    .data_datepreset .data_datepreset_item{display: none;}
+}
