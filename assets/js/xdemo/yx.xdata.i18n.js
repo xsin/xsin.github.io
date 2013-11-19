@@ -29,7 +29,11 @@ yx_xdata_i18n['zh-CN'] = {
         "day1":"\u65E5",//日
         "date":"\u65E5\u671F",//日期
         "recent":"\u6700\u8FD1",//最近
-        "moreCondition":"\u66F4\u591A\u6761\u4EF6"//更多条件
+        "moreCondition":"\u66F4\u591A\u6761\u4EF6",//更多条件
+        "actFloor":"\u6D3B\u52A8\u697C\u5C42",//活动楼层
+        "actHead":"\u6D3B\u52A8\u9996\u5C4F",//活动首屏
+        "actSidenavRight":"\u6D3B\u52A8\u53F3\u8FB9\u5BFC\u822A",//活动右边导航
+        "actSidenavLeft":"\u6D3B\u52A8\u5DE6\u8FB9\u5BFC\u822A"//活动左边导航
     },
     nav:{
         "a":"\u70B9\u51FB\u91CF",
