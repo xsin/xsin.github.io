@@ -7,6 +7,7 @@ J(function($,p,pub){
         dataChangedAt:1,
         dataInited:false,
         todayDataCache:{},
+        antiCover:false,
         tpl:J.heredoc(function(){/*
             <ul id="dataList{{id}}" class="data_list_con{{clListSub}}">
                 {{#babies}}
@@ -50,8 +51,12 @@ J(function($,p,pub){
             }).bind(J.ui.EVT.UIScroll,function(e,sTop){
                 //J.$win.trigger('oxmenuPositionNeedUpdating');
             }).bind(J.ui.EVT.UIReady,function(e){
-                p.modRank.$d = $('#dataList1').bind('mouseleave.modrank',function(e){
+                p.modRank.$d = $('#dataList1').bind('mouseleave',function(e){
+                    p.modRank.antiCover=true;
                     J.ytag.hideCovers();
+                    //console.log('modRank.mouseleave',new Date().getTime());
+                }).bind('mouseenter',function(e){
+                    p.modRank.antiCover=false;
                 });
             }).bind(J.data.EVT.KeyDataChange,function(e,err,d){
                 if(err){
@@ -297,6 +302,10 @@ J(function($,p,pub){
 
     pub.getTodayDataById = function(id){
         return p.modRank.todayDataCache[id]||{};
+    };
+
+    pub.antiCover = function(){
+        return p.modRank.antiCover;
     };
 
 });

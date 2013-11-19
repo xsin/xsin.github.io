@@ -12,6 +12,7 @@ J(function($,p,pub){
         covers:{},
         $ytagTrigger:null,
         activeNodeCssSelector:null,
+        timeoutHoverIn:null,
         dataType:1,
         hideCovers:function(){
             for(var c in this.covers){
@@ -64,7 +65,12 @@ J(function($,p,pub){
             $('[data-ytag]').live('click.ytag',function(e,d){
                 p.main.onClickYTagTrigger(this,d);
             }).live('mouseenter.ytag',function(e,d){
-                p.main.onHoverIn(this,d);
+                clearTimeout(p.main.timeoutHoverIn);
+                var _this = this;
+                p.main.timeoutHoverIn = setTimeout(function(){
+                    p.main.onHoverIn(_this,d);
+                },130);
+                return false;
             });
         },
         reset:function(t){
@@ -76,6 +82,8 @@ J(function($,p,pub){
             this.hideCovers();
         },
         onHoverIn:function(elmTrigger,d){
+            //console.log('ytag.mouseenter',new Date().getTime());
+            if(J.modrank.antiCover()) return false;
             var ytagData = J.ytag.get(elmTrigger.getAttribute('data-id'));
 
             J.$body.stop().animate({
@@ -83,6 +91,7 @@ J(function($,p,pub){
             },'fast',function(){
                 p.main.showCover(ytagData);
             });
+            return false;
         },
         onClickYTagTrigger:function(elmTrigger,d){
             var clOn = 'data_list_lk_on';

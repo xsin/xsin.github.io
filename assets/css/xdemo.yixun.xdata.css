@@ -179,8 +179,8 @@
         .data_ui_hd{position:absolute; z-index:2; left:0; top:0; width:100%; height:54px; border-bottom:1px dotted #CCC; background-color:#F2EDE0;}
         .data_ui_bd{overflow:auto; position:absolute; left:0; top:54px; bottom:0; width:100%;}
 
-    .data_exhaled{position:absolute; left:300px; top:50%; margin-top:-70px; background-color:#F6F5EF; box-shadow:2px 2px 2px rgba(0,0,0,0.3);}
-    .data_exhaled1{left:-25px;margin-top:10px;box-shadow: -2px 2px 2px rgba(0,0,0,0.3);display: none;}
+    .data_exhaled{position:absolute; left:300px; top:50%; margin-top:-30px; background-color:#F6F5EF; box-shadow:2px 2px 2px rgba(0,0,0,0.3);}
+    .data_exhaled1{left:-25px;box-shadow: -2px 2px 2px rgba(0,0,0,0.3);display: none;}
         .data_exhaled_btn{
             overflow:hidden;
             display:block;
@@ -743,9 +743,9 @@
 }
 .drp_date_title {
     font-family:Arial;
-    font-size:16px;
+    font-size:14px;
     color:#666666;
-    padding:4px 8px;
+    padding:3px 8px;
     *padding:0px 8px;
     border-right:1px solid #d8d8d8;
     vertical-align:middle;
@@ -760,9 +760,9 @@
 }
 .drp_date .to{ padding:0 5px;}
 .drp_trigger{/*====*/
-    width:30px;
-    height:26px;
-    line-height:26px;
+    width:26px;
+    height:22px;
+    line-height:22px;
     display:inline-block;
     text-align:center;
     vertical-align:middle;
@@ -779,11 +779,12 @@
     font-size:0;
     content: "";
     overflow:hidden;
-    *margin-top:10px;
+    margin-top: -2px;
+    *margin-top:8px;
 }
 
 /*---日期选择器的对比复选框---*/
-.drp_lblcompare { float: left; margin: 3px 8px 0 8px; color: #666; cursor: pointer;font:normal 14px/20px 'Miscosoft Yahei';}
+.drp_lblcompare { float: left; margin: 2px 5px 0 5px; color: #666; cursor: pointer;font:normal 14px/20px 'Miscosoft Yahei';}
 .drp_cbxcompare { vertical-align: -2px; margin:2px }
 
 /*=====日历控件结束=========*/
