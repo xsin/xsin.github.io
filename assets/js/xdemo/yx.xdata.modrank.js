@@ -225,12 +225,14 @@ J(function($,p,pub){
             };
         },
         render:function(cItems,isPrepend){
-            this.$d.find('.data_alert').remove();
+            var emptyHtml = '<div id="dataList1Tip" class="data_alert data_alertB" data-i18n="tip.noDataAdvice">无数据</div>';
+            $('#dataList1Tip').remove();
             if(!isPrepend){
                 this.$d.find('.data_list_item').remove();
             }
+            //console.log('cItems',cItems);
             if(cItems.length===0){
-                this.$d.empty().html('<div class="data_alert data_alertB" data-i18n="tip.noDataAdvice">无数据</div>').oxi18n({},true);
+                this.$d.empty().html(emptyHtml).oxi18n({},true);
                 return;
             };
 
@@ -253,6 +255,12 @@ J(function($,p,pub){
             if (!isPrepend) {
                 this.$d.oxi18n().oxtree({},true);
                 J.$win.trigger(J.ui.EVT.ModRankRendered);
+                //如果私有模块为空,提示用户模块维护接口人
+                if(J.data.privateMods.length===0){
+                    this.$d.append(emptyHtml).oxi18n({},true);
+                }
+            }else{
+                $('#dataList1Tip').remove();
             };
 
         },

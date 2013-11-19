@@ -235,7 +235,6 @@ J(function($,p,pub){
         var url = 'http://log.oxox.io/api.php',
             xhr;
 
-        //获取所有页面
         xhr = $.ajax({
             url:url,
             dataType:'json',
@@ -305,22 +304,27 @@ J(function($,p,pub){
         //获取所有页面
         pub.getPageConfigs(function(err,msg){
             if(err){
-                cbk(err);
+                cbk('getPageConfigs error:'+err);
                 return;
             };
             //获取当前页面的mods
             var page = pub.getPageConfigByUrl(location.href);
             if(!page){
-                cbk('getDefaultCTags error');
-                return;
+                console.log('getPageConfigByUrl no data',location.href);
             };
             //获取公共模块
             pub.getPublicMods(function(err1,msg1){
                 if(err1){
-                    cbk(err1);
+                    cbk('getPublicMods error:'+err1);
                     return;
                 }
                 //获取当前页面的模块
+                pub.privateMods = [];
+                if(!page){
+                    //没有私有页面配置数据，直接使用公共模块
+                    cbk(null,msg1);
+                    return;
+                }
                 xhr = $.ajax({
                     url:url,
                     dataType:'json',
@@ -331,6 +335,7 @@ J(function($,p,pub){
                         cbk(d2.info);
                         return;
                     }
+                    pub.privateMods = d2.info.xv;
                     cbk(null,msg1.concat(d2.info.xv));
                 }).fail(function(jqXhr2,txtStatus2,err2){
                     cbk(err2);
@@ -584,6 +589,20 @@ J(function($,p,pub){
         'ClickDataChange':'onXDataClickDataChanged',
         'CTagUpdated':'onXDataCTagUpdated'
     };
+
+    /**
+     * 页面配置数据
+     */
+    pub.pages = [];
+    /**
+     * 公共模块
+     */
+    pub.publicMods = [];
+    /**
+     * 当前页面私有模块
+     */
+    pub.privateMods = [];
+
     /**
      * 初始化数据
      */

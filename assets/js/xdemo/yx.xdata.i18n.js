@@ -74,8 +74,8 @@ yx_xdata_i18n['zh-CN'] = {
         dateRangeOvertop:"\u7EDF\u8BA1\u65F6\u95F4\u8303\u56F4\u8D85\u8FC7$\u5929\uFF01\u670D\u52A1\u5668\u4E9A\u5386\u5C71\u5927...",
         hidden:"\u5F53\u524D\u5904\u4E8E\u9690\u85CF\u72B6\u6001...",
         uvTip:"\u4ECA\u5929\u7684UV\u8981\u660E\u5929\u624D\u80FD\u770B\u54E6",
-        "noDataAdvice":"\u65E0\u6570\u636E,\u53EF\u8054\u7CFB\u8BE5\u9875\u9762\u7684\u91CD\u6784\u540C\u5B66\u7EF4\u62A4\u6A21\u5757\u5217\u8868",/*无数据,可联系该页面的重构同学维护模块列表*/
-        "permissionDeny":"\u60A8\u8FD8\u6CA1\u6709clickstream\u6743\u9650,\u7533\u8BF7\u6743\u9650\u8BF7RTX\u8054\u7CFB\u949F\u5B87(cookiezhong)."/*您还没有clickstream权限,申请权限请RTX联系钟宇(cookiezhong).*/
+        "noDataAdvice":"\u5F53\u524D\u9875\u9762\u53EA\u6709\u5168\u7AD9\u516C\u5171\u6A21\u5757,\u8FD8\u6CA1\u6709\u9875\u9762\u79C1\u6709\u6A21\u5757\u6570\u636E,\u53EF\u8054\u7CFBjoyma\u6216levinhuang\u6DFB\u52A0\u79C1\u6709\u6A21\u5757\u6570\u636E",/*当前页面只有全站公共模块,还没有页面私有模块数据,可联系joyma或levinhuang添加私有模块数据*/
+        "permissionDeny":"\u60A8\u6CA1\u6709\u767B\u5F55\u6216\u8005\u6CA1\u6709clickstream\u6743\u9650,\u7533\u8BF7\u6743\u9650\u8BF7RTX\u8054\u7CFB\u949F\u5B87(cookiezhong)."/*您没有登录或者没有clickstream权限,申请权限请RTX联系钟宇(cookiezhong).*/
     },
     ajax:{
         paramError:"\u83B7\u53D6\u7EDF\u8BA1\u53C2\u6570\u5931\u8D25\uFF01",
