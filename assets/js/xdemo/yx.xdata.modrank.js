@@ -7,6 +7,7 @@ J(function($,p,pub){
         dataChangedAt:1,
         dataInited:false,
         todayDataCache:{},
+        antiCover:false,
         tpl:J.heredoc(function(){/*
             <ul id="dataList{{id}}" class="data_list_con{{clListSub}}">
                 {{#babies}}
@@ -50,8 +51,12 @@ J(function($,p,pub){
             }).bind(J.ui.EVT.UIScroll,function(e,sTop){
                 //J.$win.trigger('oxmenuPositionNeedUpdating');
             }).bind(J.ui.EVT.UIReady,function(e){
-                p.modRank.$d = $('#dataList1').bind('mouseleave.modrank',function(e){
+                p.modRank.$d = $('#dataList1').bind('mouseleave',function(e){
+                    p.modRank.antiCover=true;
                     J.ytag.hideCovers();
+                    //console.log('modRank.mouseleave',new Date().getTime());
+                }).bind('mouseenter',function(e){
+                    p.modRank.antiCover=false;
                 });
             }).bind(J.data.EVT.KeyDataChange,function(e,err,d){
                 if(err){
@@ -220,12 +225,14 @@ J(function($,p,pub){
             };
         },
         render:function(cItems,isPrepend){
-            this.$d.find('.data_alert').remove();
+            var emptyHtml = '<div id="dataList1Tip" class="data_alert data_alertB" data-i18n="tip.noDataAdvice">无数据</div>';
+            $('#dataList1Tip').remove();
             if(!isPrepend){
                 this.$d.find('.data_list_item').remove();
             }
+            //console.log('cItems',cItems);
             if(cItems.length===0){
-                this.$d.empty().html('<div class="data_alert data_alertB" data-i18n="tip.noDataAdvice">无数据</div>').oxi18n({},true);
+                this.$d.empty().html(emptyHtml).oxi18n({},true);
                 return;
             };
 
@@ -248,6 +255,12 @@ J(function($,p,pub){
             if (!isPrepend) {
                 this.$d.oxi18n().oxtree({},true);
                 J.$win.trigger(J.ui.EVT.ModRankRendered);
+                //如果私有模块为空,提示用户模块维护接口人
+                if(J.data.privateMods.length===0){
+                    this.$d.append(emptyHtml).oxi18n({},true);
+                }
+            }else{
+                $('#dataList1Tip').remove();
             };
 
         },
@@ -297,6 +310,10 @@ J(function($,p,pub){
 
     pub.getTodayDataById = function(id){
         return p.modRank.todayDataCache[id]||{};
+    };
+
+    pub.antiCover = function(){
+        return p.modRank.antiCover;
     };
 
 });

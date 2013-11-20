@@ -173,7 +173,7 @@ J(function($,p,pub){
                 return 0;
             };
             var bottom = J.$win.height()-($dom.offset().top - J.$win.scrollTop());
-            console.log(bottom);
+            //console.log(bottom);
             return bottom;
         },
         loadData:function(tagData){

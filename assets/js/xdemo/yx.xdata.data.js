@@ -235,7 +235,6 @@ J(function($,p,pub){
         var url = 'http://log.oxox.io/api.php',
             xhr;
 
-        //获取所有页面
         xhr = $.ajax({
             url:url,
             dataType:'json',
@@ -251,6 +250,55 @@ J(function($,p,pub){
         }).fail(function(jqXhr,txtStatus,err){
             cbk(err);
         });
+    };
+    /**
+     * 根据页面样式选择器规范获取公共模块信息
+     * 注：该方法用于活动页面
+     */
+    pub.getPrivateModsByCssSelector = function(){
+
+        if(location.hostname!=='event.yixun.com'){
+            return ({});
+        };
+
+        var cssList = {
+                "floor":".evt_floor,.act_sec",//活动楼层
+                "header":".evt_head,.act_head",//活动首屏
+                "sideNavRight":".act_sidenav,.evt_nav_right",//活动右边导航
+                "sideNavLeft":".act_sidenav1,.evt_nav_left"//活动左边导航
+            },
+            txtList = {
+                "floor":i18n.t("com.actFloor"),//活动楼层
+                "header":i18n.t("com.actHead"),//活动首屏
+                "sideNavRight":i18n.t("com.actSidenavRight"),//活动右边导航
+                "sideNavLeft":i18n.t("com.actSidenavLeft")//活动左边导航
+            },
+            mods = {},
+            tempId = "",
+            tempClasses0 = null,
+            tempClasses1 = null,
+            len=null;
+
+        for(var c in cssList){
+            $(cssList[c]).each(function(i,o){
+                tempClasses0 = o.className.split(' ');
+                tempClasses1 = [];
+                len = tempClasses0.length;
+                for(var j=0;j<len;j++){
+                    if(tempClasses0[j]==="") continue;
+                    tempClasses1.push(tempClasses0[j]);
+                };//for
+                tempId = tempClasses1.join('_')+'_'+(i+1);
+                mods[tempId] = {
+                    "id":tempId,
+                    "alias":txtList[c]+(i+1),
+                    "ytagSelector":'.'+tempClasses1.join('.'),
+                    "isCustomYTag":true,
+                    "type":1
+                };
+            });
+        };//for
+        return mods;
     };
     /**
      * 获取页面配置信息
@@ -305,22 +353,27 @@ J(function($,p,pub){
         //获取所有页面
         pub.getPageConfigs(function(err,msg){
             if(err){
-                cbk(err);
+                cbk('getPageConfigs error:'+err);
                 return;
             };
             //获取当前页面的mods
             var page = pub.getPageConfigByUrl(location.href);
             if(!page){
-                cbk('getDefaultCTags error');
-                return;
+                console.log('getPageConfigByUrl no data',location.href);
             };
             //获取公共模块
             pub.getPublicMods(function(err1,msg1){
                 if(err1){
-                    cbk(err1);
+                    cbk('getPublicMods error:'+err1);
                     return;
                 }
                 //获取当前页面的模块
+                pub.privateMods = [];
+                if(!page){
+                    //没有私有页面配置数据，直接使用公共模块
+                    cbk(null,msg1);
+                    return;
+                }
                 xhr = $.ajax({
                     url:url,
                     dataType:'json',
@@ -331,6 +384,7 @@ J(function($,p,pub){
                         cbk(d2.info);
                         return;
                     }
+                    pub.privateMods = d2.info.xv;
                     cbk(null,msg1.concat(d2.info.xv));
                 }).fail(function(jqXhr2,txtStatus2,err2){
                     cbk(err2);
@@ -396,11 +450,17 @@ J(function($,p,pub){
     pub.getCTags = function(rawForm){
         rawForm=rawForm||false;
         var key = 'xdata_ctags_'+pub.bizInfo.pid,
-            rawData = localStorage[key];
+            rawData = localStorage[key],
+            rawData1 = pub.getPrivateModsByCssSelector(),
+            isRawData1Empty = Object.getOwnPropertyNames(rawData1).length==0;
         if(!rawData){
-            return null;
+            if(isRawData1Empty){
+                return null;
+            }
+            rawData = '{}';
         };
         rawData = JSON.parse(rawData);
+        $.extend(rawData,rawData1);
         if (rawForm) {
             return rawData;
         };
@@ -584,6 +644,20 @@ J(function($,p,pub){
         'ClickDataChange':'onXDataClickDataChanged',
         'CTagUpdated':'onXDataCTagUpdated'
     };
+
+    /**
+     * 页面配置数据
+     */
+    pub.pages = [];
+    /**
+     * 公共模块
+     */
+    pub.publicMods = [];
+    /**
+     * 当前页面私有模块
+     */
+    pub.privateMods = [];
+
     /**
      * 初始化数据
      */
