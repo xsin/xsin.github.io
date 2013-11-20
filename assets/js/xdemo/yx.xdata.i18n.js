@@ -82,7 +82,7 @@ yx_xdata_i18n['zh-CN'] = {
         hidden:"\u5F53\u524D\u5904\u4E8E\u9690\u85CF\u72B6\u6001...",
         uvTip:"\u4ECA\u5929\u7684UV\u8981\u660E\u5929\u624D\u80FD\u770B\u54E6",
         "noDataAdvice":"\u5F53\u524D\u9875\u9762\u53EA\u6709\u5168\u7AD9\u516C\u5171\u6A21\u5757,\u8FD8\u6CA1\u6709\u9875\u9762\u79C1\u6709\u6A21\u5757\u6570\u636E,\u53EF\u8054\u7CFBjoyma\u6216levinhuang\u6DFB\u52A0\u79C1\u6709\u6A21\u5757\u6570\u636E",/*当前页面只有全站公共模块,还没有页面私有模块数据,可联系joyma或levinhuang添加私有模块数据*/
-        "permissionDeny":"\u60A8\u6CA1\u6709\u767B\u5F55\u6216\u8005\u6CA1\u6709clickstream\u6743\u9650,\u7533\u8BF7\u6743\u9650\u8BF7RTX\u8054\u7CFB\u949F\u5B87(cookiezhong)."/*您没有登录或者没有clickstream权限,申请权限请RTX联系钟宇(cookiezhong).*/
+        "permissionDeny":"\u60A8\u6CA1\u6709\u767B\u5F55\u6216\u8005\u6CA1\u6709clickstream\u6743\u9650,\u7533\u8BF7\u6743\u9650\u8BF7RTX\u8054\u7CFB\u4F55\u8FEA(Dihe)."/*您没有登录或者没有clickstream权限,申请权限请RTX联系何迪(Dihe).*/
     },
     ajax:{
         paramError:"\u83B7\u53D6\u7EDF\u8BA1\u53C2\u6570\u5931\u8D25\uFF01",
