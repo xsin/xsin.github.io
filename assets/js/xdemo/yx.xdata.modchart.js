@@ -344,8 +344,11 @@ J(function($,p,pub){
             var len = d.length,
                 r =[],
                 dataByTime=null,
+                //TODO:DragClickData接口增加uv,pv字段
                 pv = J.data.CurrentKeyData.total.pv,
+                uv = J.data.CurrentKeyData.total.uv||0,
                 rateByPv = 0,
+                rateByUv = 0,
                 valToday = 0;
             for(var i=0;i<len;i++){
                 dataByTime={
@@ -354,6 +357,7 @@ J(function($,p,pub){
                     y:0,
                     date:J.data.getDateTimeStr(new Date(d[i].t),{len:10}),
                     rateByPv:0,
+                    rateByUv:0,
                     click_num:d[i].click_num,
                     order_num:d[i].order_num,
                     click_trans_rate:(parseFloat(d[i].click_trans_rate)||0)
@@ -392,8 +396,12 @@ J(function($,p,pub){
                 //每pv的比率
                 rateByPv = pv==0?0:dataByTime.y/pv;
                 rateByPv = parseFloat( (rateByPv*100).toFixed(4));
-
                 dataByTime.rateByPv = rateByPv;
+
+                //每uv的比率
+                rateByUv = uv==0?0:dataByTime.y/uv;
+                rateByUv = parseFloat( (rateByUv*100).toFixed(4));
+                dataByTime.rateByUv = rateByUv;
 
                 r.push(dataByTime);
             };
@@ -827,6 +835,7 @@ J(function($,p,pub){
     p.detail = {
         dataType:1,
         lblDataPerPV:null,
+        lblDataPerUV:null,
         tplTable:J.heredoc(function(){/*
         <table id="dataSorter" class="tablesorter data_tableB">
             <thead>
@@ -837,6 +846,7 @@ J(function($,p,pub){
                     <th><span data-i18n="nav.b">下单量</span>(ON)</th>
                     <th><span data-i18n="chart2.transRateByClick">每点击转化率</span>(ON/CN)</th>
                     <th>{{lblDataPerPV}}</th>
+                    <!--<th>{{lblDataPerUV}}</th>-->
                 </tr>
             </thead>
             <tbody>
@@ -848,6 +858,7 @@ J(function($,p,pub){
                         <td>{{order_num}}</td>
                         <td>{{click_trans_rate}}%</td>
                         <td>{{rateByPv}}%</td>
+                        <!--<td>{{rateByUv}}%</td>-->
                     </tr>
                     {{/childRow}}
                     {{^childRow}}
@@ -858,6 +869,7 @@ J(function($,p,pub){
                         <td>{{order_num}}</td>
                         <td>{{click_trans_rate}}%</td>
                         <td>{{rateByPv}}%</td>
+                        <!--<td>{{rateByUv}}%</td>-->
                     </tr>
                     {{/childRow}}
                 {{/items}}
@@ -870,6 +882,7 @@ J(function($,p,pub){
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
+                    <!--<td>&nbsp;</td>-->
                 </tr>
                 {{#total}}
                 <tr class="data_detail_sum">
@@ -878,6 +891,7 @@ J(function($,p,pub){
                     <td>{{order}}</td>
                     <td>{{transRate}}%</td>
                     <td>{{valueByPV}}%</td>
+                    <!--<td>{{valueByUV}}%</td>-->
                 </tr>
                 {{/total}}
             </tfoot>
@@ -892,24 +906,29 @@ J(function($,p,pub){
             });
         },
         onDataTypeChange:function(t){
-            //更新表格最后一列的表头
-            var txtTH = i18n.t('chart2.clickNumByPV');
+            //更新表格最后2列的表头
+            var txtTH = i18n.t('chart2.clickNumByPV'),
+                txtTH1 = i18n.t('chart2.clickNumByUV');
             switch(t){
                 case 1:
                     //default,do nothing
                 break;
                 case 2:
                     txtTH = i18n.t('chart2.orderNumByPV');
+                    txtTH1 = i18n.t('chart2.orderNumByUV');
                 break;
                 case 3:
                     txtTH = i18n.t('chart2.transRateByPV');
+                    txtTH1 = i18n.t('chart2.transRateByUV');
                 break;
             };
             this.lblDataPerPV = txtTH;
+            this.lblDataPerUV = txtTH1;
         },
         onCoreUIReady:function(){
             this.$body = $('#dataDetailBody');
             this.lblDataPerPV = i18n.t('chart2.clickNumByPV');
+            this.lblDataPerUV = i18n.t('chart2.clickNumByUV');
         },
         render:function(series){
             this.$body.empty();
@@ -921,6 +940,7 @@ J(function($,p,pub){
         parseData:function(series){
             var data = {
                 lblDataPerPV:this.lblDataPerPV,
+                lblDataPerUV:this.lblDataPerUV,
                 rowspanSum:2,
                 items:[]
             },
@@ -932,13 +952,15 @@ J(function($,p,pub){
                 click:0,
                 order:0,
                 transRate:0,
-                valueByPV:0
+                valueByPV:0,
+                valueByUV:0
             },
             total2={
                 click:0,
                 order:0,
                 transRate:0,
-                valueByPV:0
+                valueByPV:0,
+                valueByUV:0
             };
 
             for(var i=0;i<len;i++){
@@ -958,12 +980,14 @@ J(function($,p,pub){
                 total1.order+=tempItem.order_num;
                 total1.transRate+=tempItem.click_trans_rate;
                 total1.valueByPV+=tempItem.rateByPv;
+                total1.valueByUV+=tempItem.rateByUv;
                 if(tempItem1){
                     data.items.push(tempItem1);
                     total2.click+=tempItem1.click_num;
                     total2.order+=tempItem1.order_num;
                     total2.transRate+=tempItem1.click_trans_rate;
                     total2.valueByPV+=tempItem1.rateByPv;
+                    total2.valueByUV+=tempItem1.rateByUv;
                 }
             };//for
 
@@ -971,9 +995,11 @@ J(function($,p,pub){
             //转化率要转换成平均值
             total1.transRate = len==0?0:parseFloat( (total1.transRate/len).toFixed(2) );
             total1.valueByPV = len==0?0:parseFloat( (total1.valueByPV/len).toFixed(2) );
+            total1.valueByUV = len==0?0:parseFloat( (total1.valueByUV/len).toFixed(2) );
             if(hasCompare){
                 total2.transRate = len==0?0:parseFloat( (total2.transRate/len).toFixed(2) );
                 total2.valueByPV = len==0?0:parseFloat( (total2.valueByPV/len).toFixed(2) );
+                total2.valueByUV = len==0?0:parseFloat( (total2.valueByUV/len).toFixed(2) );
             }
             data.total=[total1];
             if(hasCompare){

@@ -64,10 +64,13 @@ yx_xdata_i18n['zh-CN'] = {
         "btnBeginCompare":"\u5F00\u59CB\u5BF9\u6BD4",
         "clickRate":"\u70B9\u51FB\u7387",
         "orderRate":"\u8BA2\u5355\u7387",
-        "transRateByClick":"\u6BCF\u70B9\u51FB\u8F6C\u5316\u7387",//每点击转化率
+        "transRateByClick":"\u8F6C\u5316\u7387",//转化率
         "transRateByPV":"\u6BCFPV\u8F6C\u5316\u7387",//每PV转化率
         "clickNumByPV":"\u6BCFPV\u70B9\u51FB\u7387",//每PV点击率
         "orderNumByPV":"\u6BCFPV\u4E0B\u5355\u7387",//每PV订单率
+        "transRateByUV":"\u6BCFUV\u8F6C\u5316\u7387",//每UV转化率
+        "clickNumByUV":"\u6BCFUV\u70B9\u51FB\u7387",//每UV点击率
+        "orderNumByUV":"\u6BCFUV\u4E0B\u5355\u7387",//每UV订单率
         "summary":"\u5168\u90E8\u6C47\u603B",//全部汇总
     },
     tip:{
