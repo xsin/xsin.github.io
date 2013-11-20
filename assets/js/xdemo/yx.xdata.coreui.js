@@ -151,7 +151,10 @@ J(function($,p,pub){
             this.render();
             if(location.href.indexOf('xdata')>-1){
                 J.$body.addClass('data_admin');
-            }
+            };
+            if( J.data.isBoss( (J.data.bizInfo||{uid:''}).uid ) ){
+                J.$body.addClass('data_boss');
+            };
             setTimeout(function(){
                 J.$win.trigger(EVT.UIReady);
             },100);

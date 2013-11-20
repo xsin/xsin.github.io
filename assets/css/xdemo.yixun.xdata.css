@@ -42,7 +42,7 @@
 .data_charttip1_bg{z-index: 1;background-color: #FFF;opacity: 0.8;}
 .data_charttip1_bd{position: absolute;z-index: 2;left:0;top:30%;right:0;text-align: center;}
 .data_btn_addmod{display: none!important;}
-.data_admin .data_btn_addmod,.data_admin .ox_add_link{display: inline-block!important;}
+.data_admin .data_btn_addmod,.data_boss .ox_add_link{display: inline-block!important;}
 
 .data_crumbs{position:absolute;left:20px;top:10px;height:28px;overflow: hidden;}
 .data_breadcrumb {

@@ -19,6 +19,7 @@ J(function($,p,pub){
             pid:pid,
             areaid:areaid
         };
+        pub.boss = ['6775494','8657580','765578'];
         isParamsReady=true;
     }catch(e){
         J.log(i18n.t("ajax.paramError")+e.toString());
@@ -554,6 +555,14 @@ J(function($,p,pub){
             break;
         };
         return item;
+    };
+    /**
+     * 指定uid是否超级管理员
+     * @param {String} uid userid
+     */
+    pub.isBoss = function(uid){
+        var bossList = pub.boss||[];
+        return ($.inArray(uid,bossList)!==-1);
     };
 
     /**
