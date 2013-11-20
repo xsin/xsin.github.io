@@ -36,7 +36,7 @@ J(function($,p,pub){
                         <div class="data_box_hd">
                             <h3 data-i18n="chart2.title">模块趋势</h3>
                             <a id="dataShowChart3" href="javascript:;" class="data_btn data_btn_bg1 data_btn_chart3 data_hidden">模块占比</a>
-                            <a id="dataAddCTag" href="javascript:;" class="data_btn data_btn_bg1 data_btn_addmod" data-i18n="chart2.btnAddPrivateMod">新增私有模块</a>
+                            <a id="dataAddCTag" href="javascript:;" class="data_btn data_btn_bg1" data-i18n="chart2.btnAddPrivateMod">新增私有模块</a>
                             <a id="dataCTagAdmin" target="_blank" href="http://oxox.io/tools/oxtree/" class="data_btn data_btn_bg1 data_btn_addmod" data-i18n="chart2.btnAdminMod">模块维护</a>
                         </div>
                         <div class="data_box_bd">
@@ -189,6 +189,12 @@ J(function($,p,pub){
             this.$uiCore.bind('dblclick',function(e){
                 p.main.$uiCore.toggleClass('data_ui_dblclick');
             });
+
+            //将bizInfo打到ui上,方便其他扩展功能使用
+            var bizInfo = J.data.bizInfo||{};
+            for(var c in bizInfo){
+                this.$ui[0].setAttribute('data-'+c,bizInfo[c]);
+            };
 
         },
         fixedHD:function(){
