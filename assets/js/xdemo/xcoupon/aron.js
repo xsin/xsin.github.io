@@ -95,7 +95,7 @@ JJ('aron',function(M,V,C){
 
 
     C._init = function(){
-        $('body').append(V.couponPopupTpl);
+        JJ.$body.append(V.couponPopupTpl);
         JJ.$win.bind(JJ.EVT.data.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
             if (err) {
                 return

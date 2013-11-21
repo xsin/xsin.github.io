@@ -155,6 +155,65 @@ J(function($,p,pub){
             this.dataType = t;
             $('#dataTypeForMod'+t).trigger('click.modChart',[true]);
         },
+        //设置截屏数据
+        setCapturingData:function(){
+            //设置截屏信息
+            var me = this,
+                tagInfo = J.ytag.get(this.tagData.id),
+                dimInfo = tagInfo.$dom.data('datadim'),
+                ytagData = [],
+                len = tagInfo.ytags.length,
+                ytagDimData = null,
+                i=0,
+                onDataReady = function(){
+                    me.$btnTag.attr('data-x',dimInfo.left)
+                    .attr('data-y',dimInfo.top)
+                    .attr('data-width',dimInfo.width)
+                    .attr('data-height',dimInfo.height)
+                    .attr('data-version_name',tagInfo.alias)
+                    .attr('data-mod_name',tagInfo.selector)
+                    .attr('data-version_mod_wsid',J.data.bizInfo.wsid)
+                    .attr('data-version_mod_areaid',J.data.bizInfo.areaid)
+                    .attr('data-version_mod_pageid',J.data.bizInfo.pid)
+                    .attr('data-version_mod_id',tagInfo.id)
+                    .attr('data-version_mod_ytag',JSON.stringify(ytagData));
+
+                    var lkHis = document.getElementById('dataLkTagList');
+                    lkHis.href=lkHis.getAttribute('data-href')+'?'+
+                        $.param({
+                            wsid:J.data.bizInfo.wsid,
+                            areaid:J.data.bizInfo.areaid,
+                            pageid:J.data.bizInfo.pid,
+                            modid:tagInfo.id
+                        });
+                },
+                rockYTagData = function(){
+                    /* 同步设置在for循环次数大时导致ui线程堵塞
+                    for(var i =0;i<len;i++){
+                        ytagDimData = J.data.getItemDimension($('[ytag="$"]'.replace('$',tagInfo.ytags[i].page_tag)));
+                        ytagDimData = $.extend(ytagDimData,tagInfo.ytags[i]);
+                        ytagDimData.x = ytagDimData.left - dimInfo.left;
+                        ytagDimData.y = ytagDimData.top - dimInfo.top;
+                        ytagData.push(ytagDimData);
+                    };
+                    */
+                    ytagDimData = J.data.getItemDimension($('[ytag="$"]'.replace('$',tagInfo.ytags[i].page_tag)));
+                    ytagDimData = $.extend(ytagDimData,tagInfo.ytags[i]);
+                    ytagDimData.x = ytagDimData.left - dimInfo.left;
+                    ytagDimData.y = ytagDimData.top - dimInfo.top;
+                    ytagData.push(ytagDimData);
+                    if(len - i === 1){
+                        onDataReady();
+                        return;
+                    }
+                    if(i < len){
+                        i++;
+                        setTimeout(rockYTagData,0);//Prevent UI blocking
+                    }
+                };
+
+            rockYTagData();
+        },
         show:function(tagData,$trigger,dataTypeForPage){
             this.tagData=tagData;
             this.todayData = J.modrank.getTodayDataById(tagData.id);
@@ -167,41 +226,7 @@ J(function($,p,pub){
             this.setDataType(dataTypeForPage);
 
             this.refresh();
-            //设置截屏信息
-            var tagInfo = J.ytag.get(this.tagData.id),
-                dimInfo = tagInfo.$dom.data('datadim'),
-                ytagData = [],
-                len = tagInfo.ytags.length,
-                ytagDimData = null;
-
-            for(var i =0;i<len;i++){
-                ytagDimData = J.data.getItemDimension($('[ytag="$"]'.replace('$',tagInfo.ytags[i].page_tag)));
-                ytagDimData = $.extend(ytagDimData,tagInfo.ytags[i]);
-                ytagDimData.x = ytagDimData.left - dimInfo.left;
-                ytagDimData.y = ytagDimData.top - dimInfo.top;
-                ytagData.push(ytagDimData);
-            };
-
-            this.$btnTag.attr('data-x',dimInfo.left)
-                .attr('data-y',dimInfo.top)
-                .attr('data-width',dimInfo.width)
-                .attr('data-height',dimInfo.height)
-                .attr('data-version_name',tagInfo.alias)
-                .attr('data-mod_name',tagInfo.selector)
-                .attr('data-version_mod_wsid',J.data.bizInfo.wsid)
-                .attr('data-version_mod_areaid',J.data.bizInfo.areaid)
-                .attr('data-version_mod_pageid',J.data.bizInfo.pid)
-                .attr('data-version_mod_id',tagInfo.id)
-                .attr('data-version_mod_ytag',JSON.stringify(ytagData));
-
-            var lkHis = document.getElementById('dataLkTagList');
-            lkHis.href=lkHis.getAttribute('data-href')+'?'+
-                $.param({
-                    wsid:J.data.bizInfo.wsid,
-                    areaid:J.data.bizInfo.areaid,
-                    pageid:J.data.bizInfo.pid,
-                    modid:tagInfo.id
-                });
+            this.setCapturingData();
         },
         refresh:function(){
             this.loadData(this.tagData);

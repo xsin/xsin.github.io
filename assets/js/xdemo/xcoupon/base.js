@@ -183,3 +183,26 @@ JJ.heredoc = function(fn){return (fn.toString().split('\n').slice(1,-1).join('\n
 JJ.log = function(obj){(window['console']||{log:function(x){alert(x);}}).log(obj);};
 JJ.$win = $(window);
 JJ.$body=$('body');
+
+$.fn.onTransitioned = function (cbk) {
+
+    return this.each(function () {
+        if (cbk===false) {
+            $(this).unbind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd");
+            return;
+        }
+        $(this).bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", cbk);
+    });
+};
+$.fn.onAnimated = function (cbk) {
+
+    return this.each(function(){
+        if (cbk === false) {
+            $(this).unbind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd");
+            return;
+        }
+        $(this).bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd",cbk);
+        
+    });
+    
+};
