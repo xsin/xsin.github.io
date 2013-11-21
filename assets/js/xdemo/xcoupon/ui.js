@@ -87,6 +87,7 @@ JJ('ui',function(M,V,C){
                     $('#xpanel_'+id).addClass(me.clShow);
                     me.curId = id;
                     me.$wrap.onTransitioned(false);
+                    JJ.$win.trigger('onShowXPanel',[id]);
                 };
             if(this.$wrap.hasClass(this.clWrapShow)){
                 onShow();
