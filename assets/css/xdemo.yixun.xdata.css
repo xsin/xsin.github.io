@@ -386,7 +386,7 @@
     /*--ico按钮--*/
     .data_btnB{
         display: inline-block;
-        padding: 3px 8px;
+        padding: 4px 8px;
         margin-bottom: 0;
         font:normal 12px/17px "微软雅黑";
         color: #333333;
@@ -395,7 +395,6 @@
         vertical-align: middle;
         cursor: pointer;
         border: 1px solid #cccccc;
-        border-color: #e1e1e1 #e1e1e1 #b3b3b3 #e1e1e1;
         border-radius: 2px;
         background-color: #fefefe;
         background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fefefe), to(#f5f5f5));
