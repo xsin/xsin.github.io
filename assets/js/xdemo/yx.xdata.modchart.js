@@ -165,18 +165,22 @@ J(function($,p,pub){
                 len = tagInfo.ytags.length,
                 ytagDimData = null,
                 i=0,
+                attrs = null,
                 onDataReady = function(){
-                    me.$btnTag.attr('data-x',dimInfo.left)
-                    .attr('data-y',dimInfo.top)
-                    .attr('data-width',dimInfo.width)
-                    .attr('data-height',dimInfo.height)
-                    .attr('data-version_name',tagInfo.alias)
-                    .attr('data-mod_name',tagInfo.selector)
-                    .attr('data-version_mod_wsid',J.data.bizInfo.wsid)
-                    .attr('data-version_mod_areaid',J.data.bizInfo.areaid)
-                    .attr('data-version_mod_pageid',J.data.bizInfo.pid)
-                    .attr('data-version_mod_id',tagInfo.id)
-                    .attr('data-version_mod_ytag',JSON.stringify(ytagData));
+                    attrs = {
+                        "data-x":dimInfo.left,
+                        "data-y":dimInfo.top,
+                        "data-width":dimInfo.width,
+                        "data-height":dimInfo.height,
+                        "data-version_name":tagInfo.alias,
+                        "data-mod_name":tagInfo.selector,
+                        "data-version_mod_wsid":J.data.bizInfo.wsid,
+                        "data-version_mod_areaid":J.data.bizInfo.areaid,
+                        "data-version_mod_pageid":J.data.bizInfo.pid,
+                        "data-version_mod_id":tagInfo.id,
+                        "data-version_mod_ytag":JSON.stringify(ytagData)
+                    };
+                    me.$btnTag.attr(attrs)[0].removeAttribute('disabled');
 
                     var lkHis = document.getElementById('dataLkTagList');
                     lkHis.href=lkHis.getAttribute('data-href')+'?'+
@@ -211,7 +215,7 @@ J(function($,p,pub){
                         setTimeout(rockYTagData,0);//Prevent UI blocking
                     }
                 };
-
+            this.$btnTag.attr("disabled","disabled");
             rockYTagData();
         },
         show:function(tagData,$trigger,dataTypeForPage){

@@ -381,6 +381,7 @@
 /*===== 按钮 =====*/
     .data_btn{cursor:pointer; display:inline-block; padding:0 5px; border:1px solid #FB8800; background-color:#FB8800; color:#FFF;}
     .data_btn:hover{background-color:#FA9D34; text-decoration:none;}
+    .data_btn[disabled]{pointer-events:none;cursor:not-allowed;opacity: .65;}
 
     /*--ico按钮--*/
     .data_btnB{
