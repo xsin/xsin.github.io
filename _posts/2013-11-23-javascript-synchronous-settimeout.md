@@ -76,6 +76,28 @@ javascript的执行引擎是单线程的，正常情况下是同步编程的模�
 在判断是否执行完毕时，在同步编程中很方便实现，代码写在for循环后面就行了。而异步的话，则需要做一些判断。
 
 还是以上的例子，如何在循环结束后执行回调？可以使用`Jquery`的`$.when`，和`$.Deferred`方法，当然也可以自己写回调函数，但是看起来没那么优雅。
+{% endhighlight javascript %}
+	var wait = function(){
+        var dtd = $.Deferred();
+        var i = 0;
+        function updateLater() {
+            $('#js_output').text(i++);
+            if (i < 1000) {
+                setTimeout(updateLater, 0);
+            }
+            if(i == 1000){
+                dtd.resolve(); // 改变Deferred对象的执行状态
+            }
+        }
+        updateLater();
+        return dtd.promise(); // 返回promise对象
+    }
+    var updateAsyncBack = function(){
+        $.when(wait()).done(function(){
+            alert('done!');
+        })
+    }
+{% endhighlight javascript %}
 
 ### 扩展阅读 
 
