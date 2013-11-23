@@ -40,7 +40,9 @@ gem install jekyll
 
 ---
 
-二，运行 `jekyll serve` 时显示
+二，进入网站所在的目录，如：`E:\GitHub\oxox.github.io` ，然后运行：`jekyll serve` 即可。
+
+运行 `jekyll serve` 时显示
 
 	Liquid Exception: No such file or directory - /bin/sh in ...
 
@@ -50,6 +52,12 @@ gem install jekyll
 gem uninstall pygments.rb --version "=0.5.2"
 gem install pygments.rb --version "=0.5.0"
 {% endhighlight bash %}
+这里注意，pygments.rb的版本可能已经不是0.5.2了，所以需要先查看pygments版本，简单的方法，可以先在ruby文件夹中搜索pygments.rb 会看到以版本名称命名的文件夹，如pygments.rb-0.5.4，然后再运行
+{% highlight bash %}
+gem uninstall pygments.rb --version "=0.5.4"
+gem install pygments.rb --version "=0.5.0"
+{% endhighlight bash %}
+即可解决。
 
 ---
 
@@ -77,11 +85,22 @@ self.content = File.read(File.join(base, name))
 self.content = File.read(File.join(base, name), :encoding => "utf-8")
 {% endhighlight ruby %}
 
+hugo edit：
+以上方法不适应新版jekyll-1.3.0了，这句代码已经被修改。最简单的方法是直接在`cmd`里输入
+{% highlight ruby %}
+chcp 65001
+{% endhighlight ruby %}
+即可解决问题。
+	...参考：[https://github.com/twbs/bootstrap](https://github.com/twbs/bootstrap)
+Windows users: run chcp 65001 first to change the command prompt's character encoding (code page) to UTF-8 so Jekyll runs without errors. ...
+
 五，如果你的_config.yml中配置了rdiscount做为markdown的解析器，别忘了安装rdiscount
 
 {% highlight bash %}
 gem install rdiscount
 {% endhighlight bash %}
+
+六，至此，jekyll的安装已经全部完成了，应该能正常运行。如果cmd那显示 `Server address：http://0.0.0.0:4000` 请不必理会，在浏览器中输入`http://localhost:4000` 即可访问。
 
 ### References 
 
