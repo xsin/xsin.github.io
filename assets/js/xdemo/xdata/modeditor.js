@@ -1,6 +1,4 @@
-J(function($,p,pub){
-
-    pub.id= "modeditor";
+J("modeditor",function(p){
 
     //mod editor
     p.modEditor = {
@@ -13,11 +11,30 @@ J(function($,p,pub){
         isCustomYTag:false,
         tipTimer:null,
         _init:function(){
-            
-            p.modEditor.$d = $('#dataPop2');
-            p.modEditor.$name = $('#dataPop2Ipt1');
-            p.modEditor.$value = $('#dataPop2Ipt2');
-            p.modEditor.$tip = $('#dataPop2Tip');
+            J.$win.bind(J.EVT.uiXData.Collapse,function(e){
+                p.modEditor.hide();
+            }).bind('resize.modEditor',function(e){
+                p.modEditor.updatePosition();
+            }).bind(J.EVT.uiXData.UIScroll,function(e,stop){
+                p.modEditor.updatePosition(stop);
+            }).bind(J.EVT.uiXData.UIReady,function(e){
+                p.modEditor.onCoreUIReady();
+            });
+
+            $('.data_btn_edit').live('click',function(e){
+                //tagData,$trigger,isCustomYTag
+                var $trigger = $('#dataCTag'+this.rel),
+                    isCustomYTag = $trigger.find('.data_list_lk')[0].getAttribute('data-ytagattr')=='ctag';
+                p.modEditor.show(J.data.getCTag(this.rel),$trigger,isCustomYTag);
+                return false;
+            });
+
+        },
+        onCoreUIReady:function(){
+            this.$d = $('#dataPop2');
+            this.$name = $('#dataPop2Ipt1');
+            this.$value = $('#dataPop2Ipt2');
+            this.$tip = $('#dataPop2Tip');
             //update
             $('#dataPop2Btn1').bind('click',function(e){
                 var isOk = p.modEditor.save(this.rel);
@@ -25,9 +42,9 @@ J(function($,p,pub){
                     p.modEditor.hide();
                 }
             });
-            //delete
+            //del
             $('#dataPop2Btn2').bind('click',function(e){
-                p.modEditor.delete(this.rel);
+                p.modEditor.del(this.rel);
                 p.modEditor.hide();
             });
 
@@ -43,23 +60,6 @@ J(function($,p,pub){
             $('#dataPop2Close').bind('click',function(e){
                 p.modEditor.hide();
             });
-
-            J.$win.bind(J.ui.EVT.Collapse,function(e){
-                p.modEditor.hide();
-            }).bind('resize.modEditor',function(e){
-                p.modEditor.updatePosition();
-            }).bind(J.ui.EVT.UIScroll,function(e,stop){
-                p.modEditor.updatePosition(stop);
-            });
-
-            $('.data_btn_edit').live('click',function(e){
-                //tagData,$trigger,isCustomYTag
-                var $trigger = $('#dataCTag'+this.rel),
-                    isCustomYTag = $trigger.find('.data_list_lk')[0].getAttribute('data-ytagattr')=='ctag';
-                p.modEditor.show(J.data.getCTag(this.rel),$trigger,isCustomYTag);
-                return false;
-            });
-
         },
         showTip:function(txt,duration){
             clearTimeout(this.tipTimer);
@@ -75,7 +75,7 @@ J(function($,p,pub){
                 },duration);
             }
         },
-        delete:function(id){
+        del:function(id){
             J.data.deleteCTag(id);
         },
         save:function(id){

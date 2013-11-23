@@ -1,5 +1,4 @@
-J(function($,p,pub){
-    pub.id="modchart";
+J("modchart",function(p){
     //mod chart
     p.modChart = {
         $d:null,
@@ -26,19 +25,19 @@ J(function($,p,pub){
         */}),
         _init:function(){
 
-            J.$win.bind(J.ui.EVT.DataTypeChange,function(e,t){
+            J.$win.bind(J.EVT.uiXData.DataTypeChange,function(e,t){
                 p.modChart.dataType=parseInt(t);
                 p.modChart.refresh();
-            }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
+            }).bind(J.EVT.data.CTagUpdated,function(e,opType,d){
                 p.modChart.onCTagUpdated(opType,d);
-            }).bind(J.ui.EVT.Collapse,function(e){
+            }).bind(J.EVT.uiXData.Collapse,function(e){
                 p.modChart.reset();
-            }).bind(J.ui.EVT.UIReady,function(e){
+            }).bind(J.EVT.uiXData.UIReady,function(e){
                 p.modChart.onCoreUIReady();
             });
         },
         onCoreUIReady:function(){
-            p.modChart.$d = $('#dataPop1').oxi18n();
+            p.modChart.$d = $('#xdataPop1').oxi18n();
             p.modChart.$chart = $('#dataModChart');
             p.modChart.$tip = $('#dataModChartTip');
             this.$dataTypes = $('#dataTypes');
@@ -55,7 +54,7 @@ J(function($,p,pub){
             $('#dataTypes .data_type').bind('click.modChart',function(e,noTriggerDataTypeEvent){
                 if(this.value==(p.modChart.dataType+'')) return;
                 if (!noTriggerDataTypeEvent) {
-                    J.$win.trigger(J.ui.EVT.DataTypeChange,[this.value]);
+                    J.$win.trigger(J.EVT.uiXData.DataTypeChange,[this.value]);
                 };
                 
             });
@@ -148,7 +147,7 @@ J(function($,p,pub){
             this.hide();
             this.tagData=null;
             this.$trigger=null;
-            J.$win.trigger(J.ui.EVT.ModChartReset);
+            J.$win.trigger(J.EVT.uiXData.ModChartReset);
         },
         setDataType:function(t){
             if(!t) return;
@@ -222,8 +221,8 @@ J(function($,p,pub){
             this.tagData=tagData;
             this.todayData = J.modrank.getTodayDataById(tagData.id);
             this.$trigger=$trigger;
-            this.$d.addClass('data_pop1_on');
-            J.$html.addClass('data_display');
+            this.$d.addClass('xpanel_ani_show');
+            //J.$html.addClass('data_display');
             this.isVisible=true;
             this.renderMenu();
 
@@ -236,10 +235,10 @@ J(function($,p,pub){
             this.loadData(this.tagData);
         },
         hide:function(){
-            this.$d.removeClass('data_pop1_on');
+            this.$d.removeClass('xpanel_ani_show');
             this.isVisible=false;
-            J.$html.removeClass('data_display');
-            J.$win.trigger(J.ui.EVT.ModChartHidden);
+            //J.$html.removeClass('data_display');
+            J.$win.trigger(J.EVT.uiXData.ModChartHidden);
         },
         updatePosition:function(){
             if(!this.isVisible){
@@ -927,10 +926,10 @@ J(function($,p,pub){
         </table>
         */}),
         _init:function(){
-            J.$win.bind(J.ui.EVT.DataTypeChange,function(e,t){
+            J.$win.bind(J.EVT.uiXData.DataTypeChange,function(e,t){
                 p.detail.dataType = parseInt(t);
                 p.detail.onDataTypeChange(p.detail.dataType);
-            }).bind(J.ui.EVT.UIReady,function(e){
+            }).bind(J.EVT.uiXData.UIReady,function(e){
                 p.detail.onCoreUIReady();
             });
         },
@@ -1043,15 +1042,15 @@ J(function($,p,pub){
     };
 
 
-    pub.show = function(tagData,$trigger,dataType){
+    this.show = function(tagData,$trigger,dataType){
         p.modChart.show(tagData,$trigger,dataType);
     };
 
-    pub.isVisible = function(){
+    this.isVisible = function(){
         return p.modChart.isVisible;
     };
 
-    pub.getChartOption = function(){
+    this.getChartOption = function(){
         return p.modChart.chartOpts;
     };
 

@@ -1,6 +1,4 @@
-J(function($,p,pub){
-
-    pub.id = "pagechart";
+J("pagechart",function(p){
 
     //概要图表
     p.keyChart = {
@@ -17,13 +15,18 @@ J(function($,p,pub){
             edate0:null
         },
         _init:function(){
-            J.$win.bind(J.ui.EVT.DataTypeChangeForPage,function(e,t){
+            J.$win.bind(J.EVT.uiXData.DataTypeChangeForPage,function(e,t){
                 p.keyChart.dataType=parseInt(t);
                 p.keyChart.render(p.keyChart.dataType,true);
-            }).bind(J.ui.EVT.Open,function(e,t){//每次打开时刷新一次数据
+            }).bind(J.EVT.uiXData.Open,function(e,t){//每次打开时刷新一次数据
                 p.keyChart.$retweet.trigger('click.data');
-            }).bind(J.ui.EVT.UIReady,function(e){
+            }).bind(J.EVT.uiXData.UIReady,function(e){
                 p.keyChart.onCoreUIReady();
+            }).bind(J.EVT.ui.onShowXPanel,function(e,panelId){
+                if(panelId!=='data') return;
+                if(J.uiXData.isRendered()){
+                    p.keyChart.loadData();
+                }
             });
         },
         onCoreUIReady:function(){
@@ -37,7 +40,7 @@ J(function($,p,pub){
             this.$filters = $('#dataChart1Filter label').bind('click.data',function(e){
                 p.keyChart.$filters.removeClass('on');
                 $(this).addClass('on');
-                J.$win.trigger(J.ui.EVT.DataTypeChangeForPage,[this.getAttribute('data-type')]);
+                J.$win.trigger(J.EVT.uiXData.DataTypeChangeForPage,[this.getAttribute('data-type')]);
                 return false;
             });
 
@@ -59,6 +62,9 @@ J(function($,p,pub){
                     p.keyChart.$retweet.trigger('click');
                 }
             });
+
+            //INIT DATA LOAD
+            this.loadData();
 
         },
         render:function(dataType){
@@ -158,7 +164,7 @@ J(function($,p,pub){
         }//getDataByDates
     };
 
-    pub.isToday = function(){
+    this.isToday = function(){
         return (p.keyChart.dateType==='today');
     };
 

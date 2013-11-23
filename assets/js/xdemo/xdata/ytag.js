@@ -1,6 +1,5 @@
 /* S YTAG */
-J(function($,p,pub){
-    pub.id="ytag";
+J("ytag",function(p){
     var $ytags;
     p.main = {
         coverTpl:J.heredoc(function(){/*
@@ -51,15 +50,15 @@ J(function($,p,pub){
             return tagObj;
         },
         _init:function(){
-            J.$win.bind(J.ui.EVT.ModChartReset,function(e){
+            J.$win.bind(J.EVT.uiXData.ModChartReset,function(e){
                 p.main.reset();
-            }).bind(J.ui.EVT.ModRankRendered,function(e){
+            }).bind(J.EVT.uiXData.ModRankRendered,function(e){
                 if(p.main.activeNodeCssSelector){
                     $(p.main.activeNodeCssSelector).trigger('click.ytag');
                 };
-            }).bind(J.ui.EVT.ModChartHidden,function(e){
+            }).bind(J.EVT.uiXData.ModChartHidden,function(e){
                 p.main.activeNodeCssSelector = null;
-            }).bind(J.ui.EVT.DataTypeChangeForPage,function(e,t){
+            }).bind(J.EVT.uiXData.DataTypeChangeForPage,function(e,t){
                 p.main.dataType = parseInt(t);
             });
             $('[data-ytag]').live('click.ytag',function(e,d){
@@ -103,7 +102,7 @@ J(function($,p,pub){
             this.activeNodeCssSelector = '#'+elmTrigger.id;
 
             var ytagData = J.ytag.get(elmTrigger.getAttribute('data-id'));
-            ytagData.treePath = pub.getTreePath();
+            ytagData.treePath = J.ytag.getTreePath();
             $.extend(ytagData,d||{});
 
             J.modchart.show(ytagData,p.main.$ytagTrigger,this.dataType);
@@ -154,25 +153,25 @@ J(function($,p,pub){
         }
     };
     //get ytag's data
-    pub.get = function(id){
+    this.get = function(id){
         var data = J.modrank.getDataById(id);
         data = p.main.parseData(data);
         return data;
     };
 
-    pub.reset = function(){
+    this.reset = function(){
         p.main.reset();
     };
 
-    pub.hideCovers = function(){
+    this.hideCovers = function(){
         p.main.hideCovers();
     };
 
-    pub.removeFromCache=function(id){
+    this.removeFromCache=function(id){
         cache[id]=null;
     };
 
-    pub.getTreePath = function(){
+    this.getTreePath = function(){
         var path = p.main.$ytagTrigger.data('data-treepath');
         if(path){
             return path;

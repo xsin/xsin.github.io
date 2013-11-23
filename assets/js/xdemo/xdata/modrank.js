@@ -1,5 +1,4 @@
-J(function($,p,pub){
-    pub.id="modrank";
+J("modrank",function(p){
     //自定义单元排行榜
     p.modRank = {
         $d:null,
@@ -40,17 +39,17 @@ J(function($,p,pub){
             </ul>
         */}),
         _init:function(){
-            J.$win.bind(J.ui.EVT.DataTypeChangeForPage,function(e,t){
+            J.$win.bind(J.EVT.uiXData.DataTypeChangeForPage,function(e,t){
                 p.modRank.dataType = parseInt(t);
                 p.modRank.reload(true);//排序不一样，所以要重新渲染下树形菜单
-            }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
+            }).bind(J.EVT.data.CTagUpdated,function(e,opType,d){
                 p.modRank.onCTagUpdated(opType,d);
-            }).bind(J.data.EVT.ClickDataChange,function(e,d){
+            }).bind(J.EVT.data.ClickDataChange,function(e,d){
                 p.modRank.dataChangedAt=p.modRank.dataType;
                 p.modRank.reload();
-            }).bind(J.ui.EVT.UIScroll,function(e,sTop){
+            }).bind(J.EVT.uiXData.UIScroll,function(e,sTop){
                 //J.$win.trigger('oxmenuPositionNeedUpdating');
-            }).bind(J.ui.EVT.UIReady,function(e){
+            }).bind(J.EVT.uiXData.UIReady,function(e){
                 p.modRank.$d = $('#dataList1').bind('mouseleave',function(e){
                     p.modRank.antiCover=true;
                     J.ytag.hideCovers();
@@ -58,7 +57,7 @@ J(function($,p,pub){
                 }).bind('mouseenter',function(e){
                     p.modRank.antiCover=false;
                 });
-            }).bind(J.data.EVT.KeyDataChange,function(e,err,d){
+            }).bind(J.EVT.data.KeyDataChange,function(e,err,d){
                 if(err){
                     p.modRank.$d.html('');
                 }
@@ -254,7 +253,7 @@ J(function($,p,pub){
 
             if (!isPrepend) {
                 this.$d.oxi18n().oxtree({},true);
-                J.$win.trigger(J.ui.EVT.ModRankRendered);
+                J.$win.trigger(J.EVT.uiXData.ModRankRendered);
                 //如果私有模块为空,提示用户模块维护接口人
                 if(J.data.privateMods.length===0){
                     this.$d.append(emptyHtml).oxi18n({},true);
@@ -300,19 +299,19 @@ J(function($,p,pub){
         }
     };
 
-    pub.getData = function(){
+    this.getData = function(){
         return p.modRank.data;
     };
 
-    pub.getDataById = function(id){
+    this.getDataById = function(id){
         return p.modRank.getDataById(p.modRank.data||[],id);
     };
 
-    pub.getTodayDataById = function(id){
+    this.getTodayDataById = function(id){
         return p.modRank.todayDataCache[id]||{};
     };
 
-    pub.antiCover = function(){
+    this.antiCover = function(){
         return p.modRank.antiCover;
     };
 

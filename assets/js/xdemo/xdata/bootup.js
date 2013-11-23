@@ -3,7 +3,7 @@
 var isDebug = location.href.indexOf('debug')!=-1,
     prefix = "http://oxox.io/assets/js/xdemo/xdata/",
     t = new Date().getTime(),
-    bizJs = (!isDebug)?[prefix+'all.min.js?t='+t]:[
+    bizJs = isDebug?[prefix+'all.min.js?t='+t]:[
         prefix+"i18n.js?t="+t,
         prefix+"data.js?t="+t,
         prefix+"ui.xbar.js?t="+t,

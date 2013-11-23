@@ -71,7 +71,7 @@ yx_xdata_i18n['zh-CN'] = {
         "transRateByUV":"\u6BCFUV\u8F6C\u5316\u7387",//每UV转化率
         "clickNumByUV":"\u6BCFUV\u70B9\u51FB\u7387",//每UV点击率
         "orderNumByUV":"\u6BCFUV\u4E0B\u5355\u7387",//每UV订单率
-        "summary":"\u5168\u90E8\u6C47\u603B",//全部汇总
+        "summary":"\u5168\u90E8\u6C47\u603B"//全部汇总
     },
     tip:{
         modNameRequired:"\u8BF7\u8F93\u5165\u6A21\u5757\u540D\u79F0",

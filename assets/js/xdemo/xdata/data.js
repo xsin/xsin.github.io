@@ -1,6 +1,5 @@
 /* S 数据 */
-J(function($,p,pub){
-    pub.id="data";
+J("data",function(p){
     var uid = null,
         pid = window['yPageId']||'1000',
         wsid=null,
@@ -13,13 +12,13 @@ J(function($,p,pub){
         wsid=ck.split('wsid=')[1].split(';')[0];
         areaid=ck.split('areasInfo=');/*11/03 areaid 不再使用,为了保证接口完整性使用默认的S0001_1001*/
         areaid = areaid.length>1?(areaid[1].split(';')[0]||"S0001_1001"):"S0001_1001";
-        pub.bizInfo={
+        this.bizInfo={
             uid:uid,
             wsid:wsid,
             pid:pid,
             areaid:areaid
         };
-        pub.boss = ['6775494','8657580','765578'];
+        this.boss = ['6775494','8657580','765578'];
         isParamsReady=true;
     }catch(e){
         J.log(i18n.t("ajax.paramError")+e.toString());
@@ -42,7 +41,7 @@ J(function($,p,pub){
         return jqXHR;
     };
     //获取日期数据
-    pub.getDateTimeStr=function(dObj,cfg){
+    this.getDateTimeStr=function(dObj,cfg){
         cfg=cfg||{};
         cfg.len=cfg.len||19;
         cfg.dayDiff=cfg.dayDiff||0;
@@ -70,11 +69,11 @@ J(function($,p,pub){
 
     };
     //获取主数据
-    pub.getKeyData = function(_params,cbk){
+    this.getKeyData = function(_params,cbk){
         _params = $.extend({},{
             uid:uid, 
-            start_date:pub.getDateTimeStr(today,{ignoreHMS:true}), 
-            end_date:pub.getDateTimeStr(today), 
+            start_date:J.data.getDateTimeStr(today,{ignoreHMS:true}), 
+            end_date:J.data.getDateTimeStr(today), 
             date_type:"today", 
             page_id:pid, 
             warehouse_id:wsid, 
@@ -83,11 +82,11 @@ J(function($,p,pub){
         return clickStreamData('PageKeyData',_params,cbk);
     };
     //获取点击数据
-    pub.getClickData = function(_params,cbk){
+    this.getClickData = function(_params,cbk){
         _params = $.extend({},{
             uid:uid, 
-            start_date:pub.getDateTimeStr(today,{ignoreHMS:true}), 
-            end_date:pub.getDateTimeStr(today), 
+            start_date:J.data.getDateTimeStr(today,{ignoreHMS:true}), 
+            end_date:J.data.getDateTimeStr(today), 
             date_type:"today", 
             page_id:pid, 
             warehouse_id:wsid, 
@@ -96,7 +95,7 @@ J(function($,p,pub){
         return clickStreamData('PageClickData',_params,cbk);
     };
     //根据css选择器获取该选择器下ytag的数据
-    pub.getClickDataBySelector = function(cssSelector){
+    this.getClickDataBySelector = function(cssSelector){
         var ids = [],tempCache={},id,
             addTag = function(o){
                 id = o.getAttribute('ytag');
@@ -111,13 +110,13 @@ J(function($,p,pub){
             addTag(o);
         });
         //console.log(ids);
-        return pub.getClickDataByIds(ids);
+        return J.data.getClickDataByIds(ids);
     };
     //根据id获取多个ytag的点击数据
-    pub.getClickDataByIds = function(ids){
+    this.getClickDataByIds = function(ids){
         var len =0,
             obj = null,
-            clickData = pub['CurrentClickData'].data,
+            clickData = J.data['CurrentClickData'].data,
             items=[],found=false;
         if( (len=ids.length)==0){
             return items;
@@ -145,10 +144,10 @@ J(function($,p,pub){
         return items;
     };
     //获取单个ytag的点击数据
-    pub.getClickDataById = function(id){
+    this.getClickDataById = function(id){
         var obj = null,noData = i18n.t('ajax.noData');
-        for(var c in pub['CurrentClickData'].data){
-            obj = pub['CurrentClickData'].data[c];
+        for(var c in J.data['CurrentClickData'].data){
+            obj = J.data['CurrentClickData'].data[c];
             if(obj.page_tag===id){
                 break;
             }
@@ -156,11 +155,11 @@ J(function($,p,pub){
         return obj||{'click_num':noData,'click_trans_rate':noData,'order_num':noData};
     };
     //获取指定YTag的数据
-    pub.getRangeClickData = function(_params,cbk){
+    this.getRangeClickData = function(_params,cbk){
         _params = $.extend({},{
             uid:uid, 
-            start_date:pub.getDateTimeStr(today,{ignoreHMS:true}), 
-            end_date:pub.getDateTimeStr(today), 
+            start_date:J.data.getDateTimeStr(today,{ignoreHMS:true}), 
+            end_date:J.data.getDateTimeStr(today), 
             date_type:"today", 
             page_id:pid, 
             warehouse_id:wsid, 
@@ -170,7 +169,7 @@ J(function($,p,pub){
         },_params||{});
         return clickStreamData('DragClickData',_params,cbk);
     };
-    pub.getItemDimension = function($o){
+    this.getItemDimension = function($o){
         if($o.length===0){
             return null;
         }
@@ -191,10 +190,10 @@ J(function($,p,pub){
      * @params {Object} _params 为null时表示是第一次数据加载
      * @params {Function} cbk 回调函数
      */
-    pub.getKeyAndClickData = function(_params,cbk){
+    this.getKeyAndClickData = function(_params,cbk){
         //获取当天主数据和点击数据
         //TODO: cached by dateRange id
-        pub['jqXHRKeyData']=pub.getKeyData(_params,function(err,data){
+        J.data['jqXHRKeyData']=J.data.getKeyData(_params,function(err,data){
             //console.log(data.total.pv);
             if(data&&data.status){
                 data.total.pv = parseInt((data.total.pv+'').replace(/,/g,''));
@@ -204,17 +203,17 @@ J(function($,p,pub){
                 data.total.click_trans_rate = data.total.click_num==0?0:(data.total.order_num*100/data.total.click_num).toFixed(2);
                 data.total.click_trans_rate = parseFloat(data.total.click_trans_rate);
             };
-            pub["CurrentKeyData"] = data;
-            pub['jqXHRKeyData'] = null;
-            J.$win.trigger(pub.EVT.KeyDataChange,[err,data]);
+            J.data["CurrentKeyData"] = data;
+            J.data['jqXHRKeyData'] = null;
+            J.$win.trigger(J.EVT.data.KeyDataChange,[err,data]);
             if(err){
                 cbk&&cbk(err);
                 return;
             }
-            pub['jqXHRClickData']=pub.getClickData(_params,function(err1,data1){
-                pub['CurrentClickData']=data1;
-                pub['jqXHRClickData']=null;
-                J.$win.trigger(pub.EVT.ClickDataChange,[err1,data1]);
+            J.data['jqXHRClickData']=J.data.getClickData(_params,function(err1,data1){
+                J.data['CurrentClickData']=data1;
+                J.data['jqXHRClickData']=null;
+                J.$win.trigger(J.EVT.data.ClickDataChange,[err1,data1]);
                 if(err1){
                     cbk&&cbk(err1);
                     return;
@@ -226,7 +225,7 @@ J(function($,p,pub){
     /**
      * 获取公共模块信息
      */
-    pub.getPublicMods = function(cbk){
+    this.getPublicMods = function(cbk){
         var _params = {
             "act":"query",
             "xn":"xdata",
@@ -246,8 +245,8 @@ J(function($,p,pub){
                 cbk(d.info);
                 return;
             }
-            pub.publicMods = d.info.xv;
-            cbk(null,pub.publicMods);
+            J.data.publicMods = d.info.xv;
+            cbk(null,J.data.publicMods);
         }).fail(function(jqXhr,txtStatus,err){
             cbk(err);
         });
@@ -256,7 +255,7 @@ J(function($,p,pub){
      * 根据页面样式选择器规范获取公共模块信息
      * 注：该方法用于活动页面
      */
-    pub.getPrivateModsByCssSelector = function(){
+    this.getPrivateModsByCssSelector = function(){
 
         if(location.hostname!=='event.yixun.com'){
             return ({});
@@ -304,7 +303,7 @@ J(function($,p,pub){
     /**
      * 获取页面配置信息
      */
-    pub.getPageConfigs = function(cbk){
+    this.getPageConfigs = function(cbk){
         var _params = {
             "act":"query",
             "xn":"xdata",
@@ -325,8 +324,8 @@ J(function($,p,pub){
                 cbk(d.info);
                 return;
             }
-            pub.pages = d.info.xv;
-            cbk(null,pub.pages);
+            J.data.pages = d.info.xv;
+            cbk(null,J.data.pages);
         }).fail(function(jqXhr,txtStatus,err){
             cbk(err);
         });
@@ -334,11 +333,11 @@ J(function($,p,pub){
     /**
      * 获取预配置的tag信息
      */
-    pub.getDefaultCTags = function(cbk){
+    this.getDefaultCTags = function(cbk){
         /*
         var xhr = $.getScript('http://oxox.io/assets/js/xdemo.yixun.xdata.ctags.js?t'+(new Date()).getTime());
         xhr.done(function(script, textStatus, jqxhr){
-            cbk(null,(window['xdataCTags']||{})[pub.bizInfo.pid]);
+            cbk(null,(window['xdataCTags']||{})[J.data.bizInfo.pid]);
         }).fail(function(jqxhr, cfgs, err){
             cbk(err);
         });
@@ -352,24 +351,24 @@ J(function($,p,pub){
             xhr;
 
         //获取所有页面
-        pub.getPageConfigs(function(err,msg){
+        J.data.getPageConfigs(function(err,msg){
             if(err){
                 cbk('getPageConfigs error:'+err);
                 return;
             };
             //获取当前页面的mods
-            var page = pub.getPageConfigByUrl(location.href);
+            var page = J.data.getPageConfigByUrl(location.href);
             if(!page){
                 console.log('getPageConfigByUrl no data',location.href);
             };
             //获取公共模块
-            pub.getPublicMods(function(err1,msg1){
+            J.data.getPublicMods(function(err1,msg1){
                 if(err1){
                     cbk('getPublicMods error:'+err1);
                     return;
                 }
                 //获取当前页面的模块
-                pub.privateMods = [];
+                J.data.privateMods = [];
                 if(!page){
                     //没有私有页面配置数据，直接使用公共模块
                     cbk(null,msg1);
@@ -385,7 +384,7 @@ J(function($,p,pub){
                         cbk(d2.info);
                         return;
                     }
-                    pub.privateMods = d2.info.xv;
+                    J.data.privateMods = d2.info.xv;
                     cbk(null,msg1.concat(d2.info.xv));
                 }).fail(function(jqXhr2,txtStatus2,err2){
                     cbk(err2);
@@ -396,7 +395,7 @@ J(function($,p,pub){
     /**
      * 获取指定URL的页面配置数据
      */
-    pub.getPageConfigByUrl = function(url){
+    this.getPageConfigByUrl = function(url){
         var len =0,tempPage,page;
         if(!this.pages || (len=this.pages.length)==0){
             return null;
@@ -415,8 +414,8 @@ J(function($,p,pub){
     /**
      * 获取指定编号的预设tag
      */
-    pub.getDefaultCTagById = function(id){
-        var pageCTags = (pub.defaultCTags||[]),
+    this.getDefaultCTagById = function(id){
+        var pageCTags = (J.data.defaultCTags||[]),
             len = pageCTags.length,
             obj = null;
         for(var i =0 ;i<len;i++){
@@ -427,32 +426,32 @@ J(function($,p,pub){
         };
         return obj;
     };
-    pub.getAllCTags = function(cbk){
-        var items = pub.getCTags()||[];
-        if(!pub.defaultCTags){
+    this.getAllCTags = function(cbk){
+        var items = J.data.getCTags()||[];
+        if(!J.data.defaultCTags){
             J.data.getDefaultCTags(function(err,d){
                 if(err){
                     console.log(i18n.t('ajax.presetModError'),err);
                     cbk(items);
                     return;
                 };
-                pub.defaultCTags = d||[];
-                items = items.concat(pub.defaultCTags);
+                J.data.defaultCTags = d||[];
+                items = items.concat(J.data.defaultCTags);
                 cbk(items);
             });
             return;
         };
-        items = items.concat(pub.defaultCTags);
+        items = items.concat(J.data.defaultCTags);
         cbk(items);
     };
     /**
      * 获取自定义tag信息
      */
-    pub.getCTags = function(rawForm){
+    this.getCTags = function(rawForm){
         rawForm=rawForm||false;
-        var key = 'xdata_ctags_'+pub.bizInfo.pid,
+        var key = 'xdata_ctags_'+J.data.bizInfo.pid,
             rawData = localStorage[key],
-            rawData1 = pub.getPrivateModsByCssSelector(),
+            rawData1 = J.data.getPrivateModsByCssSelector(),
             isRawData1Empty = Object.getOwnPropertyNames(rawData1).length==0;
         if(!rawData){
             if(isRawData1Empty){
@@ -475,36 +474,36 @@ J(function($,p,pub){
      * 获取自定义tag数据
      * @params {String} id tag编号
      */
-    pub.getCTag = function(id){
-        var d = pub.getCTags(true)||{};
-        d = d[id]||pub.getDefaultCTagById(id);
+    this.getCTag = function(id){
+        var d = J.data.getCTags(true)||{};
+        d = d[id]||J.data.getDefaultCTagById(id);
         return d;
     };
     /**
      * 保存自定义tag数据
      * @params {Object} tagData tag数据
      */
-    pub.saveCTag = function(tagData){
-        var d = pub.getCTags(true)||{},
+    this.saveCTag = function(tagData){
+        var d = J.data.getCTags(true)||{},
             isNew = false;
         if(tagData.id==''){
             tagData.id = new Date().getTime();
         };
-        if(!pub.getCTag(tagData.id)){
+        if(!J.data.getCTag(tagData.id)){
             isNew = true;
         };
         d[tagData.id]=tagData;
-        var key = 'xdata_ctags_'+pub.bizInfo.pid;
+        var key = 'xdata_ctags_'+J.data.bizInfo.pid;
         localStorage[key]=JSON.stringify(d);
-        J.$win.trigger(pub.EVT.CTagUpdated,[(isNew?0:1),tagData]);
+        J.$win.trigger(J.EVT.data.CTagUpdated,[(isNew?0:1),tagData]);
         return d;
     };
     /**
      * 删除自定义tag数据
      * @params {String} id tag id
      */
-    pub.deleteCTag = function(id){
-        var d = pub.getCTags(true);
+    this.deleteCTag = function(id){
+        var d = J.data.getCTags(true);
         if(!d){
             return null;
         };
@@ -512,26 +511,26 @@ J(function($,p,pub){
             return d;
         };
         delete d[id];
-        var key = 'xdata_ctags_'+pub.bizInfo.pid;
+        var key = 'xdata_ctags_'+J.data.bizInfo.pid;
         localStorage[key]=JSON.stringify(d);
-        J.$win.trigger(pub.EVT.CTagUpdated,[-1,id]);
+        J.$win.trigger(J.EVT.data.CTagUpdated,[-1,id]);
         return d;
     };
     /**
      * 停止主数据和点击数据的ajax请求
      */
-    pub.abortKeyAndClickDataRequest = function(){
-        var jqXHR = pub['jqXHRKeyData'];
+    this.abortKeyAndClickDataRequest = function(){
+        var jqXHR = J.data['jqXHRKeyData'];
         if(jqXHR&&jqXHR.readyState != 4){
             jqXHR.abort();
         };
-        jqXHR = pub['jqXHRClickData'];
+        jqXHR = J.data['jqXHRClickData'];
         if(jqXHR&&jqXHR.readyState != 4){
             jqXHR.abort();
         };
     };
 
-    pub.getSafeCurrentKeyData = function(dataType){
+    this.getSafeCurrentKeyData = function(dataType){
         var item = {
             id:'-1',
             click_num:0,
@@ -560,15 +559,15 @@ J(function($,p,pub){
      * 指定uid是否超级管理员
      * @param {String} uid userid
      */
-    pub.isBoss = function(uid){
-        var bossList = pub.boss||[];
+    this.isBoss = function(uid){
+        var bossList = J.data.boss||[];
         return ($.inArray(uid,bossList)!==-1);
     };
 
     /**
      * ytag相关的数据
      */
-    pub.ytag = (function(){
+    this.ytag = (function(){
 
         var p1 = {
             getData:function(dataType,topCnt){
@@ -647,30 +646,30 @@ J(function($,p,pub){
         return pub1;
 
     })();
-
-    pub.EVT = {
-        'KeyDataChange':'onXDataKeyDataChanged',
-        'ClickDataChange':'onXDataClickDataChanged',
-        'CTagUpdated':'onXDataCTagUpdated'
-    };
-
     /**
      * 页面配置数据
      */
-    pub.pages = [];
+    this.pages = [];
     /**
      * 公共模块
      */
-    pub.publicMods = [];
+    this.publicMods = [];
     /**
      * 当前页面私有模块
      */
-    pub.privateMods = [];
+    this.privateMods = [];
 
     /**
      * 初始化数据
-     */
-    pub.init = function(){
-        pub.getKeyAndClickData(null);
+    this.init = function(){
+        this.getKeyAndClickData(null);
+    };
+    */
+    this._init = function(){
+        this.EVT([
+            'KeyDataChange',
+            'ClickDataChange',
+            'CTagUpdated'
+        ]);
     };
 });

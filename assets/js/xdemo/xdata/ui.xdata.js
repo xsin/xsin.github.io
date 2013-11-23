@@ -1,8 +1,7 @@
-/* S CoreUI */
-J(function($,p,pub){
-    pub.id='ui';
-    var coreTpl = J.heredoc(function(){/*
-        <div id="dataWrap" class="data_wrap data_wrap_hide">
+J("uiXData",function(M,V,C){
+
+    V.tpl0 = J.heredoc(function(){/*
+        <div id="dataWrap" class="data_wrap">
             <div id="dataUI" class="data_ui data_ui_1">
                 <div id="dataUIHD" class="data_ui_hd data_fixed">
                     <div class="data_time">
@@ -53,9 +52,6 @@ J(function($,p,pub){
                     </div><!--/data_box-->
                 </div>
             </div>
-            <div class="data_exhaled">
-                <a id="dataClose" href="javascript:;" class="data_exhaled_btn"></a>
-            </div>
             <div id="dataPop2" class="data_pop data_pop2 data_hidden">
                 <div class="data_pop_add">
                     <ul>
@@ -71,126 +67,129 @@ J(function($,p,pub){
                 <a id="dataPop2Close" href="javascript:;" class="data_pop_close">+</a>
             </div>
         </div>
-        <div id="dataPop1" class="data_pop data_pop1">
-            <div class="data_pop_hd">
-                <div class="data_action">
-                    <button id="dataTag1" class="data_btn ox_add_link" data-i18n="chart2.btnSetVersion">设置版本点</button>
-                    <a id="dataLkTagList" class="data_btn" data-href="http://ecd.oa.com/xdata/timeline/" target="_blank" data-i18n="chart2.btnModHis">版本历史</a>
-                </div>
-                <div id="dataCrumbs" class="data_crumbs"></div>
-                <div class="data_filter1">
-                    <div class="data_time clearfix">
-                        <div id="dataDateRange2" class="data_fl data_daterange">
-                            <div class="drp_date drp_date1" id="div_dataLabelDateRange2">
-                                <span class="drp_date_title" id="dataLabelDateRange2"></span>
-                                <a class="drp_trigger" id="drp_dataLabelDateRange2Trigger" href="javascript:;">
-                                    <i class="drp_trigger_ico"></i>
-                                </a>
+    */});
+
+    V.tpl1 = J.heredoc(function(){/*
+        <div id="xdataPop1" data-xpanel_parent="xpanel_data" class="xpanel xpanelB">
+            <a id="dataPop1Close" href="javascript:;" class="xbar_close">&larr;</a> 
+            <div class="xpanel_bd">
+                <div class="xpanel_inner">
+
+                    <div id="dataPop1" class="data_pop data_pop1">
+                        <div class="data_pop_hd">
+                            <div class="data_action">
+                                <button id="dataTag1" class="data_btn ox_add_link" data-i18n="chart2.btnSetVersion">设置版本点</button>
+                                <a id="dataLkTagList" class="data_btn" data-href="http://ecd.oa.com/xdata/timeline/" target="_blank" data-i18n="chart2.btnModHis">版本历史</a>
+                            </div>
+                            <div id="dataCrumbs" class="data_crumbs"></div>
+                            <div class="data_filter1">
+                                <div class="data_time clearfix">
+                                    <div id="dataDateRange2" class="data_fl data_daterange">
+                                        <div class="drp_date drp_date1" id="div_dataLabelDateRange2">
+                                            <span class="drp_date_title" id="dataLabelDateRange2"></span>
+                                            <a class="drp_trigger" id="drp_dataLabelDateRange2Trigger" href="javascript:;">
+                                                <i class="drp_trigger_ico"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="data_fr data_datepreset">
+                                        <ul class="clearfix">
+                                            <li class="data_datepreset_item data_datepreset_item1" id="drpRecentDays1" data-v="1"><a href="javascript:;"><span data-i18n="com.recent">最近</span>7<span data-i18n="com.day">天</span></a></li>
+                                            <li class="data_datepreset_item" id="drpRecentDays2" data-v="2"><a href="javascript:;"><span data-i18n="com.recent">最近</span>15<span data-i18n="com.day">天</span></a></li>
+                                            <li class="data_datepreset_item" id="drpRecentDays3" data-v="3"><a href="javascript:;"><span data-i18n="com.recent">最近</span>30<span data-i18n="com.day">天</span></a></li>
+                                            <li>
+                                                <button id="dataBtnMoreFilter" class="data_btnB"><i class="data_ico_chart"></i><span data-i18n="com.moreCondition">更多条件</span></button>
+                                                <div id="dataTypes" class="data_types data_hidden">
+                                                    <label><input id="dataTypeForMod1" class="data_type" type="radio" value="1" name="data_type" checked="checked"/><span data-i18n="nav.a">点击量</span></label>
+                                                    <label><input id="dataTypeForMod2" class="data_type" type="radio" value="2" name="data_type"/><span data-i18n="nav.b">下单量</span></label>
+                                                    <label><input id="dataTypeForMod3" class="data_type" type="radio" value="3" name="data_type"/><span data-i18n="nav.c">转化率</span></label>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="data_fr data_datepreset">
-                            <ul class="clearfix">
-                                <li class="data_datepreset_item data_datepreset_item1" id="drpRecentDays1" data-v="1"><a href="javascript:;"><span data-i18n="com.recent">最近</span>7<span data-i18n="com.day">天</span></a></li>
-                                <li class="data_datepreset_item" id="drpRecentDays2" data-v="2"><a href="javascript:;"><span data-i18n="com.recent">最近</span>15<span data-i18n="com.day">天</span></a></li>
-                                <li class="data_datepreset_item" id="drpRecentDays3" data-v="3"><a href="javascript:;"><span data-i18n="com.recent">最近</span>30<span data-i18n="com.day">天</span></a></li>
-                                <li>
-                                    <button id="dataBtnMoreFilter" class="data_btnB"><i class="data_ico_chart"></i><span data-i18n="com.moreCondition">更多条件</span></button>
-                                    <div id="dataTypes" class="data_types data_hidden">
-                                        <label><input id="dataTypeForMod1" class="data_type" type="radio" value="1" name="data_type" checked="checked"/><span data-i18n="nav.a">点击量</span></label>
-                                        <label><input id="dataTypeForMod2" class="data_type" type="radio" value="2" name="data_type"/><span data-i18n="nav.b">下单量</span></label>
-                                        <label><input id="dataTypeForMod3" class="data_type" type="radio" value="3" name="data_type"/><span data-i18n="nav.c">转化率</span></label>
+                        <div class="data_pop_bd">
+                            <div class="data_pop_inner">
+                                <div id="dataModChartTip" class="data_ytagcharttip data_hidden"></div>
+                                <!--趋势图-->
+                                <div class="data_pop_section data_chart">
+                                    <h3 class="data_pop_tit" data-i18n="chart2.title">趋势图</h3>
+                                    <div id="dataModChart" class="data_chart_bd"></div>
+                                </div>
+                                <!--详细数据-->
+                                <div class="data_pop_section data_detail">
+                                    <h3 class="data_pop_tit" data-i18n="chart2.title1"></h3>
+                                    <div class="data_detail_bd" id="dataDetailBody">
                                     </div>
-                                </li>
-                            </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="data_pop_bd">
-                <div class="data_pop_inner">
-                    <div id="dataModChartTip" class="data_ytagcharttip data_hidden"></div>
-                    <!--趋势图-->
-                    <div class="data_pop_section data_chart">
-                        <h3 class="data_pop_tit" data-i18n="chart2.title">趋势图</h3>
-                        <div id="dataModChart" class="data_chart_bd"></div>
-                    </div>
-                    <!--详细数据-->
-                    <div class="data_pop_section data_detail">
-                        <h3 class="data_pop_tit" data-i18n="chart2.title1"></h3>
-                        <div class="data_detail_bd" id="dataDetailBody">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="data_exhaled data_exhaled1">
-                <a id="dataPop1Close" href="javascript:;" class="data_exhaled_btn data_exhaled_btn_on"></a>
+
+                </div><!--xpanel_inner-->
             </div>
         </div>
     */});
 
-    var EVT={
-        'Collapse':'onXDataCollapse',
-        'Open':'onXDataOpen',
-        'ModChartReset':'onXDataModChartReset',
-        'ModChartHidden':'onXDataModChartHidden',
-        'UIScroll':'onXDataUIScroll',
-        'UIReady':'onXDataUIReady',
-        'DataTypeChange':'onXDataTypeChange',
-        'DataTypeChangeForPage':'onXDataTypeChangeForPage',
-        'ModRankRendered':'onXDataModRankRendered'
+    V._init = function(){
+        J.$body.append(V.tpl1);
     };
-    pub.EVT=EVT;
-    pub.maxDateRange = 100;
+    C._init = function(){
+        J.uiXData.EVT([
+            'Collapse',
+            'Open',
+            'ModChartReset',
+            'ModChartHidden',
+            'UIScroll',
+            'UIReady',
+            'DataTypeChange',
+            'DataTypeChangeForPage',
+            'ModRankRendered'
+        ]);
+    };
+
+    this.maxDateRange = 100;
     //主UI框架
-    p.main={
+    C.main={
         visible:false,
+        isRendered:false,
         $ui:null,
         dataType:1,
-        tpl0:'',
         _init:function(){
-            this.render();
             if(location.href.indexOf('xdata')>-1){
                 J.$body.addClass('data_admin');
             };
             if( J.data.isBoss( (J.data.bizInfo||{uid:''}).uid ) ){
                 J.$body.addClass('data_boss');
             };
-            setTimeout(function(){
-                J.$win.trigger(EVT.UIReady);
-            },100);
-
-            J.$win.bind(J.ui.EVT.DataTypeChangeForPage,function(e,t){
-                p.main.dataType = parseInt(t)||1;
-                p.main.$uiCore.removeClass('data_ui_1 data_ui_2 data_ui_3')
+            J.$win.bind(J.EVT.uiXData.DataTypeChangeForPage,function(e,t){
+                C.main.dataType = parseInt(t)||1;
+                C.main.$uiCore.removeClass('data_ui_1 data_ui_2 data_ui_3')
                     .addClass('data_ui_'+t);
+            }).bind(J.EVT.ui.onShowXPanel,function(e,panelId){
+                if(panelId!=='data'||C.main.isRendered) return;
+                C.main.render();
             });
         },
         render:function(){
-            J.$body.append(coreTpl);
+            
+            document.getElementById('xpanel_'+J.uiXData.id).innerHTML += V.tpl0;
             this.$ui = $('#dataWrap').oxi18n();
             this.$uiCore = $('#dataUI');
             this.$hd = $('#dataUIHD');
             this.$bd = $('#dataUIBD');
-            $('#dataClose').bind('click',function(e){
-                p.main[p.main.visible?'hide':'show'].call(p.main);
-                return false;
-            });
-
-            this.$ui.onTransitioned(function(){
-                if(p.main.visible){
-                    p.main.fixedHD();
-                }
-            });
 
             //coreui scrollevent
             //UICOre的scroll事件
-            p.main.$bd.bind('scroll.modChart',function(e){
-                J.$win.trigger(EVT.UIScroll,[p.main.$bd.scrollTop()]);
+            C.main.$bd.bind('scroll.modChart',function(e){
+                J.$win.trigger(J.EVT.uiXData.UIScroll,[C.main.$bd.scrollTop()]);
             });
 
             //双击切换百分比
             this.$uiCore.bind('dblclick',function(e){
-                p.main.$uiCore.toggleClass('data_ui_dblclick');
+                C.main.$uiCore.toggleClass('data_ui_dblclick');
             });
 
             //将bizInfo打到ui上,方便其他扩展功能使用
@@ -198,6 +197,11 @@ J(function($,p,pub){
             for(var c in bizInfo){
                 this.$ui[0].setAttribute('data-'+c,bizInfo[c]);
             };
+
+            setTimeout(function(){
+                J.$win.trigger(J.EVT.uiXData.UIReady);
+                C.main.isRendered = true;
+            },50);
 
         },
         fixedHD:function(){
@@ -209,22 +213,26 @@ J(function($,p,pub){
         show:function(){
             this.$ui.removeClass('data_wrap_hide');
             this.visible=true;
-            J.$win.trigger(EVT.Open);
+            J.$win.trigger(J.EVT.uiXData.Open);
         },
         hide:function(){
             this.unfixedHD();
             this.$ui.addClass('data_wrap_hide');
             this.visible=false;
-            J.$win.trigger(EVT.Collapse);
+            J.$win.trigger(J.EVT.uiXData.Collapse);
         }
     };
 
-    pub.getPosition = function(){
-        return p.main.$ui.position();
+    this.getPosition = function(){
+        return C.main.$ui.position();
     };
 
-    pub.getOffset = function(){
-        return p.main.$ui.offset();
+    this.getOffset = function(){
+        return C.main.$ui.offset();
+    };
+
+    this.isRendered = function(){
+        return C.main.isRendered;
     };
 
 });

@@ -1,0 +1,1 @@
+call build\xdata\js.bat
