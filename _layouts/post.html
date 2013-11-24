@@ -19,6 +19,17 @@ layout: default
   {% endfor %}
 </span>
 {% endif %}
+{% if page.author %}
+, <span class="tags">
+  author:
+  {{ page.author }}
+</span>
+{% else %}
+, <span class="tags">
+  author:
+  LV
+</span>
+{% endif %}
 </section>
 
 <section class="post">
