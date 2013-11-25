@@ -7,6 +7,12 @@ J('joy',function(M,V,C){
     // 获取用户qq
     M.userQQ = G.header.common.getCookie("yx_uin");
 
+    V.errTemplate = J.heredoc(function(){/*
+        <div class="xbar_tips_error">
+            请登录或刷新页面。
+        </div>
+    */});
+
     V.cartTemplate = J.heredoc(function(){/*
         <ul class="xbar_goods clearfix" id="xbarCart">
             {{#data}}
@@ -87,6 +93,26 @@ J('joy',function(M,V,C){
         </ul>
     */});
 
+    V.favTemplate = J.heredoc(function(){/*
+        <ul class="xbar_goods clearfix" id="xbarOrder">
+            {{#data}}
+            <li>
+                <a href="{{url}}" class="xbar_goods_img" target="_blank">
+                    <img src="{{img}}" alt="">
+                </a>
+                <div class="xbar_goods_info">
+                    <p class="xbar_goods_name">
+                        <a href="{{url}}" target="_blank">{{name}}</a>
+                    </p>
+                    <p class="xbar_goods_price">
+                        <i>&yen;</i><span>{{price}}</span>
+                    </p>
+                </div>
+            </li>
+            {{/data}}
+        </ul>
+    */});
+
     M.showTemplate = function(name){
         switch(name){
             case "cart":
@@ -95,23 +121,27 @@ J('joy',function(M,V,C){
                      dataType:"jsonp",
                      jsonp:"callback",
                      success:function(result){
-                        // console.log(data);
-                        var _goodsInfo = {
-                            data : []
-                        };
-                        var data = result.data;
-                        // console.log(data);
-                        $.each(data, function(i, item) {
-                            _goodsInfo.data.push({
-                                url : 'http://item.'+G.header.domain+'/item-' + item.product_id + '.html',
-                                name : item.name,
-                                img : G.header.common._getPicUrl(item.product_char_id,"middle", 0),
-                                price : (item.price / 100).toFixed(1),
-                                count : item.buy_count
+                        console.log(result);
+                        if (result.errno == 0) {
+                            var _goodsInfo = {
+                                data : []
+                            };
+                            var data = result.data;
+                            // console.log(data);
+                            $.each(data, function(i, item) {
+                                _goodsInfo.data.push({
+                                    url : 'http://item.'+G.header.domain+'/item-' + item.product_id + '.html',
+                                    name : item.name,
+                                    img : G.header.common._getPicUrl(item.product_char_id,"middle", 0),
+                                    price : (item.price / 100).toFixed(1),
+                                    count : item.buy_count
+                                });
                             });
-                        });
-                        // console.log();
-                        $("#xpanel_cart .xpanel_inner").html(J.toHtml(V.cartTemplate,_goodsInfo));
+                            // console.log();
+                            $("#xpanel_cart .xpanel_inner").html(J.toHtml(V.cartTemplate,_goodsInfo));
+                        }else{
+                            $("#xpanel_cart .xpanel_inner").html(V.errTemplate);
+                        }
                      }
                 });
                 break;
@@ -177,22 +207,26 @@ J('joy',function(M,V,C){
                      jsonp:"callback",
                      success:function(result){
                         console.log(result);
-                        var _goodsInfo = {
-                            data : []
-                        };
-                        var data = result.data;
-                        console.log(data);
-                        $.each(data, function(i, item) {
-                            _goodsInfo.data.push({
-                                url : "http://base.yixun.com/orderdetail-"+item.businessDealId+"-html",
-                                name : item.dealList[0]["productList"][0]["itemTitle"],
-                                img : item.dealList[0]["productList"][0]["itemUrl"],
-                                price : item.payScore,
-                                count : 0
+                        if (result.errno == 0) {
+                            var _goodsInfo = {
+                                data : []
+                            };
+                            var data = result.data;
+                            console.log(data);
+                            $.each(data, function(i, item) {
+                                _goodsInfo.data.push({
+                                    url : "http://base.yixun.com/orderdetail-"+item.businessDealId+"-html",
+                                    name : item.dealList[0]["productList"][0]["itemTitle"],
+                                    img : item.dealList[0]["productList"][0]["itemUrl"],
+                                    price : item.payScore,
+                                    count : 0
+                                });
                             });
-                        });
-                        console.log();
-                        $("#xpanel_order .xpanel_inner").html(J.toHtml(V.orderTemplate,_goodsInfo));
+                            console.log();
+                            $("#xpanel_order .xpanel_inner").html(J.toHtml(V.orderTemplate,_goodsInfo));
+                        }else{
+                            $("#xpanel_order .xpanel_inner").html(V.errTemplate);
+                        }
                      }
                 });
                 break;
@@ -247,26 +281,29 @@ J('joy',function(M,V,C){
             console.log(o);
             if(o && o.errno == 0){//已登录
                 //请求VIP用户信息
-                // self.uid = G.logic.login.getLoginUid();
-                // $.ajax({
-                //     type : 'GET',
-                //     url : M.token.addToken('http://base.51buy.com/json.php?mod=vip&act=getVipInfo&uid=' + self.uid, 'jq'),
-                //     dataType : 'jsonp',
-                //     crossDomain : true,
-                //     jsonpCallback : 'getVipUserInfo',
-                //     success : function(o){
-                //         console.log(o);
-                //         if((o.errno == 0) && o.data){
-                            // 成功登录
-                //         }
-                //     }
-                // });
+                $.ajax({
+                    type : 'GET',
+                    url : M.token.addToken('http://base.yixun.com/json.php?mod=vip&act=getVipInfo&uid=' + M.userID, 'jq'),
+                    dataType : 'jsonp',
+                    crossDomain : true,
+                    jsonpCallback : 'getVipUserInfo',
+                    success : function(o){
+                        console.log(o);
+                        if((o.errno == 0) && o.data){
+                            
+                        }
+                    }
+                });
                 var self = o.data;
                 $('.xbar_mine .xbar_name').html(self.name);
                 $('.xbar_avatar').attr('src','http://qlogo2.store.qq.com/qzone/'+self.qq+'/'+self.qq+'/50')
             }
             else{//未登录
+                // $(".xbar_mine").attr("href","https://base.yixun.com/login.html?url="+location.href);
                 $(".xbar_mine .xbar_name").html("未登录");
+                $(".xbar_order").hide();
+                $(".xbar_cart").hide();
+
             }
         });
     };

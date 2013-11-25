@@ -5,6 +5,8 @@
     .xbar_hd{position:absolute;z-index:2;left:0;top:0;width:50px;;height:100%;background-color:#fff;box-shadow: 2px 0px 3px rgba(0,0,0,0.3);}
     .xbar_lists{position:absolute;top:50%;left:0px;height:380px;margin-top:-190px;}
         .xbar_lk{display:block;text-align:center;text-decoration:none !important;padding:10px 0;}
+        /* 暂时隐藏掉逛逛 */
+        .xbar_guang{display:none;}
             .xbar_lk i{display:block;margin:0 14px;width:21px;height:21px;}
             .xbar_cart i{background-position:-0px -0px;}
             .xbar_view i{background-position:-76px -0px;}  
@@ -21,6 +23,7 @@
             .xbar_fav:hover i{background-position:-129px -25px;}  
             .xbar_coupon:hover i{background-position:-50px -25px;}  
             .xbar_guang:hover i{background-position:-102px -25px;}
+            .xbar_order:hover i{background-position:-26px -25px;}
             .xbar_data:hover i.xbar_ico_data {background-position: 0 -26px;}
             .xbar_lk:hover .xbar_name{color:#fff;}
 
