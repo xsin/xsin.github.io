@@ -3,8 +3,7 @@
 var cbk = function($s){
     var prefix = "http://oxox.io/assets/js/xdemo/",
             t = new Date().getTime();
-    $s(["http://oxox.io/assets/js/libs/heatmap/heatmap.js",
-        prefix+"yx.xdata.base.js?t="+t,
+    $s([prefix+"yx.xdata.base.js?t="+t,
         "http://oxox.io/jq/oxmenu/jquery.oxtree.js?t="+t,
         "http://oxox.io/jq/oxi18n/jquery.oxi18n.js?t="+t,
         prefix+"yx.xdata.score.js?t="+t
@@ -18,8 +17,7 @@ var cbk = function($s){
             prefix+"yx.xdata.pagechart.js?t="+t,
             prefix+"yx.xdata.modeditor.js?t="+t,
             prefix+"yx.xdata.ytag.js?t="+t,
-            prefix+"yx.xdata.modrank.js?t="+t,
-            prefix+"yx.xdata.heatmap.js?t="+t
+            prefix+"yx.xdata.modrank.js?t="+t
         ],"biz");
         $s.ready('biz',function(){
             i18n.addLng('zh-CN',yx_xdata_i18n['zh-CN']);
