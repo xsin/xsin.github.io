@@ -100,9 +100,12 @@ yx_xdata_i18n['zh-CN'] = {
         viewed:"\u770B\u8FC7",//看过
         myViewed:"\u6700\u8FD1\u6D4F\u89C8\u8FC7",//最近浏览过
         like:"\u731C\u559C\u6B22",//猜喜欢
-        myLike:"\u731C\u559C\u6B22",
+        myLike:"\u731C\u4F60\u559C\u6B22",//猜你喜欢
         coupon:"\u4F18\u60E0\u5238",//优惠券
         guang:"\u901B\u901B",//逛逛
         xdata:"\u6613\u6570\u636E",//易数据
+        myFav:"\u6211\u7684\u6536\u85CF\u5939",//我的收藏夹
+        fav:"\u6536\u85CF\u5939",//收藏夹
+        myInfo:"\u6211\u7684\u4FE1\u606F",//我的信息
     }
 };

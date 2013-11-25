@@ -4,11 +4,12 @@ J("ui",function(M,V,C){
         <div id="xbar" class="xbar"> 
             <div class="xbar_hd"> 
                 <div id="xbarList" class="xbar_lists"> 
-                    <a data-xbarid="mine" href="javascript:;" class="xbar_lk xbar_mine"><img src="http://ecd.oa.com/30x30" class="xbar_avatar"><span class="xbar_name" data-i18n="xbar.notLogin">我</span></a>
+                    <a data-xbarid="mine" href="javascript:;" class="xbar_lk xbar_mine"><img src="http://ecd.oa.com/30x30" class="xbar_avatar"><span class="xbar_name" data-i18n="xbar.notLogin">未登录</span></a>
                     <a data-xbarid="order" href="javascript:;" class="xbar_lk xbar_order"><i class="xbar_ico_guang"></i><span class="xbar_name" data-i18n="xbar.order">订单</span></a>
                     <a data-xbarid="cart" href="javascript:;" class="xbar_lk xbar_cart"><i class="xbar_ico_cart"></i><span class="xbar_name" data-i18n="xbar.cart">购物车</span></a>
+                    <a data-xbarid="fav" href="javascript:;" class="xbar_lk xbar_fav"><i class="xbar_ico_fav"></i><span class="xbar_name" data-i18n="xbar.fav">收藏夹</span></a>
                     <a data-xbarid="view" href="javascript:;" class="xbar_lk xbar_view"><i class="xbar_ico_view"></i><span class="xbar_name" data-i18n="xbar.viewed">看过</span></a>
-                    <a data-xbarid="fav" href="javascript:;" class="xbar_lk xbar_fav"><i class="xbar_ico_fav"></i><span class="xbar_name" data-i18n="xbar.like">猜喜欢</span></a>
+                    <a data-xbarid="like" href="javascript:;" class="xbar_lk xbar_like"><i class="xbar_ico_like"></i><span class="xbar_name" data-i18n="xbar.like">猜喜欢</span></a>
                     <a data-xbarid="coupon" href="javascript:;" class="xbar_lk xbar_coupon"><i class="xbar_ico_coupon"></i><span class="xbar_name" data-i18n="xbar.coupon">优惠券</span></a>
                     <a data-xbarid="guang" href="javascript:;" class="xbar_lk xbar_guang"><i class="xbar_ico_guang"></i><span class="xbar_name" data-i18n="xbar.guang">逛逛</span></a>
                     <a data-xbarid="data" href="javascript:;" class="xbar_lk xbar_data"><i class="xbar_ico_data"></i><span class="xbar_name" data-i18n="xbar.xdata">易数据</span></a>
@@ -56,14 +57,21 @@ J("ui",function(M,V,C){
                 </div>
                 <div class="xpanel xpanelA" id="xpanel_fav">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_fav">&larr;</a>
-                    <div class="xpanel_tit" data-i18n="xbar.myLike">猜喜欢</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.myFav">我的收藏夹</div>
+                    <div class="xpanel_bd">
+                        <div class="xpanel_inner"></div>
+                    </div> 
+                </div>
+                <div class="xpanel xpanelA" id="xpanel_like">
+                    <a href="javascript:;" class="xbar_close" rel="xpanel_like">&larr;</a>
+                    <div class="xpanel_tit" data-i18n="xbar.myLike">猜你喜欢</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner"></div>
                     </div> 
                 </div>
                 <div class="xpanel xpanelA" id="xpanel_mine">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_mine">&larr;</a>
-                    <div class="xpanel_tit">我自己</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.myInfo">我的信息</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner"></div>
                     </div> 

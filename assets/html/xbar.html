@@ -1,0 +1,106 @@
+<div class="xbar_mineinfo">
+	<a href="#" class="xbar_mineinfo_img">
+		<img src="{{img}}" alt="">
+		<span>欢迎您！</span>
+		<span><b>{{name}}</b></span>
+		<span>{{level_name}}</span>
+	</a>
+	<div class="xbar_mineinfo_detail">
+		<p class="xbar_mineinfo_item">
+			<span class="xbar_mineinfo_tit">我的积分：</span>
+			<span class="xbar_mineinfo_cnt">{{jifen}}</span>
+		</p>
+		<p class="xbar_mineinfo_item">
+			<span class="xbar_mineinfo_tit">消费金额：</span>
+			<span class="xbar_mineinfo_cnt">&yen; {{fee}}</span>
+		</p>
+	</div>
+</div>
+
+
+
+
+<div class="xbar_goods clearfix xbar_cartinfo" id="xbarCart">
+	<ul class=" xbar_cartinfo_list">
+    	{{#data}}
+	    <li>
+	        <a href="{{url}}" class="xbar_goods_img" target="_blank">
+	            <img src="{{img}}" alt="">
+	        </a>
+	        <div class="xbar_goods_info">
+	            <p class="xbar_goods_name">
+	                <a href="{{url}}" target="_blank">{{name}}</a>
+	            </p>
+	            <p class="xbar_goods_price">
+	                <span><i>&yen;</i>{{price}}</span><i>&times;</i><span>{{count}}</span>
+	            </p>
+	        </div>
+	    </li>
+	    {{/data}}
+	</ul>
+	<div class="xbar_cartinfo_total">
+		{{#total}}
+		<p>共<b>{{count}}</b>件商品，总计：<b>{{price}}</b></p>
+		<p>满29元免运费</p>
+		<a href="http://buy.yixun.com/showcart.html" class="mod_btn mod_btn_bg2 mod_btn_large" target="_blank">去结算<i></i></a>
+		{{/total}}
+	</div>
+</div>
+
+
+<div class="xbar_orderinfo_wrap">
+	{{#data}}
+	<div class="xbar_orderinfo">
+	    <div class="xbar_orderinfo_hd">
+	        <a href="http://base.yixun.com/orderdetail-{{businessDealId}}-html" target="_blank" class="xbar_orderinfo_num">订单：{{businessDealId}}</a><!-- <span class="xbar_orderinfo_count">共1件</span> --><span class="xbar_orderinfo_state">{{bdealGenTime}}</span>
+	    </div>
+	    <div class="xbar_orderinfo_bd">
+	    	{{#dealList}}
+	        <div class="xbar_orderinfo_item">
+	            <div class="xbar_orderinfo_title">
+	                共计：<span class="xbar_orderinfo_title_num">&yen;{{dealPayment}}</span><span class="xbar_orderinfo_title_status">{{dealStateStr}}</span>
+	            </div>
+	            <div class="xbar_orderinfo_pic">
+	                <ul>
+	                	{{#productList}}
+	                    <li>
+	                        <a href="http://item.yixun.com/item-{{productId}}.html" target="_blank" title="{{itemTitle}}"><img src="{{itemUrl}}" alt=""></a>
+	                    </li>
+	                    {{/productList}}
+	                </ul>
+	            </div>
+	        </div>
+	        {{/dealList}}
+	    </div>
+	    <!-- <div class="xbar_orderinfo_info">
+	        <p class="xbar_orderinfo_row">
+	            <span class="xbar_orderinfo_row_tit">总额：</span>
+	            <span class="xbar_orderinfo_row_cnt"><span class="xbar_orderinfo_price">¥9999.00</span>（微信支付）</span>
+	        </p>
+	        <p class="xbar_orderinfo_row">
+	            <span class="xbar_orderinfo_row_tit">时间：</span>
+	            <span class="xbar_orderinfo_row_cnt">2013-8-22</span>
+	        </p>
+	        <div class="xbar_orderinfo_btn">
+	            <a href="#" class="mod_btn mod_btn_large">去支付</a>
+	        </div>
+	    </div> -->
+    </div>
+    {{/data}}
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
