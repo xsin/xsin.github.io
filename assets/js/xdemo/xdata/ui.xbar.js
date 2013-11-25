@@ -4,59 +4,59 @@ J("ui",function(M,V,C){
         <div id="xbar" class="xbar"> 
             <div class="xbar_hd"> 
                 <div id="xbarList" class="xbar_lists"> 
-                    <a data-xbarid="mine" href="javascript:;" class="xbar_lk xbar_mine"><img src="http://ecd.oa.com/30x30" class="xbar_avatar"><span class="xbar_name">我</span></a>
-                    <a data-xbarid="order" href="javascript:;" class="xbar_lk xbar_order"><i class="xbar_ico_guang"></i><span class="xbar_name">订单</span></a>
-                    <a data-xbarid="cart" href="javascript:;" class="xbar_lk xbar_cart"><i class="xbar_ico_cart"></i><span class="xbar_name">购物车</span></a>
-                    <a data-xbarid="view" href="javascript:;" class="xbar_lk xbar_view"><i class="xbar_ico_view"></i><span class="xbar_name">看过</span></a>
-                    <a data-xbarid="fav" href="javascript:;" class="xbar_lk xbar_fav"><i class="xbar_ico_fav"></i><span class="xbar_name">猜喜欢</span></a>
-                    <a data-xbarid="coupon" href="javascript:;" class="xbar_lk xbar_coupon"><i class="xbar_ico_coupon"></i><span class="xbar_name">优惠券</span></a>
-                    <a data-xbarid="guang" href="javascript:;" class="xbar_lk xbar_guang"><i class="xbar_ico_guang"></i><span class="xbar_name">逛逛</span></a>
-                    <a data-xbarid="data" href="javascript:;" class="xbar_lk xbar_data"><i class="xbar_ico_data"></i><span class="xbar_name">易数据</span></a>
+                    <a data-xbarid="mine" href="javascript:;" class="xbar_lk xbar_mine"><img src="http://ecd.oa.com/30x30" class="xbar_avatar"><span class="xbar_name" data-i18n="xbar.notLogin">我</span></a>
+                    <a data-xbarid="order" href="javascript:;" class="xbar_lk xbar_order"><i class="xbar_ico_guang"></i><span class="xbar_name" data-i18n="xbar.order">订单</span></a>
+                    <a data-xbarid="cart" href="javascript:;" class="xbar_lk xbar_cart"><i class="xbar_ico_cart"></i><span class="xbar_name" data-i18n="xbar.cart">购物车</span></a>
+                    <a data-xbarid="view" href="javascript:;" class="xbar_lk xbar_view"><i class="xbar_ico_view"></i><span class="xbar_name" data-i18n="xbar.viewed">看过</span></a>
+                    <a data-xbarid="fav" href="javascript:;" class="xbar_lk xbar_fav"><i class="xbar_ico_fav"></i><span class="xbar_name" data-i18n="xbar.like">猜喜欢</span></a>
+                    <a data-xbarid="coupon" href="javascript:;" class="xbar_lk xbar_coupon"><i class="xbar_ico_coupon"></i><span class="xbar_name" data-i18n="xbar.coupon">优惠券</span></a>
+                    <a data-xbarid="guang" href="javascript:;" class="xbar_lk xbar_guang"><i class="xbar_ico_guang"></i><span class="xbar_name" data-i18n="xbar.guang">逛逛</span></a>
+                    <a data-xbarid="data" href="javascript:;" class="xbar_lk xbar_data"><i class="xbar_ico_data"></i><span class="xbar_name" data-i18n="xbar.xdata">易数据</span></a>
                 </div> 
             </div> 
             <div id="xbarBD" class="xbar_bd">
                 <!--注意：每个xbar菜单对应一个面板(xpanel)，面板的id为xpanel_{xbar菜单的data-xbarid属性}-->
                 <div class="xpanel xpanelA" id="xpanel_coupon">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_coupon">&larr;</a>
-                    <div class="xpanel_tit">我的优惠券</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.coupon">优惠券</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner">
                             <ul class="Xcoupon_list clearfix" id="xbarCoupon"></ul>
-                            <a href="#" class="xbar_morecoupon" id="J_moreCoupon">查看更多优惠券&gt;&gt;</a>
+                            <a href="#" class="xbar_morecoupon" id="J_moreCoupon"><span data-i18n="com.viewMore">查看更多</span>&gt;&gt;</a>
                         </div>
                     </div>
                 </div>
                 <div class="xpanel xpanelA" id="xpanel_data">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_data">&larr;</a>
-                    <div class="xpanel_tit">易数据</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.xdata">易数据</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner" id="xpanel_uiXData"></div>
                     </div> 
                 </div>
                 <div class="xpanel xpanelA" id="xpanel_order">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_order">&larr;</a>
-                    <div class="xpanel_tit">我的订单</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.myOrder">我的订单</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner"></div>
                     </div> 
                 </div>
                 <div class="xpanel xpanelA" id="xpanel_cart">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_cart">&larr;</a>
-                    <div class="xpanel_tit">购物车</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.myCart">我的购物车</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner"></div>
                     </div> 
                 </div>
                 <div class="xpanel xpanelA" id="xpanel_view">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_view">&larr;</a>
-                    <div class="xpanel_tit">最近浏览过</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.myViewed">最近浏览过</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner"></div>
                     </div> 
                 </div>
                 <div class="xpanel xpanelA" id="xpanel_fav">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_fav">&larr;</a>
-                    <div class="xpanel_tit">猜喜欢</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.myLike">猜喜欢</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner"></div>
                     </div> 
@@ -72,7 +72,12 @@ J("ui",function(M,V,C){
         </div>
     */});
 
-    this.EVT(['onClickXbarMenu','onHideAllXPanel','onShowXPanel']);
+    this.EVT([
+        'onClickXbarMenu',
+        'onHideAllXPanel',
+        'onShowXPanel',
+        'onHideXPanel'
+    ]);
 
     C.xbar = {
         clCur:'xbar_lk_current',
@@ -129,15 +134,14 @@ J("ui",function(M,V,C){
         },
         hide:function(id){
             var me = this;
-            $('#xpanel_'+id).removeClass(this.clShow).onAnimated(function(){
-                $(this).onAnimated(false);
-            });
+            $('#xpanel_'+id).removeClass(this.clShow);
+            J.$win.trigger(J.EVT.ui.onHideXPanel,[id]);
         },
         hideAll:function(panelId){
             var me = this;
             this.$wrap.removeClass(this.clWrapShow).onTransitioned(function(){
                 me.$wrap.find('.xpanel').removeClass(me.clShow);
-                J.$win.trigger(J.EVT.ui.onHideAllXPanel);
+                J.$win.trigger(J.EVT.ui.onHideAllXPanel,[{"rel":panelId}]);
                 me.$wrap.onTransitioned(false);
             });
             //隐藏子面板
@@ -148,6 +152,7 @@ J("ui",function(M,V,C){
     this._init = function(){
         //menu
         J.$body.append(V.tpl0);
+        $('#xbar').oxi18n();
     };
 
 });

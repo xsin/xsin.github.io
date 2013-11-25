@@ -64,7 +64,7 @@ J("pagechart",function(p){
             });
 
             //INIT DATA LOAD
-            this.loadData();
+            //this.loadData();
 
         },
         render:function(dataType){

@@ -14,7 +14,7 @@ J("modrank",function(p){
                     {{#hasChildren}}
                         <i class="data_list_ico"></i>
                         <a id="dataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">
-                            {{alias}}
+                            <span class="data_txt">{{alias}}</span>
                             <span class="data_val data_val1">{{val1}}</span>
                             <span class="data_val data_val2">{{percent}}%</span>
                         </a>
@@ -26,7 +26,7 @@ J("modrank",function(p){
                     {{^hasChildren}}
                     <i class="data_list_ico"></i>
                     <a id="dataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">
-                        {{alias}}
+                        <span class="data_txt">{{alias}}</span>
                         <span class="data_val data_val1">{{val1}}</span>
                         <span class="data_val data_val2">{{percent}}%</span>
                     </a>
