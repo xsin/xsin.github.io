@@ -1,6 +1,14 @@
 J('dataXCoupon',function(M,V,C){
     M.URL_MyCoupon = 'http://ic_fd_pc-pc0.tencent.com:8080/xcoupon/admin_icson.php';
     M.URL_HotCoupon='http://log.oxox.io/api.php?xn=xcoupon&xk=coupons&act=query';
+    
+    //事件接口
+    this.EVT([
+        'onGetMyCoupon',
+        'onGetHotCoupon',
+        'onGetAllCoupon'
+    ]);
+
     M._init = function(){
         var ck =(document.cookie||''),
             uid = ck.split('yx_uid=')[1].split(';')[0],
@@ -12,12 +20,6 @@ J('dataXCoupon',function(M,V,C){
             wsid:wsid,
             pid:pid
         };
-
-        //事件接口
-        J.dataXCoupon.EVT('onGetMyCoupon');
-        J.dataXCoupon.EVT('onGetHotCoupon');
-        J.dataXCoupon.EVT('onGetAllCoupon');
-
     }
     C.ajax = function(url,_params,_cbk,type){
         type = type||'GET';

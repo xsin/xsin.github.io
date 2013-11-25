@@ -665,11 +665,10 @@ J("data",function(p){
         this.getKeyAndClickData(null);
     };
     */
-    this._init = function(){
-        this.EVT([
-            'KeyDataChange',
-            'ClickDataChange',
-            'CTagUpdated'
-        ]);
-    };
+    //Register public events
+    this.EVT([
+        'KeyDataChange',
+        'ClickDataChange',
+        'CTagUpdated'
+    ]);
 });
