@@ -1,0 +1,11 @@
+.xbar_mine img{width:30px;height:30px;border-radius:30px;}
+
+.xbar_goods{padding:10px;}
+.xbar_goods li{height:auto;overflow:hidden;margin-bottom:10px;}
+.xbar_goods li:hover{background-color:#eee;}
+    .xbar_goods_img{float:left;width:80px;padding:10px;}
+        .xbar_goods_img img{width:80px;height:80px;overflow:hidden;}
+    .xbar_goods_info{float:left;width:150px;margin-left:10px;padding-top:10px;}
+        .xbar_goods_name{height:36px;line-height:18px;margin-bottom:5px;overflow:hidden;}
+        .xbar_goods_price{color:#d70000;}
+        .xbar_goods_price span{font-size:18px;}
