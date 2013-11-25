@@ -1,15 +1,15 @@
 /**
  * module description
  */
-JJ('lv',function(M,V,C){
+J('lv',function(M,V,C){
     M.isSearchex = location.href.indexOf('searchex.yixun.com')>-1;
     
     M.quan = {};
     V.quan = {
-        tplHD:JJ.heredoc(function(){/*
+        tplHD:J.heredoc(function(){/*
             <a class="goods_more_tag xcoupon_lnk"gtagtype="he">可用券<i></i><span></span></a>
         */}),
-        tplBD:JJ.heredoc(function(){/*
+        tplBD:J.heredoc(function(){/*
             {{#cnt1}}
             <h4>可用券：</h4>
             <ul class="xcoupon_list xcoupon_list1">
@@ -68,7 +68,7 @@ JJ('lv',function(M,V,C){
                 });
                 data.cnt2=1;
             }
-            var html = JJ.toHtml(this.tplBD,data),
+            var html = J.toHtml(this.tplBD,data),
                 $bd = this.$items.eq(idx).find('.goods_more_bd');
             if($bd.length>0){
                 $bd.append(html);
@@ -81,7 +81,7 @@ JJ('lv',function(M,V,C){
     C.quan = {
         _init:function(){
             if(!M.isSearchex) return;
-            JJ.$win.bind(JJ.EVT.data.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
+            J.$win.bind(J.EVT.data.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
                 if(err){
                     return;
                 }
@@ -89,14 +89,14 @@ JJ('lv',function(M,V,C){
                 myCoupons = myCoupons||{errCode:0,data:{total:0}}
                 //数据二次处理
                 if(myCoupons.errCode!==0){
-                    JJ.log(myCoupons.errMsg);
+                    J.log(myCoupons.errMsg);
                     //获取我的优惠券报错
                     return;
                 }
                 myCoupons = myCoupons.data;
                 if(hotCoupons.code!=="1"){
                     //获取热门优惠券报错
-                    JJ.log(hotCoupons.info);
+                    J.log(hotCoupons.info);
                     return;
                 }
                 hotCoupons = hotCoupons.info;
@@ -108,6 +108,10 @@ JJ('lv',function(M,V,C){
                 }
                 
             });
+
+            //取券数据
+            J.dataXCoupon.getAllCoupon();
+
         }
     };
 

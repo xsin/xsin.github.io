@@ -1,5 +1,5 @@
-JJ('data',function(M,V,C){
-    M.URL_MyCoupon = 'http://aronhuang-pc0.tencent.com:8002/xcoupon/admin_icson.php';
+J('dataXCoupon',function(M,V,C){
+    M.URL_MyCoupon = 'http://ic_fd_pc-pc0.tencent.com:8080/xcoupon/admin_icson.php';
     M.URL_HotCoupon='http://log.oxox.io/api.php?xn=xcoupon&xk=coupons&act=query';
     M._init = function(){
         var ck =(document.cookie||''),
@@ -14,9 +14,9 @@ JJ('data',function(M,V,C){
         };
 
         //事件接口
-        JJ.data.EVT('onGetMyCoupon');
-        JJ.data.EVT('onGetHotCoupon');
-        JJ.data.EVT('onGetAllCoupon');
+        J.dataXCoupon.EVT('onGetMyCoupon');
+        J.dataXCoupon.EVT('onGetHotCoupon');
+        J.dataXCoupon.EVT('onGetAllCoupon');
 
     }
     C.ajax = function(url,_params,_cbk,type){
@@ -34,28 +34,6 @@ JJ('data',function(M,V,C){
         return jqXHR;
     };
 
-    C.coupon = {
-        _init:function(){
-            JJ.data.getMyCoupon('10281283',function(err,data){
-                console.log('okkk11')
-                console.log('getMyCoupon',err,data);
-                /*
-                if(!err){
-                    me.getHotCoupon(function(err1,data1){
-                        JJ.$win.trigger(JJ.EVT.data.onGetAllCoupon,[err1,data,data1]);
-                    });
-                }
-                */
-                JJ.data.getHotCoupon(function(err1,data1){
-                    console.log('getHotCoupon',err1,data1);
-                    JJ.$win.trigger(JJ.EVT.data.onGetAllCoupon,[err1,data,data1]);
-                });
-            });
-            
-        }
-    };
-
-
     this.getBizData = function(){
         return M.bizInfo;
     };
@@ -67,7 +45,7 @@ JJ('data',function(M,V,C){
         var bizInfo = this.getBizData();
         uid = uid||bizInfo.uid;
         return C.ajax(M.URL_MyCoupon,{uid:uid},function(err,data){
-            JJ.$win.trigger(JJ.EVT.data.onGetMyCoupon,[err,data]);
+            J.$win.trigger(J.EVT.dataXCoupon.onGetMyCoupon,[err,data]);
             cbk(err,data);
         });
     };
@@ -77,12 +55,26 @@ JJ('data',function(M,V,C){
      */
     this.getHotCoupon = function(cbk){
         return C.ajax(M.URL_HotCoupon,null,function(err,data){
-            JJ.$win.trigger(JJ.EVT.data.onGetHotCoupon,[err,data]);
+            J.$win.trigger(J.EVT.dataXCoupon.onGetHotCoupon,[err,data]);
             cbk(err,data);
         });
     };
 
-    this.init = function(){
-        C.coupon._init();
+    this.getAllCoupon = function(){
+        J.dataXCoupon.getMyCoupon(M.bizInfo.uid,function(err,data){
+            console.log('getMyCoupon'+M.bizInfo.uid,err,data);
+            /*
+            if(!err){
+                me.getHotCoupon(function(err1,data1){
+                    J.$win.trigger(J.EVT.data.onGetAllCoupon,[err1,data,data1]);
+                });
+            }
+            */
+            J.dataXCoupon.getHotCoupon(function(err1,data1){
+                console.log('getHotCoupon',err1,data1);
+                J.$win.trigger(J.EVT.dataXCoupon.onGetAllCoupon,[err1,data,data1]);
+            });
+        });
     };
+
 });

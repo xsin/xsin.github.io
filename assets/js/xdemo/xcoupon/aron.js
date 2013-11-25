@@ -1,12 +1,12 @@
 /**
  * module description
  */
-JJ('aron',function(M,V,C){
+J('aron',function(M,V,C){
 
 
     
 
-     V.couponPopupTpl = JJ.heredoc(function(){/*
+     V.couponPopupTpl = J.heredoc(function(){/*
         <div class="Xmod_popup" id="J_coupon_popup" style="display:none;">
             <div class="Xmod_popup_hd">
                 <h3>优惠券</h3>
@@ -95,8 +95,8 @@ JJ('aron',function(M,V,C){
 
 
     C._init = function(){
-        JJ.$body.append(V.couponPopupTpl);
-        JJ.$win.bind(JJ.EVT.data.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
+        J.$body.append(V.couponPopupTpl);
+        J.$win.bind(J.EVT.dataXCoupon.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
             if (err) {
                 return
             }
@@ -119,6 +119,8 @@ JJ('aron',function(M,V,C){
             V.showCouponPopup();
         });
 
+         J.dataXCoupon.getAllCoupon();
+
         
     };
 
@@ -126,7 +128,7 @@ JJ('aron',function(M,V,C){
 
 
 
-    /*V.tpl0 = JJ.heredoc(function(){/*
+    /*V.tpl0 = J.heredoc(function(){/*
         <div class="mod_pop" style="left:-400px; top:200px; left: 50%; width:800px;">
             <div class="mod_pop_hd">
                 <h3 class="mod_pop_tit">优惠券</h3>
@@ -141,7 +143,7 @@ JJ('aron',function(M,V,C){
     });
 
     /*V.render = function(data){
-        $('#list').append(JJ.toHtml(this.tpl0,data));
+        $('#list').append(J.toHtml(this.tpl0,data));
         if(M.isDataLoaded){
 
         }
@@ -150,7 +152,7 @@ JJ('aron',function(M,V,C){
     M.isDataLoaded = false;
 
     C._init = function(){
-        JJ.$win.bind(JJ.EVT.data.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
+        J.$win.bind(J.EVT.data.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
             console.log(hotCoupons)
             M.isDataLoaded = true;
         }); 
@@ -158,7 +160,7 @@ JJ('aron',function(M,V,C){
 
     C.xxx = {
         _init:function(){
-           JJ.$win.bind(JJ.EVT.data.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
+           J.$win.bind(J.EVT.data.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
                 console.log(hotCoupons)
             });  
         }

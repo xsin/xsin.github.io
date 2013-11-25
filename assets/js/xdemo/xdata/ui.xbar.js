@@ -5,9 +5,10 @@ J("ui",function(M,V,C){
             <div class="xbar_hd"> 
                 <div id="xbarList" class="xbar_lists"> 
                     <a data-xbarid="mine" href="javascript:;" class="xbar_lk xbar_mine"><img src="http://ecd.oa.com/30x30" class="xbar_avatar"><span class="xbar_name">我</span></a>
+                    <a data-xbarid="order" href="javascript:;" class="xbar_lk xbar_order"><i class="xbar_ico_guang"></i><span class="xbar_name">订单</span></a>
                     <a data-xbarid="cart" href="javascript:;" class="xbar_lk xbar_cart"><i class="xbar_ico_cart"></i><span class="xbar_name">购物车</span></a>
                     <a data-xbarid="view" href="javascript:;" class="xbar_lk xbar_view"><i class="xbar_ico_view"></i><span class="xbar_name">看过</span></a>
-                    <a data-xbarid="fav" href="javascript:;" class="xbar_lk xbar_fav"><i class="xbar_ico_fav"></i><span class="xbar_name">收藏</span></a>
+                    <a data-xbarid="fav" href="javascript:;" class="xbar_lk xbar_fav"><i class="xbar_ico_fav"></i><span class="xbar_name">猜喜欢</span></a>
                     <a data-xbarid="coupon" href="javascript:;" class="xbar_lk xbar_coupon"><i class="xbar_ico_coupon"></i><span class="xbar_name">优惠券</span></a>
                     <a data-xbarid="guang" href="javascript:;" class="xbar_lk xbar_guang"><i class="xbar_ico_guang"></i><span class="xbar_name">逛逛</span></a>
                     <a data-xbarid="data" href="javascript:;" class="xbar_lk xbar_data"><i class="xbar_ico_data"></i><span class="xbar_name">易数据</span></a>
@@ -23,7 +24,7 @@ J("ui",function(M,V,C){
                             <ul class="Xcoupon_list clearfix" id="xbarCoupon"></ul>
                             <a href="#" class="xbar_morecoupon" id="J_moreCoupon">查看更多优惠券&gt;&gt;</a>
                         </div>
-                    </div> 
+                    </div>
                 </div>
                 <div class="xpanel xpanelA" id="xpanel_data">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_data">&larr;</a>
@@ -32,7 +33,13 @@ J("ui",function(M,V,C){
                         <div class="xpanel_inner" id="xpanel_uiXData"></div>
                     </div> 
                 </div>
-
+                <div class="xpanel xpanelA" id="xpanel_order">
+                    <a href="javascript:;" class="xbar_close" rel="xpanel_order">&larr;</a>
+                    <div class="xpanel_tit">我的订单</div> 
+                    <div class="xpanel_bd">
+                        <div class="xpanel_inner"></div>
+                    </div> 
+                </div>
                 <div class="xpanel xpanelA" id="xpanel_cart">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_cart">&larr;</a>
                     <div class="xpanel_tit">购物车</div> 
@@ -61,7 +68,6 @@ J("ui",function(M,V,C){
                         <div class="xpanel_inner"></div>
                     </div> 
                 </div>
-
             </div>
         </div>
     */});

@@ -1,3 +1,5 @@
+@import url("xdemo.yixun.xcoupon.joy.css");
+@import url("xdemo.yixun.xcoupon.aron.css");
 /* ===== S xbar ===== */
 .xbar{position:fixed;top:0px;left:0px;width:50px;height:100%;z-index:10000;}
     .xbar_hd{position:absolute;z-index:2;left:0;top:0;width:50px;;height:100%;background-color:#fff;box-shadow: 2px 0px 3px rgba(0,0,0,0.3);}
