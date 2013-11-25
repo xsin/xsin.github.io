@@ -136,19 +136,17 @@ J("uiXData",function(M,V,C){
     V._init = function(){
         J.$body.append(V.tpl1);
     };
-    C._init = function(){
-        J.uiXData.EVT([
-            'Collapse',
-            'Open',
-            'ModChartReset',
-            'ModChartHidden',
-            'UIScroll',
-            'UIReady',
-            'DataTypeChange',
-            'DataTypeChangeForPage',
-            'ModRankRendered'
-        ]);
-    };
+    this.EVT([
+        'Collapse',
+        'Open',
+        'ModChartReset',
+        'ModChartHidden',
+        'UIScroll',
+        'UIReady',
+        'DataTypeChange',
+        'DataTypeChangeForPage',
+        'ModRankRendered'
+    ]);
 
     this.maxDateRange = 100;
     //主UI框架

@@ -72,9 +72,7 @@ J("ui",function(M,V,C){
         </div>
     */});
 
-    C._init = function(){
-        J.ui.EVT(['onClickXbarMenu','onHideAllXPanel','onShowXPanel']);
-    };
+    this.EVT(['onClickXbarMenu','onHideAllXPanel','onShowXPanel']);
 
     C.xbar = {
         clCur:'xbar_lk_current',
