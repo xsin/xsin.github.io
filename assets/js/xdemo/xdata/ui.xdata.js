@@ -169,6 +169,12 @@ J("uiXData",function(M,V,C){
             }).bind(J.EVT.ui.onShowXPanel,function(e,panelId){
                 if(panelId!=='data'||C.main.isRendered) return;
                 C.main.render();
+            }).bind(J.EVT.ui.onHideXPanel,function(e,panelId){
+                if(panelId!=='data') return;
+                C.main.hide();
+            }).bind(J.EVT.ui.onHideAllXPanel,function(e,obj){
+                if(obj.rel!=='data') return;
+                C.main.hide();
             });
         },
         render:function(){
@@ -198,6 +204,7 @@ J("uiXData",function(M,V,C){
 
             setTimeout(function(){
                 J.$win.trigger(J.EVT.uiXData.UIReady);
+                C.main.show();
                 C.main.isRendered = true;
             },50);
 
@@ -209,13 +216,12 @@ J("uiXData",function(M,V,C){
             this.$hd.removeClass('data_fixed');
         },
         show:function(){
-            this.$ui.removeClass('data_wrap_hide');
+            this.fixedHD();
             this.visible=true;
             J.$win.trigger(J.EVT.uiXData.Open);
         },
         hide:function(){
             this.unfixedHD();
-            this.$ui.addClass('data_wrap_hide');
             this.visible=false;
             J.$win.trigger(J.EVT.uiXData.Collapse);
         }

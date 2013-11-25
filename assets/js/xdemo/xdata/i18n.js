@@ -33,7 +33,8 @@ yx_xdata_i18n['zh-CN'] = {
         "actFloor":"\u6D3B\u52A8\u697C\u5C42",//活动楼层
         "actHead":"\u6D3B\u52A8\u9996\u5C4F",//活动首屏
         "actSidenavRight":"\u6D3B\u52A8\u53F3\u8FB9\u5BFC\u822A",//活动右边导航
-        "actSidenavLeft":"\u6D3B\u52A8\u5DE6\u8FB9\u5BFC\u822A"//活动左边导航
+        "actSidenavLeft":"\u6D3B\u52A8\u5DE6\u8FB9\u5BFC\u822A",//活动左边导航
+        "viewMore":"\u67E5\u770B\u66F4\u591A"
     },
     nav:{
         "a":"\u70B9\u51FB\u91CF",
@@ -89,5 +90,19 @@ yx_xdata_i18n['zh-CN'] = {
         noData:"\u65E0\u6570\u636E",
         presetModError:"\u9884\u8BBE\u6A21\u5757\u8BFB\u53D6\u51FA\u9519!",
         serverError:"\u670D\u52A1\u5668\u9519\u8BEF\uFF01"
+    },
+    xbar:{
+        notLogin:"\u672A\u767B\u5F55",//未登录
+        order:"\u8BA2\u5355",//订单
+        myOrder:"\u6211\u7684\u8BA2\u5355",//我的订单
+        cart:"\u8D2D\u7269\u8F66",//购物车
+        myCart:"\u6211\u7684\u8D2D\u7269\u8F66",//我的购物车
+        viewed:"\u770B\u8FC7",//看过
+        myViewed:"\u6700\u8FD1\u6D4F\u89C8\u8FC7",//最近浏览过
+        like:"\u731C\u559C\u6B22",//猜喜欢
+        myLike:"\u731C\u559C\u6B22",
+        coupon:"\u4F18\u60E0\u5238",//优惠券
+        guang:"\u901B\u901B",//逛逛
+        xdata:"\u6613\u6570\u636E",//易数据
     }
 };
