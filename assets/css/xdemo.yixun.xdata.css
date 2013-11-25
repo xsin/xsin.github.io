@@ -11,6 +11,7 @@
             .xbar_fav i{background-position:-129px -0px;}  
             .xbar_coupon i{background-position:-50px -0px;}  
             .xbar_guang i{background-position:-102px -0px;}
+            .xbar_order i{background-position:-26px -0px;}
             .xbar_mine img{display: inline-block;}
 
             .xbar_name{display:block;color:#333;}
@@ -41,6 +42,9 @@
             .xpanel_tit{height:36px;line-height:36px;padding-left:10px;font-size:14px;font-weight:bold;color:#333;font-family:"\5FAE\8F6F\96C5\9ED1";border-bottom:1px solid #C3C3C3;}
             .xpanel_bd{position: absolute;top:37px;left:0;right: 0;bottom:0;}
             .xpanel_inner{position:absolute;top:0;bottom:0;left:0;right:0;overflow-y:auto;}
+            .xpanel_inner::-webkit-scrollbar-track-piece{background-color:#EFEFEF;}
+            .xpanel_inner::-webkit-scrollbar{width:12px;}
+            .xpanel_inner::-webkit-scrollbar-thumb{background:#ccc;}
         .xpanelB{position:fixed;z-index: 9998;left:350px;right:150px;opacity: 0;}
         .xpanelB.xpanel_ani_show{opacity: 1;}
         .xpanelB .xpanel_bd{top:0;}

@@ -3,7 +3,7 @@
     .Xcoupon_sec{margin-bottom: 25px;}
     .Xcoupon_sec_tit{margin-bottom: 10px;color: #333;font-size: 16px;}
     .Xcoupon_list{margin-right: -10px;}
-    .Xcoupon_list li{float: left;margin: 0 10px 15px 0;}
+    .Xcoupon_list li{float: left;margin:10px 7px 0;}
     .Xcoupon_item{float: left;height: 70px;width: 273px;padding: 5px;border: 1px dashed #c5c5c5;display: block;}
     .Xcoupon_item:hover{border:2px solid #5d96fa;padding: 4px;}
     .Xcoupon_item .col{float: left;display: inline-block;}
@@ -24,7 +24,7 @@
     .xbar_iframe .Xcoupon_list li{float: none;width: 285px;margin: 0 auto 15px;}
     .xbar_iframe .Xcoupon_item{float: none;height: 80px;}
     .xbar_iframe .Xcoupon_val{margin-top: 8px;}
-    .xbar_morecoupon{color: #1d7ad9;}
+    .xbar_morecoupon{display:block;color: #1d7ad9;padding:7px;}
 
     .Xmod_btn{display: inline-block;height: 28px;padding:0 15px;color: #fff;font-size: 16px;cursor:pointer;line-height: 28px;text-align: center;background: #fc8800;border: none;font-family: \5FAE\8F6F\96C5\9ED1;}
 

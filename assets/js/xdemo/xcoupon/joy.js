@@ -305,7 +305,7 @@ J('joy',function(M,V,C){
 
     C._init = function(){
         M.renderPersonalInfo();
-        J.$win.bind('onShowXPanel',function(e,panelId){
+        J.$win.bind(J.EVT.ui.onShowXPanel,function(e,panelId){
             // alert('面板显示:'+panelId);
             //接下来写面板显示后的各种应用逻辑
             M.showTemplate(panelId);
