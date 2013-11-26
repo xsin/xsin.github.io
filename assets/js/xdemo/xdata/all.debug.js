@@ -1,3 +1,104 @@
+xData = {};
+xData.score = (function(){
+    var pub = {};
+
+    /**
+     * 威尔逊区间算法
+     * （95%置信区间下，常数是1.96）
+     * @param {Number} click 点击数
+     * @param {Number} order 订单数
+     */
+    var _calRate = function(click,order){
+        CONSTANT = 1.96;
+        return (order / click + Math.pow(CONSTANT,2) / (2 * click) - CONSTANT * Math.sqrt( order / click * (1- order / click) / click + Math.pow(CONSTANT,2) / (4 * click * click))) / ( 1 + Math.pow(CONSTANT,2) / click);
+    };
+
+    /**
+     * 预处理，计算数据最大值和平均值
+     * @param {json} data 数据
+     */
+    var _preParseData = function(data){
+        // 初始化变量
+        maxRate = minRate = totalClick = totalOrder = avgRate = 0;
+
+        for (var i = data.length - 1; i >= 0; i--) {
+            rate = _calRate(data[i]['click_num'], data[i]['order_num']);
+            // 获取最大值
+            if (rate > maxRate) {
+                maxRate = rate;
+                maxIndex = i;
+            }
+            // 统计全部
+            totalClick += data[i]['click_num'];
+            totalOrder += data[i]['order_num'];
+            // 计算平均值
+            if (i == 0) {
+                avgRate = _calRate(totalClick,totalOrder);
+            };
+        };
+        return {
+            // 返回最大值
+            "maxRate": maxRate,
+            // 返回平均值
+            "avgRate": avgRate
+        };
+    };
+
+    /**
+     * 数据计算
+     * @param {json} data 数据
+     */
+    var _parseData = function(data){
+        // 数据预处理，获取最大值和平均值
+        var preRate = _preParseData(data);
+        
+        // 初始化变量
+        var output = [];
+
+        for (var i = data.length - 1; i >= 0; i--) {
+            rate = _calRate(data[i]['click_num'], data[i]['order_num']);
+            // 模块健康度（数据平均值设为60分）
+            grade60 = 60 / preRate['avgRate'] * rate;
+            // 模块健康度（数据最大值设为90分）
+            grade90 = 90 / preRate['maxRate'] * rate;
+            // 判断id是否存在，不存在时用page_tag赋值
+            data[i]["id"] == undefined || data[i]["id"] == "" ? data[i]["id"] = data[i]['page_tag'] : data[i]["id"] = data[i]["id"];
+            // 拼装输出内容
+            output.push(
+                {
+                    "id":data[i]['id'],
+                    "click":data[i]['click_num'],
+                    "order":data[i]['order_num'],
+                    "rate":rate,
+                    "grade60":grade60,
+                    "grade90":grade90
+                }
+            );
+        }
+        return output;
+    };
+
+    /**
+     * 转化率百分比计算
+     * @param {number} avgRate 平均转化率
+     * @param {number} rate 当前点转化率
+     * @param {number} weight 位置权重
+     */
+    var _calRateSimple = function(avgRate,rate,weight){
+        if(avgRate==0){
+            return 100;
+        };
+        weight == undefined || weight == "" ? weight = 1 : weight = weight;
+        return 60 / avgRate * rate * weight;
+    }
+
+    pub.init = function(avgRate,rate,weight){
+        // return _parseData(data);
+        return _calRateSimple(avgRate,rate,weight);
+    };
+
+    return pub;
+})();;
 window['yx_xdata_i18n']=window['yx_xdata_i18n']||{};
 yx_xdata_i18n['zh-CN'] = {
     com:{
@@ -33,7 +134,8 @@ yx_xdata_i18n['zh-CN'] = {
         "actFloor":"\u6D3B\u52A8\u697C\u5C42",//活动楼层
         "actHead":"\u6D3B\u52A8\u9996\u5C4F",//活动首屏
         "actSidenavRight":"\u6D3B\u52A8\u53F3\u8FB9\u5BFC\u822A",//活动右边导航
-        "actSidenavLeft":"\u6D3B\u52A8\u5DE6\u8FB9\u5BFC\u822A"//活动左边导航
+        "actSidenavLeft":"\u6D3B\u52A8\u5DE6\u8FB9\u5BFC\u822A",//活动左边导航
+        "viewMore":"\u67E5\u770B\u66F4\u591A"
     },
     nav:{
         "a":"\u70B9\u51FB\u91CF",
@@ -89,6 +191,20 @@ yx_xdata_i18n['zh-CN'] = {
         noData:"\u65E0\u6570\u636E",
         presetModError:"\u9884\u8BBE\u6A21\u5757\u8BFB\u53D6\u51FA\u9519!",
         serverError:"\u670D\u52A1\u5668\u9519\u8BEF\uFF01"
+    },
+    xbar:{
+        notLogin:"\u672A\u767B\u5F55",//未登录
+        order:"\u8BA2\u5355",//订单
+        myOrder:"\u6211\u7684\u8BA2\u5355",//我的订单
+        cart:"\u8D2D\u7269\u8F66",//购物车
+        myCart:"\u6211\u7684\u8D2D\u7269\u8F66",//我的购物车
+        viewed:"\u770B\u8FC7",//看过
+        myViewed:"\u6700\u8FD1\u6D4F\u89C8\u8FC7",//最近浏览过
+        like:"\u731C\u559C\u6B22",//猜喜欢
+        myLike:"\u731C\u559C\u6B22",
+        coupon:"\u4F18\u60E0\u5238",//优惠券
+        guang:"\u901B\u901B",//逛逛
+        xdata:"\u6613\u6570\u636E",//易数据
     }
 };;
 /* S 数据 */
@@ -298,7 +414,7 @@ J("data",function(p){
             };
             J.data["CurrentKeyData"] = data;
             J.data['jqXHRKeyData'] = null;
-            J.$win.trigger(J.data.EVT.KeyDataChange,[err,data]);
+            J.$win.trigger(J.EVT.data.KeyDataChange,[err,data]);
             if(err){
                 cbk&&cbk(err);
                 return;
@@ -306,7 +422,7 @@ J("data",function(p){
             J.data['jqXHRClickData']=J.data.getClickData(_params,function(err1,data1){
                 J.data['CurrentClickData']=data1;
                 J.data['jqXHRClickData']=null;
-                J.$win.trigger(J.data.EVT.ClickDataChange,[err1,data1]);
+                J.$win.trigger(J.EVT.data.ClickDataChange,[err1,data1]);
                 if(err1){
                     cbk&&cbk(err1);
                     return;
@@ -588,7 +704,7 @@ J("data",function(p){
         d[tagData.id]=tagData;
         var key = 'xdata_ctags_'+J.data.bizInfo.pid;
         localStorage[key]=JSON.stringify(d);
-        J.$win.trigger(J.data.EVT.CTagUpdated,[(isNew?0:1),tagData]);
+        J.$win.trigger(J.EVT.data.CTagUpdated,[(isNew?0:1),tagData]);
         return d;
     };
     /**
@@ -606,7 +722,7 @@ J("data",function(p){
         delete d[id];
         var key = 'xdata_ctags_'+J.data.bizInfo.pid;
         localStorage[key]=JSON.stringify(d);
-        J.$win.trigger(J.data.EVT.CTagUpdated,[-1,id]);
+        J.$win.trigger(J.EVT.data.CTagUpdated,[-1,id]);
         return d;
     };
     /**
@@ -739,13 +855,6 @@ J("data",function(p){
         return pub1;
 
     })();
-
-    this.EVT = {
-        'KeyDataChange':'onXDataKeyDataChanged',
-        'ClickDataChange':'onXDataClickDataChanged',
-        'CTagUpdated':'onXDataCTagUpdated'
-    };
-
     /**
      * 页面配置数据
      */
@@ -761,10 +870,16 @@ J("data",function(p){
 
     /**
      * 初始化数据
-     */
     this.init = function(){
         this.getKeyAndClickData(null);
     };
+    */
+    //Register public events
+    this.EVT([
+        'KeyDataChange',
+        'ClickDataChange',
+        'CTagUpdated'
+    ]);
 });;
 J("ui",function(M,V,C){
 
@@ -772,52 +887,59 @@ J("ui",function(M,V,C){
         <div id="xbar" class="xbar"> 
             <div class="xbar_hd"> 
                 <div id="xbarList" class="xbar_lists"> 
-                    <a data-xbarid="mine" href="javascript:;" class="xbar_lk xbar_mine"><img src="http://ecd.oa.com/30x30" class="xbar_avatar"><span class="xbar_name">我</span></a>
-                    <a data-xbarid="cart" href="javascript:;" class="xbar_lk xbar_cart"><i class="xbar_ico_cart"></i><span class="xbar_name">购物车</span></a>
-                    <a data-xbarid="view" href="javascript:;" class="xbar_lk xbar_view"><i class="xbar_ico_view"></i><span class="xbar_name">看过</span></a>
-                    <a data-xbarid="fav" href="javascript:;" class="xbar_lk xbar_fav"><i class="xbar_ico_fav"></i><span class="xbar_name">收藏</span></a>
-                    <a data-xbarid="coupon" href="javascript:;" class="xbar_lk xbar_coupon"><i class="xbar_ico_coupon"></i><span class="xbar_name">优惠券</span></a>
-                    <a data-xbarid="guang" href="javascript:;" class="xbar_lk xbar_guang"><i class="xbar_ico_guang"></i><span class="xbar_name">逛逛</span></a>
-                    <a data-xbarid="data" href="javascript:;" class="xbar_lk xbar_data"><i class="xbar_ico_data"></i><span class="xbar_name">易数据</span></a>
+                    <a data-xbarid="mine" href="javascript:;" class="xbar_lk xbar_mine"><img src="http://ecd.oa.com/30x30" class="xbar_avatar"><span class="xbar_name" data-i18n="xbar.notLogin">我</span></a>
+                    <a data-xbarid="order" href="javascript:;" class="xbar_lk xbar_order"><i class="xbar_ico_guang"></i><span class="xbar_name" data-i18n="xbar.order">订单</span></a>
+                    <a data-xbarid="cart" href="javascript:;" class="xbar_lk xbar_cart"><i class="xbar_ico_cart"></i><span class="xbar_name" data-i18n="xbar.cart">购物车</span></a>
+                    <a data-xbarid="view" href="javascript:;" class="xbar_lk xbar_view"><i class="xbar_ico_view"></i><span class="xbar_name" data-i18n="xbar.viewed">看过</span></a>
+                    <a data-xbarid="fav" href="javascript:;" class="xbar_lk xbar_fav"><i class="xbar_ico_fav"></i><span class="xbar_name" data-i18n="xbar.like">猜喜欢</span></a>
+                    <a data-xbarid="coupon" href="javascript:;" class="xbar_lk xbar_coupon"><i class="xbar_ico_coupon"></i><span class="xbar_name" data-i18n="xbar.coupon">优惠券</span></a>
+                    <a data-xbarid="guang" href="javascript:;" class="xbar_lk xbar_guang"><i class="xbar_ico_guang"></i><span class="xbar_name" data-i18n="xbar.guang">逛逛</span></a>
+                    <a data-xbarid="data" href="javascript:;" class="xbar_lk xbar_data"><i class="xbar_ico_data"></i><span class="xbar_name" data-i18n="xbar.xdata">易数据</span></a>
                 </div> 
             </div> 
             <div id="xbarBD" class="xbar_bd">
                 <!--注意：每个xbar菜单对应一个面板(xpanel)，面板的id为xpanel_{xbar菜单的data-xbarid属性}-->
                 <div class="xpanel xpanelA" id="xpanel_coupon">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_coupon">&larr;</a>
-                    <div class="xpanel_tit">我的优惠券</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.coupon">优惠券</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner">
                             <ul class="Xcoupon_list clearfix" id="xbarCoupon"></ul>
-                            <a href="#" class="xbar_morecoupon" id="J_moreCoupon">查看更多优惠券&gt;&gt;</a>
+                            <a href="#" class="xbar_morecoupon" id="J_moreCoupon"><span data-i18n="com.viewMore">查看更多</span>&gt;&gt;</a>
                         </div>
-                    </div> 
+                    </div>
                 </div>
                 <div class="xpanel xpanelA" id="xpanel_data">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_data">&larr;</a>
-                    <div class="xpanel_tit">易数据</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.xdata">易数据</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner" id="xpanel_uiXData"></div>
                     </div> 
                 </div>
-
+                <div class="xpanel xpanelA" id="xpanel_order">
+                    <a href="javascript:;" class="xbar_close" rel="xpanel_order">&larr;</a>
+                    <div class="xpanel_tit" data-i18n="xbar.myOrder">我的订单</div> 
+                    <div class="xpanel_bd">
+                        <div class="xpanel_inner"></div>
+                    </div> 
+                </div>
                 <div class="xpanel xpanelA" id="xpanel_cart">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_cart">&larr;</a>
-                    <div class="xpanel_tit">购物车</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.myCart">我的购物车</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner"></div>
                     </div> 
                 </div>
                 <div class="xpanel xpanelA" id="xpanel_view">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_view">&larr;</a>
-                    <div class="xpanel_tit">最近浏览过</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.myViewed">最近浏览过</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner"></div>
                     </div> 
                 </div>
                 <div class="xpanel xpanelA" id="xpanel_fav">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_fav">&larr;</a>
-                    <div class="xpanel_tit">猜喜欢</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.myLike">猜喜欢</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner"></div>
                     </div> 
@@ -829,14 +951,16 @@ J("ui",function(M,V,C){
                         <div class="xpanel_inner"></div>
                     </div> 
                 </div>
-
             </div>
         </div>
     */});
 
-    C._init = function(){
-        J.ui.EVT(['onClickXbarMenu','onHideAllXPanel','onShowXPanel']);
-    };
+    this.EVT([
+        'onClickXbarMenu',
+        'onHideAllXPanel',
+        'onShowXPanel',
+        'onHideXPanel'
+    ]);
 
     C.xbar = {
         clCur:'xbar_lk_current',
@@ -851,7 +975,6 @@ J("ui",function(M,V,C){
                 C.xbar.$cur=$(this).addClass(C.xbar.clCur);
                 return false;
             });
-            console.log(J.ui);
             J.$win.bind(J.EVT.ui.onHideAllXPanel,function(e){
                 C.xbar.reset();
             });
@@ -894,15 +1017,14 @@ J("ui",function(M,V,C){
         },
         hide:function(id){
             var me = this;
-            $('#xpanel_'+id).removeClass(this.clShow).onAnimated(function(){
-                $(this).onAnimated(false);
-            });
+            $('#xpanel_'+id).removeClass(this.clShow);
+            J.$win.trigger(J.EVT.ui.onHideXPanel,[id]);
         },
         hideAll:function(panelId){
             var me = this;
             this.$wrap.removeClass(this.clWrapShow).onTransitioned(function(){
                 me.$wrap.find('.xpanel').removeClass(me.clShow);
-                J.$win.trigger(J.EVT.ui.onHideAllXPanel);
+                J.$win.trigger(J.EVT.ui.onHideAllXPanel,[{"rel":panelId}]);
                 me.$wrap.onTransitioned(false);
             });
             //隐藏子面板
@@ -913,6 +1035,7 @@ J("ui",function(M,V,C){
     this._init = function(){
         //menu
         J.$body.append(V.tpl0);
+        $('#xbar').oxi18n();
     };
 
 });;
@@ -989,7 +1112,7 @@ J("uiXData",function(M,V,C){
 
     V.tpl1 = J.heredoc(function(){/*
         <div id="xdataPop1" data-xpanel_parent="xpanel_data" class="xpanel xpanelB">
-            <a href="javascript:;" class="xbar_close">&larr;</a> 
+            <a id="dataPop1Close" href="javascript:;" class="xbar_close">&larr;</a> 
             <div class="xpanel_bd">
                 <div class="xpanel_inner">
 
@@ -1044,9 +1167,6 @@ J("uiXData",function(M,V,C){
                                 </div>
                             </div>
                         </div>
-                        <div class="data_exhaled data_exhaled1">
-                            <a id="dataPop1Close" href="javascript:;" class="data_exhaled_btn data_exhaled_btn_on"></a>
-                        </div>
                     </div>
 
                 </div><!--xpanel_inner-->
@@ -1057,19 +1177,17 @@ J("uiXData",function(M,V,C){
     V._init = function(){
         J.$body.append(V.tpl1);
     };
-    C._init = function(){
-        J.uiXData.EVT([
-            'Collapse',
-            'Open',
-            'ModChartReset',
-            'ModChartHidden',
-            'UIScroll',
-            'UIReady',
-            'DataTypeChange',
-            'DataTypeChangeForPage',
-            'ModRankRendered'
-        ]);
-    };
+    this.EVT([
+        'Collapse',
+        'Open',
+        'ModChartReset',
+        'ModChartHidden',
+        'UIScroll',
+        'UIReady',
+        'DataTypeChange',
+        'DataTypeChangeForPage',
+        'ModRankRendered'
+    ]);
 
     this.maxDateRange = 100;
     //主UI框架
@@ -1085,23 +1203,24 @@ J("uiXData",function(M,V,C){
             if( J.data.isBoss( (J.data.bizInfo||{uid:''}).uid ) ){
                 J.$body.addClass('data_boss');
             };
-            setTimeout(function(){
-                J.$win.trigger(EVT.UIReady);
-            },100);
-
             J.$win.bind(J.EVT.uiXData.DataTypeChangeForPage,function(e,t){
                 C.main.dataType = parseInt(t)||1;
                 C.main.$uiCore.removeClass('data_ui_1 data_ui_2 data_ui_3')
                     .addClass('data_ui_'+t);
-            }).bind(J.ui.EVT.onShowXPanel,function(e,panelId){
+            }).bind(J.EVT.ui.onShowXPanel,function(e,panelId){
                 if(panelId!=='data'||C.main.isRendered) return;
                 C.main.render();
+            }).bind(J.EVT.ui.onHideXPanel,function(e,panelId){
+                if(panelId!=='data') return;
+                C.main.hide();
+            }).bind(J.EVT.ui.onHideAllXPanel,function(e,obj){
+                if(obj.rel!=='data') return;
+                C.main.hide();
             });
         },
         render:function(){
             
-            document.getElementById('xpanel_'+J.uiXData.id).innerHTML = V.tpl0;
-            this.isRendered = true;
+            document.getElementById('xpanel_'+J.uiXData.id).innerHTML += V.tpl0;
             this.$ui = $('#dataWrap').oxi18n();
             this.$uiCore = $('#dataUI');
             this.$hd = $('#dataUIHD');
@@ -1110,7 +1229,7 @@ J("uiXData",function(M,V,C){
             //coreui scrollevent
             //UICOre的scroll事件
             C.main.$bd.bind('scroll.modChart',function(e){
-                J.$win.trigger(EVT.UIScroll,[C.main.$bd.scrollTop()]);
+                J.$win.trigger(J.EVT.uiXData.UIScroll,[C.main.$bd.scrollTop()]);
             });
 
             //双击切换百分比
@@ -1124,6 +1243,12 @@ J("uiXData",function(M,V,C){
                 this.$ui[0].setAttribute('data-'+c,bizInfo[c]);
             };
 
+            setTimeout(function(){
+                J.$win.trigger(J.EVT.uiXData.UIReady);
+                C.main.show();
+                C.main.isRendered = true;
+            },50);
+
         },
         fixedHD:function(){
             this.$hd.addClass('data_fixed');
@@ -1132,15 +1257,14 @@ J("uiXData",function(M,V,C){
             this.$hd.removeClass('data_fixed');
         },
         show:function(){
-            this.$ui.removeClass('data_wrap_hide');
+            this.fixedHD();
             this.visible=true;
-            J.$win.trigger(EVT.Open);
+            J.$win.trigger(J.EVT.uiXData.Open);
         },
         hide:function(){
             this.unfixedHD();
-            this.$ui.addClass('data_wrap_hide');
             this.visible=false;
-            J.$win.trigger(EVT.Collapse);
+            J.$win.trigger(J.EVT.uiXData.Collapse);
         }
     };
 
@@ -1150,6 +1274,10 @@ J("uiXData",function(M,V,C){
 
     this.getOffset = function(){
         return C.main.$ui.offset();
+    };
+
+    this.isRendered = function(){
+        return C.main.isRendered;
     };
 
 });;
@@ -1180,19 +1308,19 @@ J("modchart",function(p){
         */}),
         _init:function(){
 
-            J.$win.bind(J.ui.EVT.DataTypeChange,function(e,t){
+            J.$win.bind(J.EVT.uiXData.DataTypeChange,function(e,t){
                 p.modChart.dataType=parseInt(t);
                 p.modChart.refresh();
-            }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
+            }).bind(J.EVT.data.CTagUpdated,function(e,opType,d){
                 p.modChart.onCTagUpdated(opType,d);
-            }).bind(J.ui.EVT.Collapse,function(e){
+            }).bind(J.EVT.uiXData.Collapse,function(e){
                 p.modChart.reset();
-            }).bind(J.ui.EVT.UIReady,function(e){
+            }).bind(J.EVT.uiXData.UIReady,function(e){
                 p.modChart.onCoreUIReady();
             });
         },
         onCoreUIReady:function(){
-            p.modChart.$d = $('#dataPop1').oxi18n();
+            p.modChart.$d = $('#xdataPop1').oxi18n();
             p.modChart.$chart = $('#dataModChart');
             p.modChart.$tip = $('#dataModChartTip');
             this.$dataTypes = $('#dataTypes');
@@ -1209,7 +1337,7 @@ J("modchart",function(p){
             $('#dataTypes .data_type').bind('click.modChart',function(e,noTriggerDataTypeEvent){
                 if(this.value==(p.modChart.dataType+'')) return;
                 if (!noTriggerDataTypeEvent) {
-                    J.$win.trigger(J.ui.EVT.DataTypeChange,[this.value]);
+                    J.$win.trigger(J.EVT.uiXData.DataTypeChange,[this.value]);
                 };
                 
             });
@@ -1302,7 +1430,7 @@ J("modchart",function(p){
             this.hide();
             this.tagData=null;
             this.$trigger=null;
-            J.$win.trigger(J.ui.EVT.ModChartReset);
+            J.$win.trigger(J.EVT.uiXData.ModChartReset);
         },
         setDataType:function(t){
             if(!t) return;
@@ -1376,8 +1504,8 @@ J("modchart",function(p){
             this.tagData=tagData;
             this.todayData = J.modrank.getTodayDataById(tagData.id);
             this.$trigger=$trigger;
-            this.$d.addClass('data_pop1_on');
-            J.$html.addClass('data_display');
+            this.$d.addClass('xpanel_ani_show');
+            //J.$html.addClass('data_display');
             this.isVisible=true;
             this.renderMenu();
 
@@ -1390,10 +1518,10 @@ J("modchart",function(p){
             this.loadData(this.tagData);
         },
         hide:function(){
-            this.$d.removeClass('data_pop1_on');
+            this.$d.removeClass('xpanel_ani_show');
             this.isVisible=false;
-            J.$html.removeClass('data_display');
-            J.$win.trigger(J.ui.EVT.ModChartHidden);
+            //J.$html.removeClass('data_display');
+            J.$win.trigger(J.EVT.uiXData.ModChartHidden);
         },
         updatePosition:function(){
             if(!this.isVisible){
@@ -2081,10 +2209,10 @@ J("modchart",function(p){
         </table>
         */}),
         _init:function(){
-            J.$win.bind(J.ui.EVT.DataTypeChange,function(e,t){
+            J.$win.bind(J.EVT.uiXData.DataTypeChange,function(e,t){
                 p.detail.dataType = parseInt(t);
                 p.detail.onDataTypeChange(p.detail.dataType);
-            }).bind(J.ui.EVT.UIReady,function(e){
+            }).bind(J.EVT.uiXData.UIReady,function(e){
                 p.detail.onCoreUIReady();
             });
         },
@@ -2227,13 +2355,18 @@ J("pagechart",function(p){
             edate0:null
         },
         _init:function(){
-            J.$win.bind(J.ui.EVT.DataTypeChangeForPage,function(e,t){
+            J.$win.bind(J.EVT.uiXData.DataTypeChangeForPage,function(e,t){
                 p.keyChart.dataType=parseInt(t);
                 p.keyChart.render(p.keyChart.dataType,true);
-            }).bind(J.ui.EVT.Open,function(e,t){//每次打开时刷新一次数据
+            }).bind(J.EVT.uiXData.Open,function(e,t){//每次打开时刷新一次数据
                 p.keyChart.$retweet.trigger('click.data');
-            }).bind(J.ui.EVT.UIReady,function(e){
+            }).bind(J.EVT.uiXData.UIReady,function(e){
                 p.keyChart.onCoreUIReady();
+            }).bind(J.EVT.ui.onShowXPanel,function(e,panelId){
+                if(panelId!=='data') return;
+                if(J.uiXData.isRendered()){
+                    p.keyChart.loadData();
+                }
             });
         },
         onCoreUIReady:function(){
@@ -2247,7 +2380,7 @@ J("pagechart",function(p){
             this.$filters = $('#dataChart1Filter label').bind('click.data',function(e){
                 p.keyChart.$filters.removeClass('on');
                 $(this).addClass('on');
-                J.$win.trigger(J.ui.EVT.DataTypeChangeForPage,[this.getAttribute('data-type')]);
+                J.$win.trigger(J.EVT.uiXData.DataTypeChangeForPage,[this.getAttribute('data-type')]);
                 return false;
             });
 
@@ -2269,6 +2402,9 @@ J("pagechart",function(p){
                     p.keyChart.$retweet.trigger('click');
                 }
             });
+
+            //INIT DATA LOAD
+            //this.loadData();
 
         },
         render:function(dataType){
@@ -2386,11 +2522,30 @@ J("modeditor",function(p){
         isCustomYTag:false,
         tipTimer:null,
         _init:function(){
-            
-            p.modEditor.$d = $('#dataPop2');
-            p.modEditor.$name = $('#dataPop2Ipt1');
-            p.modEditor.$value = $('#dataPop2Ipt2');
-            p.modEditor.$tip = $('#dataPop2Tip');
+            J.$win.bind(J.EVT.uiXData.Collapse,function(e){
+                p.modEditor.hide();
+            }).bind('resize.modEditor',function(e){
+                p.modEditor.updatePosition();
+            }).bind(J.EVT.uiXData.UIScroll,function(e,stop){
+                p.modEditor.updatePosition(stop);
+            }).bind(J.EVT.uiXData.UIReady,function(e){
+                p.modEditor.onCoreUIReady();
+            });
+
+            $('.data_btn_edit').live('click',function(e){
+                //tagData,$trigger,isCustomYTag
+                var $trigger = $('#dataCTag'+this.rel),
+                    isCustomYTag = $trigger.find('.data_list_lk')[0].getAttribute('data-ytagattr')=='ctag';
+                p.modEditor.show(J.data.getCTag(this.rel),$trigger,isCustomYTag);
+                return false;
+            });
+
+        },
+        onCoreUIReady:function(){
+            this.$d = $('#dataPop2');
+            this.$name = $('#dataPop2Ipt1');
+            this.$value = $('#dataPop2Ipt2');
+            this.$tip = $('#dataPop2Tip');
             //update
             $('#dataPop2Btn1').bind('click',function(e){
                 var isOk = p.modEditor.save(this.rel);
@@ -2416,23 +2571,6 @@ J("modeditor",function(p){
             $('#dataPop2Close').bind('click',function(e){
                 p.modEditor.hide();
             });
-
-            J.$win.bind(J.ui.EVT.Collapse,function(e){
-                p.modEditor.hide();
-            }).bind('resize.modEditor',function(e){
-                p.modEditor.updatePosition();
-            }).bind(J.ui.EVT.UIScroll,function(e,stop){
-                p.modEditor.updatePosition(stop);
-            });
-
-            $('.data_btn_edit').live('click',function(e){
-                //tagData,$trigger,isCustomYTag
-                var $trigger = $('#dataCTag'+this.rel),
-                    isCustomYTag = $trigger.find('.data_list_lk')[0].getAttribute('data-ytagattr')=='ctag';
-                p.modEditor.show(J.data.getCTag(this.rel),$trigger,isCustomYTag);
-                return false;
-            });
-
         },
         showTip:function(txt,duration){
             clearTimeout(this.tipTimer);
@@ -2614,15 +2752,15 @@ J("ytag",function(p){
             return tagObj;
         },
         _init:function(){
-            J.$win.bind(J.ui.EVT.ModChartReset,function(e){
+            J.$win.bind(J.EVT.uiXData.ModChartReset,function(e){
                 p.main.reset();
-            }).bind(J.ui.EVT.ModRankRendered,function(e){
+            }).bind(J.EVT.uiXData.ModRankRendered,function(e){
                 if(p.main.activeNodeCssSelector){
                     $(p.main.activeNodeCssSelector).trigger('click.ytag');
                 };
-            }).bind(J.ui.EVT.ModChartHidden,function(e){
+            }).bind(J.EVT.uiXData.ModChartHidden,function(e){
                 p.main.activeNodeCssSelector = null;
-            }).bind(J.ui.EVT.DataTypeChangeForPage,function(e,t){
+            }).bind(J.EVT.uiXData.DataTypeChangeForPage,function(e,t){
                 p.main.dataType = parseInt(t);
             });
             $('[data-ytag]').live('click.ytag',function(e,d){
@@ -2754,6 +2892,20 @@ J("ytag",function(p){
     };
 
 });;
+J('ytagExt',function(M,V,C){
+
+    C.feeling = {
+        _init:function(){
+            J.$win.bind(J.EVT.uiXData.UIReady,function(e){
+                C.feeling.onUIReady();
+            });
+        },
+        onUIReady:function(){
+            console.log(J.data.CurrentClickData);
+        }
+    };
+
+});;
 J("modrank",function(p){
     //自定义单元排行榜
     p.modRank = {
@@ -2770,7 +2922,7 @@ J("modrank",function(p){
                     {{#hasChildren}}
                         <i class="data_list_ico"></i>
                         <a id="dataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">
-                            {{alias}}
+                            <span class="data_txt">{{alias}}</span>
                             <span class="data_val data_val1">{{val1}}</span>
                             <span class="data_val data_val2">{{percent}}%</span>
                         </a>
@@ -2782,7 +2934,7 @@ J("modrank",function(p){
                     {{^hasChildren}}
                     <i class="data_list_ico"></i>
                     <a id="dataLnkCTag{{id}}" data-id="{{id}}" data-alias="{{alias}}" href="javascript:;" data-ytag="{{ytagSelector}}" data-ytagattr="ctag" data-val="{{val}}" data-val0="{{val0}}" class="data_list_lk">
-                        {{alias}}
+                        <span class="data_txt">{{alias}}</span>
                         <span class="data_val data_val1">{{val1}}</span>
                         <span class="data_val data_val2">{{percent}}%</span>
                     </a>
@@ -2795,17 +2947,17 @@ J("modrank",function(p){
             </ul>
         */}),
         _init:function(){
-            J.$win.bind(J.ui.EVT.DataTypeChangeForPage,function(e,t){
+            J.$win.bind(J.EVT.uiXData.DataTypeChangeForPage,function(e,t){
                 p.modRank.dataType = parseInt(t);
                 p.modRank.reload(true);//排序不一样，所以要重新渲染下树形菜单
-            }).bind(J.data.EVT.CTagUpdated,function(e,opType,d){
+            }).bind(J.EVT.data.CTagUpdated,function(e,opType,d){
                 p.modRank.onCTagUpdated(opType,d);
-            }).bind(J.data.EVT.ClickDataChange,function(e,d){
+            }).bind(J.EVT.data.ClickDataChange,function(e,d){
                 p.modRank.dataChangedAt=p.modRank.dataType;
                 p.modRank.reload();
-            }).bind(J.ui.EVT.UIScroll,function(e,sTop){
+            }).bind(J.EVT.uiXData.UIScroll,function(e,sTop){
                 //J.$win.trigger('oxmenuPositionNeedUpdating');
-            }).bind(J.ui.EVT.UIReady,function(e){
+            }).bind(J.EVT.uiXData.UIReady,function(e){
                 p.modRank.$d = $('#dataList1').bind('mouseleave',function(e){
                     p.modRank.antiCover=true;
                     J.ytag.hideCovers();
@@ -2813,7 +2965,7 @@ J("modrank",function(p){
                 }).bind('mouseenter',function(e){
                     p.modRank.antiCover=false;
                 });
-            }).bind(J.data.EVT.KeyDataChange,function(e,err,d){
+            }).bind(J.EVT.data.KeyDataChange,function(e,err,d){
                 if(err){
                     p.modRank.$d.html('');
                 }
@@ -3009,7 +3161,7 @@ J("modrank",function(p){
 
             if (!isPrepend) {
                 this.$d.oxi18n().oxtree({},true);
-                J.$win.trigger(J.ui.EVT.ModRankRendered);
+                J.$win.trigger(J.EVT.uiXData.ModRankRendered);
                 //如果私有模块为空,提示用户模块维护接口人
                 if(J.data.privateMods.length===0){
                     this.$d.append(emptyHtml).oxi18n({},true);
@@ -3070,5 +3222,702 @@ J("modrank",function(p){
     this.antiCover = function(){
         return p.modRank.antiCover;
     };
+
+});;
+J('dataXCoupon',function(M,V,C){
+    M.URL_MyCoupon = 'http://ic_fd_pc-pc0.tencent.com:8080/xcoupon/admin_icson.php';
+    M.URL_HotCoupon='http://log.oxox.io/api.php?xn=xcoupon&xk=coupons&act=query';
+    
+    //事件接口
+    this.EVT([
+        'onGetMyCoupon',
+        'onGetHotCoupon',
+        'onGetAllCoupon'
+    ]);
+
+    M._init = function(){
+        var ck =(document.cookie||''),
+            uid = ck.split('yx_uid=')[1].split(';')[0],
+            pid = window['yPageId']||'1000',
+            wsid=ck.split('wsid=')[1].split(';')[0];
+
+        this.bizInfo={
+            uid:uid,
+            wsid:wsid,
+            pid:pid
+        };
+    }
+    C.ajax = function(url,_params,_cbk,type){
+        type = type||'GET';
+        var jqXHR=$.ajax({
+            type: type,
+            url: url,
+            data: _params,
+            dataType: 'json'
+        }).fail(function(jqXHR1,txtStatus1,err1){
+            _cbk(err1);
+        }).done(function(data,txtStatus2,jqXHR2){
+            _cbk(null,data);
+        });
+        return jqXHR;
+    };
+
+    this.getBizData = function(){
+        return M.bizInfo;
+    };
+    /**
+     * 获取我的优惠券
+     * @param {string} uid 用户id
+     */
+    this.getMyCoupon = function(uid,cbk){
+        var bizInfo = this.getBizData();
+        uid = uid||bizInfo.uid;
+        return C.ajax(M.URL_MyCoupon,{uid:uid},function(err,data){
+            J.$win.trigger(J.EVT.dataXCoupon.onGetMyCoupon,[err,data]);
+            cbk(err,data);
+        });
+    };
+    /**
+     * 获取热门优惠券
+     * @param {Function} cbk 回调函数
+     */
+    this.getHotCoupon = function(cbk){
+        return C.ajax(M.URL_HotCoupon,null,function(err,data){
+            J.$win.trigger(J.EVT.dataXCoupon.onGetHotCoupon,[err,data]);
+            cbk(err,data);
+        });
+    };
+
+    this.getAllCoupon = function(){
+        J.dataXCoupon.getMyCoupon(M.bizInfo.uid,function(err,data){
+            console.log('getMyCoupon'+M.bizInfo.uid,err,data);
+            /*
+            if(!err){
+                me.getHotCoupon(function(err1,data1){
+                    J.$win.trigger(J.EVT.data.onGetAllCoupon,[err1,data,data1]);
+                });
+            }
+            */
+            J.dataXCoupon.getHotCoupon(function(err1,data1){
+                console.log('getHotCoupon',err1,data1);
+                J.$win.trigger(J.EVT.dataXCoupon.onGetAllCoupon,[err1,data,data1]);
+            });
+        });
+    };
+
+});;
+/**
+ * module description
+ */
+J('joy',function(M,V,C){
+    // 获取用户uid
+    M.userID = G.header.common.getCookie("yx_uid");
+    // 获取用户qq
+    M.userQQ = G.header.common.getCookie("yx_uin");
+
+    V.cartTemplate = J.heredoc(function(){/*
+        <ul class="xbar_goods clearfix" id="xbarCart">
+            {{#data}}
+            <li>
+                <a href="{{url}}" class="xbar_goods_img" target="_blank">
+                    <img src="{{img}}" alt="">
+                </a>
+                <div class="xbar_goods_info">
+                    <p class="xbar_goods_name">
+                        <a href="{{url}}" target="_blank">{{name}}</a>
+                    </p>
+                    <p class="xbar_goods_price">
+                        <i>&yen;</i><span>{{price}}</span>
+                    </p>
+                </div>
+            </li>
+            {{/data}}
+        </ul>
+    */});
+
+    V.viewTemplate = J.heredoc(function(){/*
+        <ul class="xbar_goods clearfix" id="xbarView">
+            {{#data}}
+            <li>
+                <a href="{{url}}" class="xbar_goods_img" target="_blank">
+                    <img src="{{img}}" alt="">
+                </a>
+                <div class="xbar_goods_info">
+                    <p class="xbar_goods_name">
+                        <a href="{{url}}" target="_blank">{{name}}</a>
+                    </p>
+                    <p class="xbar_goods_price">
+                        <i>&yen;</i><span>{{price}}</span>
+                    </p>
+                </div>
+            </li>
+            {{/data}}
+        </ul>
+    */});
+
+    V.favTemplate = J.heredoc(function(){/*
+        <ul class="xbar_goods clearfix" id="xbarFav">
+            {{#data}}
+            <li>
+                <a href="{{url}}" class="xbar_goods_img" target="_blank">
+                    <img src="{{img}}" alt="">
+                </a>
+                <div class="xbar_goods_info">
+                    <p class="xbar_goods_name">
+                        <a href="{{url}}" target="_blank">{{name}}</a>
+                    </p>
+                    <p class="xbar_goods_price">
+                        <i>&yen;</i><span>{{price}}</span>
+                    </p>
+                </div>
+            </li>
+            {{/data}}
+        </ul>
+    */});
+
+    V.orderTemplate = J.heredoc(function(){/*
+        <ul class="xbar_goods clearfix" id="xbarOrder">
+            {{#data}}
+            <li>
+                <a href="{{url}}" class="xbar_goods_img" target="_blank">
+                    <img src="{{img}}" alt="">
+                </a>
+                <div class="xbar_goods_info">
+                    <p class="xbar_goods_name">
+                        <a href="{{url}}" target="_blank">{{name}}</a>
+                    </p>
+                    <p class="xbar_goods_price">
+                        <i>&yen;</i><span>{{price}}</span>
+                    </p>
+                </div>
+            </li>
+            {{/data}}
+        </ul>
+    */});
+
+    M.showTemplate = function(name){
+        switch(name){
+            case "cart":
+                $.ajax({
+                     url:'http://cart.buy.yixun.com/minicart/minilistislogincmem?uid='+M.userID+'&pnum=10',
+                     dataType:"jsonp",
+                     jsonp:"callback",
+                     success:function(result){
+                        // console.log(data);
+                        var _goodsInfo = {
+                            data : []
+                        };
+                        var data = result.data;
+                        // console.log(data);
+                        $.each(data, function(i, item) {
+                            _goodsInfo.data.push({
+                                url : 'http://item.'+G.header.domain+'/item-' + item.product_id + '.html',
+                                name : item.name,
+                                img : G.header.common._getPicUrl(item.product_char_id,"middle", 0),
+                                price : (item.price / 100).toFixed(1),
+                                count : item.buy_count
+                            });
+                        });
+                        // console.log();
+                        $("#xpanel_cart .xpanel_inner").html(J.toHtml(V.cartTemplate,_goodsInfo));
+                     }
+                });
+                break;
+            case "view":
+                $.ajax({
+                     url:'http://s6.smart.yixun.com/w/tf/gettfx?tfid=100004&type=jsonp',
+                     dataType:"jsonp",
+                     jsonp:"callback",
+                     success:function(result){
+                        // console.log(result);
+                        var _goodsInfo = {
+                            data : []
+                        };
+                        var data = result.data.POS_HISTORY;
+                        console.log(data);
+                        $.each(data, function(i, item) {
+                            _goodsInfo.data.push({
+                                url : item.URL,
+                                name : item.TITLE,
+                                img : item.IMG,
+                                price : item.PRICE,
+                                count : 0
+                            });
+                        });
+                        // console.log();
+                        $("#xpanel_view .xpanel_inner").html(J.toHtml(V.viewTemplate,_goodsInfo));
+                     }
+                });
+                break;
+            case "fav":
+                // console.log(M.userQQ);
+                var tfids = 100001; //未知参数
+                $.ajax({
+                     url:'http://s1.smart.yixun.com/w/tf/gettfxs?tfids='+tfids+'&uin='+M.userQQ,
+                     dataType:"jsonp",
+                     jsonp:"callback",
+                     success:function(result){
+                        console.log(result);
+                        var _goodsInfo = {
+                            data : []
+                        };
+                        var data = result[tfids].data.POS_1;
+                        console.log(data);
+                        $.each(data, function(i, item) {
+                            _goodsInfo.data.push({
+                                url : item.URL,
+                                name : item.TITLE,
+                                img : item.IMG,
+                                price : item.PRICE,
+                                count : 0
+                            });
+                        });
+                        // console.log();
+                        $("#xpanel_fav .xpanel_inner").html(J.toHtml(V.favTemplate,_goodsInfo));
+                     }
+                });
+                break;
+            case "order":
+                // console.log(M.userQQ);
+                $.ajax({
+                     url:'http://buy.yixun.com/json.php?mod=showorder&act=getUserOrdersInOneMonth&pageIndex=1',
+                     dataType:"jsonp",
+                     jsonp:"callback",
+                     success:function(result){
+                        console.log(result);
+                        var _goodsInfo = {
+                            data : []
+                        };
+                        var data = result.data;
+                        console.log(data);
+                        $.each(data, function(i, item) {
+                            _goodsInfo.data.push({
+                                url : "http://base.yixun.com/orderdetail-"+item.businessDealId+"-html",
+                                name : item.dealList[0]["productList"][0]["itemTitle"],
+                                img : item.dealList[0]["productList"][0]["itemUrl"],
+                                price : item.payScore,
+                                count : 0
+                            });
+                        });
+                        console.log();
+                        $("#xpanel_order .xpanel_inner").html(J.toHtml(V.orderTemplate,_goodsInfo));
+                     }
+                });
+                break;
+            case "coupon":
+                
+                break;
+            default: 
+                console.log("none panel");
+        }
+    };
+
+    M.token = {
+        //给连接加上token
+        addToken : function(url,type){
+            //type标识请求的方式,jq标识jquery，lk标识普通链接,fr标识form表单,ow打开新窗口
+            var token=this.getToken();
+            //只支持http和https协议，当url中无协议头的时候，应该检查当前页面的协议头
+            if(url=="" || (url.indexOf("://")<0?location.href:url).indexOf("http")!=0){
+                return url;
+            }
+            if(url.indexOf("#")!=-1){
+                var f1=url.match(/\?.+\#/);
+                 if(f1){
+                    var t=f1[0].split("#"),newPara=[t[0],"&g_tk=",token,"&g_ty=",type,"#",t[1]].join("");
+                    return url.replace(f1[0],newPara);
+                 }else{
+                    var t=url.split("#");
+                    return [t[0],"?g_tk=",token,"&g_ty=",type,"#",t[1]].join("");
+                 }
+            }
+            //无论如何都把g_ty带上，用户服务器端判断请求的类型
+            return token==""?(url+(url.indexOf("?")!=-1?"&":"?")+"g_ty="+type):(url+(url.indexOf("?")!=-1?"&":"?")+"g_tk="+token+"&g_ty="+type);
+        },
+        //获取转换后的token
+        getToken : function(){
+            var skey=G.util.cookie.get("skey"),
+                token=skey==null?"":this.time33(skey);
+                return token;
+        },
+        //skey转token
+        time33 : function(str){
+            //哈希time33算法
+            for(var i = 0, len = str.length,hash = 5381; i < len; ++i){
+               hash += (hash << 5) + str.charAt(i).charCodeAt();
+            };
+            return hash & 0x7fffffff;
+        }
+    }
+
+    M.renderPersonalInfo = function(){
+        G.logic.login.getLoginUser(function(o){
+            console.log(o);
+            if(o && o.errno == 0){//已登录
+                //请求VIP用户信息
+                // self.uid = G.logic.login.getLoginUid();
+                // $.ajax({
+                //     type : 'GET',
+                //     url : M.token.addToken('http://base.51buy.com/json.php?mod=vip&act=getVipInfo&uid=' + self.uid, 'jq'),
+                //     dataType : 'jsonp',
+                //     crossDomain : true,
+                //     jsonpCallback : 'getVipUserInfo',
+                //     success : function(o){
+                //         console.log(o);
+                //         if((o.errno == 0) && o.data){
+                            // 成功登录
+                //         }
+                //     }
+                // });
+                var self = o.data;
+                $('.xbar_mine .xbar_name').html(self.name);
+                $('.xbar_avatar').attr('src','http://qlogo2.store.qq.com/qzone/'+self.qq+'/'+self.qq+'/50')
+            }
+            else{//未登录
+                $(".xbar_mine .xbar_name").html("未登录");
+            }
+        });
+    };
+
+    M.getUserName  = function(data){
+        var d = data;
+        if(d.account.toString().indexOf('Login_QQ_') == 0 || 'true' === G.util.cookie.get('__BINDQQACCOUNT')){//QQ用户
+            var cps_msg = G.util.cookie.get("cps_msg").split('|');
+            if (cps_msg.length >= 2 && cps_msg[0] == d.uid) {
+                cps_msg.shift();
+                return G.util.parse.encodeHtml(cps_msg.join('|'));
+            }
+            else{
+                var qq_nick = G.util.cookie.get("qq_nick").split('|');
+                if (qq_nick.length >= 2 && qq_nick[0] == d.uid) {
+                    qq_nick.shift();
+                    return G.logic.login.cutString(G.util.parse.encodeHtml(qq_nick.join('|')), G.logic.login._loginNameCutLen);
+                }
+            }
+        }
+        else if(d.account.toString().indexOf('Login_Alipay_') == 0){//支付宝
+            return G.logic.login.cutString(G.util.parse.encodeHtml(d.name || d.account), G.logic.login._loginNameCutLen);
+        }
+        else if (/^\d+@51fanli$/.test(d.account.toString())) {//51fanli
+            var cps_msg = G.util.cookie.get("cps_msg").split('|');
+            if (cps_msg.length >= 2 && cps_msg[0] == d.uid) {
+                return cps_msg[1];
+            }
+        }
+        else if (d.account.toString().indexOf('Login_SHAuto_') == 0) {//安悦用户
+            return G.logic.login.cutString(G.util.parse.encodeHtml(d.account.substr(13)), G.logic.login._loginNameCutLen);
+        }
+        //易迅帐号
+        return G.logic.login.cutString(G.util.parse.encodeHtml(d.name || d.account), G.logic.login._loginNameCutLen);
+    };
+
+    C._init = function(){
+        M.renderPersonalInfo();
+        J.$win.bind(J.EVT.ui.onShowXPanel,function(e,panelId){
+            // alert('面板显示:'+panelId);
+            //接下来写面板显示后的各种应用逻辑
+            M.showTemplate(panelId);
+        }); 
+    };
+
+
+});
+;
+/**
+ * module description
+ */
+J('lv',function(M,V,C){
+    M.isSearchex = location.href.indexOf('searchex.yixun.com')>-1;
+    
+    M.quan = {};
+    V.quan = {
+        tplHD:J.heredoc(function(){/*
+            <a class="goods_more_tag xcoupon_lnk"gtagtype="he">可用券<i></i><span></span></a>
+        */}),
+        tplBD:J.heredoc(function(){/*
+            {{#cnt1}}
+            <h4>可用券：</h4>
+            <ul class="xcoupon_list xcoupon_list1">
+                {{#items1}}
+                <li><a href="{{url}}" title="{{name}}">{{name}}</a></li>
+                {{/items1}}
+            </ul>
+            {{/cnt1}}
+            <h4>可领券：</h4>
+            <ul class="xcoupon_list xcoupon_list2">
+                {{#items2}}
+                <li><a href="{{url}}" target="_blank" title="{{name}}">{{name}}</a></li>
+                {{/items2}}
+            </ul>
+        */}),
+        _init:function(){
+            if(!M.isSearchex) return;
+            this.$items = $('#itemList').find('li');
+            M.cnt = this.$items.length;
+
+            
+        },
+        render:function(myCoupons,hotCoupons){
+            var cnt =8 ,idx;
+            while(cnt>0){
+                idx = Math.floor(Math.random()*cnt);
+                if(idx<M.cnt){
+                    this.addQuanUI(idx,myCoupons,hotCoupons);
+                }
+                cnt--;
+            };
+        },
+        addQuanUI:function(idx,myCoupons,hotCoupons){
+            if(M.quan[idx+'']){
+                return;
+            }
+            M.quan[idx+'']=true;
+            var $hd = this.$items.eq(idx).find('.goods_more_hd').append(this.tplHD);
+            var data = {
+                cnt1:0,
+                cnt2:0,
+                items1:[],
+                items2:[]
+            };
+            if(myCoupons.total>0){
+                data.items1.push({
+                    url:"javascript:;",
+                    name:myCoupons.coupons[0].coupon_name
+                });
+                data.cnt1=1;
+            }
+            if(hotCoupons.xv.length>0){
+                data.items2.push({
+                    url:hotCoupons.xv[0].url,
+                    name:hotCoupons.xv[0].coupon_name
+                });
+                data.cnt2=1;
+            }
+            var html = J.toHtml(this.tplBD,data),
+                $bd = this.$items.eq(idx).find('.goods_more_bd');
+            if($bd.length>0){
+                $bd.append(html);
+            }else{
+                $hd.after('<div class="goods_more_bd">'+html+'</div>');
+            }
+        }
+    };
+
+    C.quan = {
+        _init:function(){
+            if(!M.isSearchex) return;
+            J.$win.bind(J.EVT.data.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
+                if(err){
+                    return;
+                }
+                //TEST:
+                myCoupons = myCoupons||{errCode:0,data:{total:0}}
+                //数据二次处理
+                if(myCoupons.errCode!==0){
+                    J.log(myCoupons.errMsg);
+                    //获取我的优惠券报错
+                    return;
+                }
+                myCoupons = myCoupons.data;
+                if(hotCoupons.code!=="1"){
+                    //获取热门优惠券报错
+                    J.log(hotCoupons.info);
+                    return;
+                }
+                hotCoupons = hotCoupons.info;
+
+                if(!err){
+                    M.quan.myCoupons = myCoupons;
+                    M.quan.hotCoupons = hotCoupons;
+                    V.quan.render(myCoupons,hotCoupons);
+                }
+                
+            });
+
+            //取券数据
+            J.dataXCoupon.getAllCoupon();
+
+        }
+    };
+
+});;
+/**
+ * module description
+ */
+J('aron',function(M,V,C){
+
+
+    
+
+     V.couponPopupTpl = J.heredoc(function(){/*
+        <div class="Xmod_popup" id="J_coupon_popup" style="display:none;">
+            <div class="Xmod_popup_hd">
+                <h3>优惠券</h3>
+                <span class="Xmod_popup_close" id="J_popup_close">关闭</span>
+            </div>
+            <div class="Xmod_popup_bd">
+                <div class="Xcoupon_container">
+                    <div class="Xcoupon">
+                        <div class="Xcoupon_sec my_coupon">
+                            <h2 class="Xcoupon_sec_tit">我的优惠券</h2>
+                            <div class="Xcoupon_sec_bd">
+                                <ul class="Xcoupon_list clearfix" id="myCoupon">
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="Xcoupon_sec">
+                            <h2 class="Xcoupon_sec_tit">热门优惠券</h2>
+                            <div class="Xcoupon_sec_bd">
+                                <ul class="Xcoupon_list clearfix" id="availableCoupon">
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+        </div>
+        <div id="J_mask" class="Xmod_popup_mask" style="display:none;"></div>
+    */});
+
+    V.renderCoupon = function(obj, data, isOwned, num){
+        var html = [];
+        var count = 0;
+        if (data.length == 0) {
+            html.push('<p class="tips_none">暂时没有可用的优惠券哦！</p>');
+        } else {
+            $.each(data, function(){
+                count++;
+                var row = this;
+                var rowHtml;
+                if (isOwned) {
+                    rowHtml = [
+                        '<li>',
+                            '<a class="Xcoupon_item" title="'+ row.coupon_name+'" href="http://base.yixun.com/mycoupon.html" title="查看我的优惠券" target="_blank">',
+                            '<div class="col col1"><div class="Xcoupon_val"><i>&yen;</i><span>' + row.coupon_amt/100 + '</span></div></div>',
+                            '<div class="col col2"><div class="Xcoupon_desc">' + row.coupon_name + '</div><div class="Xcoupou_expired">有效期至：' + M.formatTime(row.valid_time_to*1000) + '</div></div>',
+                            '</a>',
+                        '</li>'
+                    ].join(''); 
+                } else {
+                    rowHtml = [
+                        '<li>',
+                            '<a class="Xcoupon_item" href="' + row.url + '" target="_blank" title="'+ row.coupon_name+'">',
+                            '<div class="col col1"><div class="Xcoupon_val"><i>&yen;</i><span>' + row.coupon_amt + '</span></div></div>',
+                            '<div class="col col2"><div class="Xcoupon_desc">' + row.coupon_name + '</div><div class="Xcoupou_expired">有效期至：' + M.formatTime(row.valid_time_to) + '</div></div>',
+                            /*'<div class="Xcoupou_btn Xmod_btn">立即领取</div></a>',*/
+                        '</li>'
+                    ].join(''); 
+                } 
+                html.push(rowHtml);
+                if (num && count == num) {
+                    return false;
+                }
+            });
+        }
+        $(obj).html(html.join(''));
+    }
+
+    V.showCouponPopup = function(){
+        $('#J_coupon_popup').show();
+        $('#J_mask').show();
+    }
+
+
+    V.hideCouponPopup = function(){
+       $('#J_coupon_popup').hide();
+       $('#J_mask').hide(); 
+    }
+
+
+    M.formatTime = function(timestamp){
+        var date = new Date(timestamp);
+        return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+    }
+
+
+
+    C._init = function(){
+        J.$body.append(V.couponPopupTpl);
+        J.$win.bind(J.EVT.dataXCoupon.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
+            if (err) {
+                return
+            }
+            console.log(myCoupons);
+            myCoupons = myCoupons.data.coupons;
+            hotCoupons = hotCoupons.info.xv;
+            V.renderCoupon($('#xbarCoupon'), myCoupons, true, 5);
+            V.renderCoupon($('#availableCoupon'), hotCoupons, false);
+            V.renderCoupon($('#myCoupon'), myCoupons, true);
+        }); 
+
+
+        $('#J_popup_close').bind('click', function(e){
+            e.preventDefault();
+            V.hideCouponPopup();
+        });
+
+         $('#J_moreCoupon').bind('click', function(e){
+            e.preventDefault();
+            V.showCouponPopup();
+        });
+
+         J.dataXCoupon.getAllCoupon();
+
+        
+    };
+
+
+
+
+
+    /*V.tpl0 = J.heredoc(function(){/*
+        <div class="mod_pop" style="left:-400px; top:200px; left: 50%; width:800px;">
+            <div class="mod_pop_hd">
+                <h3 class="mod_pop_tit">优惠券</h3>
+                <button type="button" class="mod_pop_close" data-dismiss="model">关闭</button>
+            </div>
+            <div class="mod_pop_bd">
+                <div class="mod_pop_con">
+                    <iframe frameborder="0" border="0" id="preview_frame" width="188" height="225" scrolling="no" allowtransparency="true" src="http://chong.qq.com/tws/entra/getpanel?id=306&amp;vb2ctag=3_1007_1_1346&amp;width=188&amp;height=225"></iframe>
+                </div>
+            </div>
+        </div>
+    });
+
+    /*V.render = function(data){
+        $('#list').append(J.toHtml(this.tpl0,data));
+        if(M.isDataLoaded){
+
+        }
+    };
+
+    M.isDataLoaded = false;
+
+    C._init = function(){
+        J.$win.bind(J.EVT.data.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
+            console.log(hotCoupons)
+            M.isDataLoaded = true;
+        }); 
+    };
+
+    C.xxx = {
+        _init:function(){
+           J.$win.bind(J.EVT.data.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
+                console.log(hotCoupons)
+            });  
+        }
+    };
+    
+    C=>V
+    C=>M
+    V=>M
+
+
+
+
+
+    */
+
 
 });;
