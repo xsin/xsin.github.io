@@ -37,7 +37,7 @@ rem ;; where are files specified in the list
 rem ;; NOTE: if files in the list have absolute path please remove this variable
 rem ;;       writing "rem" instead of "set" as prefix
 rem ;; E:\Camp\Works\Qee\QeeUE\trunk\qeetuan\www\js
-set YUI_FOLDER_SOURCE=%YUI_FOLDER_DEST%
+set YUI_FOLDER_SOURCE=assets\js\xdemo
 
 rem ;; specify if you do not want to munge file (obfuscation)
 rem ;; NOTE: YUICompressor is a great tool but sometimes it could have some problem with munge option
