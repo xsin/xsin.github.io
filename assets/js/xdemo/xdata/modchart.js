@@ -10,6 +10,7 @@ J("modchart",function(p){
         isVisible:false,
         hasAjaxError:false,
         data:{},
+        keyData:{},
         tagData:null,
         dataType:1,
         chartOpts:null,
@@ -289,6 +290,7 @@ J("modchart",function(p){
             var me = this;
             //reset data
             this.data={};
+            this.keyData={};
             this.loadDateRangeData(tagData,dates,function(err,d){
 
                 if(err){
@@ -321,6 +323,7 @@ J("modchart",function(p){
         loadDateRangeData:function(tagData,dateRanges,cbk){
 
             if(dateRanges.length===0){
+                //console.log(this.keyData);
                 cbk(null,this.data);
                 return;
             };
@@ -354,6 +357,7 @@ J("modchart",function(p){
             this.hasAjaxError=false;
             
             this.data[dateKey]=[];
+            this.keyData[dateKey]=[];
             //从服务器取数据
             //采用按maxDateCountPerTime天分割轮询查询的方式，提升查询性能
             this.getDataByDates(tagData.ytagIds,dates,dateKey,function(err,d){
@@ -372,18 +376,24 @@ J("modchart",function(p){
             var len = d.length,
                 r =[],
                 dataByTime=null,
-                //TODO:DragClickData接口增加uv,pv字段
-                pv = J.data.CurrentKeyData.total.pv,
-                uv = J.data.CurrentKeyData.total.uv||0,
+                dataByTime1 = null,
+                keyData = this.keyData[dateKey],
+                pv = 0,
+                uv = 0,
                 rateByPv = 0,
                 rateByUv = 0,
                 valToday = 0;
             for(var i=0;i<len;i++){
+                dataByTime1 = keyData[i];
+                pv = (dataByTime1&&dataByTime1.pv)||0;
+                uv = (dataByTime1&&dataByTime1.uv)||0;
                 dataByTime={
                     t:d[i].t,
                     x:d[i].t,
                     y:0,
                     date:J.data.getDateTimeStr(new Date(d[i].t),{len:10}),
+                    pv:pv,
+                    uv:uv,
                     rateByPv:0,
                     rateByUv:0,
                     click_num:d[i].click_num,
@@ -793,6 +803,53 @@ J("modchart",function(p){
             this.tagData.treePath[this.tagData.treePath.length-1].clActive="";
             return true;
         },
+        //获取页面总体数据如pv/uv数据
+        getPageKeyData:function(dateRangeObj,cbk){
+            var sdate = dateRangeObj.sdate,
+                edate = dateRangeObj.edate,
+                dateKey = 'PageKeyData-'+dateRangeObj.id+"_"+J.data.bizInfo.pid+'_'+J.data.bizInfo.wsid,
+                _params = {
+                    date_type:'custom',
+                    start_date:sdate,
+                    end_date:edate
+                },
+                todayStr = J.data.getDateTimeStr(new Date(),{len:10}),
+                len,
+                tempItem,
+                tempItem1,
+                cacheStr;
+
+            //已经统计过
+            if( (cacheStr=localStorage[dateKey]) ){
+                cbk(null,JSON.parse(cacheStr));
+                return;
+            }
+            this.jqXHR = J.data.getKeyData(_params,function(err,data){
+                if(err){
+                    cbk(err);
+                    return;
+                }
+                if(!data.status){
+                    cbk('getPageKeyData:'+i18n.t('ajax.serverError')+","+data.errmsg);
+                    return;
+                }
+                //如果最后一天是今天
+                len = data.data.length;
+                if(todayStr===edate.substr(0,10)){
+                    tempItem = data.data[len-1];
+                    tempItem1 = J.data.TodayKeyData||{total:{click_num:0,click_trans_rate:0,order_num:0,pv:0,uv:0}};
+                    tempItem.click_num = tempItem1.total.click_num;
+                    tempItem.click_trans_rate=tempItem1.total.click_trans_rate;
+                    tempItem.order_num = tempItem1.total.order_num;
+                    tempItem.pv = tempItem1.total.pv;
+                    tempItem.uv =tempItem1.total.uv||0;
+                    data.data[len-1] = tempItem;
+                }
+                localStorage[dateKey]=JSON.stringify(data);
+                cbk(null,data);
+            });
+
+        },
         getDataByDates:function(tagids,dates,dateKey,cbk,maxDateCountPerTime){
             maxDateCountPerTime = maxDateCountPerTime ||5;
             if(dates.length==0){
@@ -809,6 +866,7 @@ J("modchart",function(p){
                     page_tag_ids:tagids.join(',')
                 },
                 me = this,
+                dateKey1 = sdate.substr(0,10)+'-'+edate.substr(0,10),
                 tempItem,tempDate;
 
             this.jqXHR=J.data.getRangeClickData(_params,function(err,d){
@@ -826,10 +884,25 @@ J("modchart",function(p){
                     tempDate = new Date(c);
                     tempDate = new Date(tempDate.getFullYear(),tempDate.getMonth(),tempDate.getDate());
                     tempItem.t = tempDate.getTime();
+                    tempItem.s_date = tempItem.s_date||J.data.getDateTimeStr(tempDate,{len:10});
                     me.data[dateKey].push(tempItem);
                 };
-                //递归
-                me.getDataByDates(tagids,dates,dateKey,cbk,maxDateCountPerTime);
+                //获取页面整体数据
+                me.getPageKeyData({
+                    sdate:sdate,
+                    edate:edate,
+                    id:dateKey1
+                },function(err1,d1){
+                    if(err1){
+                        me.hasAjaxError=true;
+                        cbk(err1);
+                        return;
+                    }
+                    me.keyData[dateKey]=me.keyData[dateKey].concat(d1.data);
+                    //递归
+                    me.getDataByDates(tagids,dates,dateKey,cbk,maxDateCountPerTime);
+                });
+                
             });
         },
         endDateIsToday:function(dateKey){
@@ -872,9 +945,11 @@ J("modchart",function(p){
                     <th><span data-i18n="com.date">日期</span></th>
                     <th><span data-i18n="nav.a">点击量</span>(CN)</th>
                     <th><span data-i18n="nav.b">下单量</span>(ON)</th>
-                    <th><span data-i18n="chart2.transRateByClick">每点击转化率</span>(ON/CN)</th>
+                    <th><span data-i18n="chart2.transRateByClick">转化率</span>(ON/CN)</th>
+                    <th>PV</th>
+                    <th>UV</th>
                     <th>{{lblDataPerPV}}</th>
-                    <!--<th>{{lblDataPerUV}}</th>-->
+                    <th>{{lblDataPerUV}}</th>
                 </tr>
             </thead>
             <tbody>
@@ -885,8 +960,10 @@ J("modchart",function(p){
                         <td>{{click_num}}</td>
                         <td>{{order_num}}</td>
                         <td>{{click_trans_rate}}%</td>
+                        <td>{{pv}}</td>
+                        <td>{{uv}}</td>
                         <td>{{rateByPv}}%</td>
-                        <!--<td>{{rateByUv}}%</td>-->
+                        <td>{{rateByUv}}%</td>
                     </tr>
                     {{/childRow}}
                     {{^childRow}}
@@ -896,8 +973,10 @@ J("modchart",function(p){
                         <td>{{click_num}}</td>
                         <td>{{order_num}}</td>
                         <td>{{click_trans_rate}}%</td>
+                        <td>{{pv}}</td>
+                        <td>{{uv}}</td>
                         <td>{{rateByPv}}%</td>
-                        <!--<td>{{rateByUv}}%</td>-->
+                        <td>{{rateByUv}}%</td>
                     </tr>
                     {{/childRow}}
                 {{/items}}
@@ -910,7 +989,9 @@ J("modchart",function(p){
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
-                    <!--<td>&nbsp;</td>-->
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
                 </tr>
                 {{#total}}
                 <tr class="data_detail_sum">
@@ -918,8 +999,10 @@ J("modchart",function(p){
                     <td>{{click}}</td>
                     <td>{{order}}</td>
                     <td>{{transRate}}%</td>
+                    <td>{{pv}}</td>
+                    <td>{{uv}}</td>
                     <td>{{valueByPV}}%</td>
-                    <!--<td>{{valueByUV}}%</td>-->
+                    <td>{{valueByUV}}%</td>
                 </tr>
                 {{/total}}
             </tfoot>
@@ -981,14 +1064,18 @@ J("modchart",function(p){
                 order:0,
                 transRate:0,
                 valueByPV:0,
-                valueByUV:0
+                valueByUV:0,
+                pv:0,
+                uv:0
             },
             total2={
                 click:0,
                 order:0,
                 transRate:0,
                 valueByPV:0,
-                valueByUV:0
+                valueByUV:0,
+                pv:0,
+                uv:0
             };
 
             for(var i=0;i<len;i++){
@@ -1009,6 +1096,8 @@ J("modchart",function(p){
                 total1.transRate+=tempItem.click_trans_rate;
                 total1.valueByPV+=tempItem.rateByPv;
                 total1.valueByUV+=tempItem.rateByUv;
+                total1.pv+=tempItem.pv;
+                total1.uv+=tempItem.uv;
                 if(tempItem1){
                     data.items.push(tempItem1);
                     total2.click+=tempItem1.click_num;
@@ -1016,6 +1105,8 @@ J("modchart",function(p){
                     total2.transRate+=tempItem1.click_trans_rate;
                     total2.valueByPV+=tempItem1.rateByPv;
                     total2.valueByUV+=tempItem1.rateByUv;
+                    total2.pv+=tempItem1.pv;
+                    total2.uv+=tempItem1.uv;
                 }
             };//for
 

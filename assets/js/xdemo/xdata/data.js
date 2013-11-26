@@ -204,6 +204,9 @@ J("data",function(p){
                 data.total.click_trans_rate = parseFloat(data.total.click_trans_rate);
             };
             J.data["CurrentKeyData"] = data;
+            if(_params.date_type==='today'){
+                J.data["TodayKeyData"] = data;
+            };
             J.data['jqXHRKeyData'] = null;
             J.$win.trigger(J.EVT.data.KeyDataChange,[err,data]);
             if(err){
