@@ -2,40 +2,41 @@
 @import url("xdemo.yixun.xcoupon.aron.css");
 /* ===== S xbar ===== */
 .xbar{position:fixed;top:0px;left:0px;width:50px;height:100%;z-index:10000;}
-    .xbar_hd{position:absolute;z-index:2;left:0;top:0;width:50px;;height:100%;background-color:#fff;box-shadow: 2px 0px 3px rgba(0,0,0,0.3);}
+    .xbar_hd{position:absolute;z-index:2;left:0;top:0;width:50px;;height:100%;background-color:#4174E3;box-shadow: 2px 0px 3px rgba(0,0,0,0.3);}
     .xbar_lists{position:absolute;top:50%;left:0px;height:380px;margin-top:-190px;width:100%}
-        .xbar_lk{display:block;text-align:center;text-decoration:none !important;padding:10px 0;}
+        .xbar_lk{display:block;text-align:center;text-decoration:none !important;padding:10px 0;color:#fff;}
         /* 暂时隐藏掉逛逛 */
         .xbar_guang{display:none;}
             .xbar_lk i{display:block;margin:0 14px;width:21px;height:21px;}
-            .xbar_cart i{background-position:-0px -0px;}
-            .xbar_view i{background-position:-76px -0px;}  
-            .xbar_fav i{background-position:-129px -0px;}  
-            .xbar_coupon i{background-position:-50px -0px;}  
-            .xbar_guang i{background-position:-102px -0px;}
-            .xbar_order i{background-position:-26px -0px;}
+            .xbar_cart i{background-position:-0px -25px;}
+            .xbar_view i{background-position:-76px -25px;}  
+            .xbar_fav i{background-position:-129px -25px;}  
+            .xbar_coupon i{background-position:-50px -25px;}  
+            .xbar_guang i{background-position:-102px -25px;}
+            .xbar_order i{background-position:-26px -25px;}
+            .xbar_data i{background-position:0px -26px;}
             .xbar_mine img{display: inline-block;}
 
-            .xbar_name{display:block;color:#333;}
-        .xbar_lk:hover{background-color:#4174E3;}
-            .xbar_cart:hover i{background-position:-0px -25px;}
-            .xbar_view:hover i{background-position:-76px -25px;}  
-            .xbar_fav:hover i{background-position:-129px -25px;}  
-            .xbar_coupon:hover i{background-position:-50px -25px;}  
-            .xbar_guang:hover i{background-position:-102px -25px;}
-            .xbar_order:hover i{background-position:-26px -25px;}
-            .xbar_data:hover i.xbar_ico_data {background-position: 0 -26px;}
-            .xbar_lk:hover .xbar_name{color:#fff;}
+            .xbar_name{display:block;color:#fff;}
+        .xbar_lk:hover{background-color:#fff;}
+            .xbar_cart:hover i{background-position:-0px 0;}
+            .xbar_view:hover i{background-position:-76px 0;}  
+            .xbar_fav:hover i{background-position:-129px 0;}  
+            .xbar_coupon:hover i{background-position:-50px 0;}  
+            .xbar_guang:hover i{background-position:-102px 0;}
+            .xbar_order:hover i{background-position:-26px 0;}
+            .xbar_data:hover i.xbar_ico_data {background-position: 0 0;}
+            .xbar_lk:hover .xbar_name{color:#333;}
 
-        .xbar_lk_current{background-color:#4174E3;}
-            .xbar_cart.xbar_lk_current i{background-position:-0px -25px;}
-            .xbar_view.xbar_lk_current i{background-position:-76px -25px;}  
-            .xbar_fav.xbar_lk_current i{background-position:-129px -25px;}  
-            .xbar_coupon.xbar_lk_current i{background-position:-50px -25px;}  
-            .xbar_guang.xbar_lk_current i{background-position:-102px -25px;}
-            .xbar_order.xbar_lk_current i{background-position:-26px -25px;}
-            .xbar_data.xbar_lk_current i.xbar_ico_data {background-position: 0 -26px;}
-            .xbar_lk_current .xbar_name{color:#fff;}
+        .xbar_lk_current{background-color:#fff;}
+            .xbar_cart.xbar_lk_current i{background-position:-0px 0;}
+            .xbar_view.xbar_lk_current i{background-position:-76px 0;}  
+            .xbar_fav.xbar_lk_current i{background-position:-129px 0;}  
+            .xbar_coupon.xbar_lk_current i{background-position:-50px 0;}  
+            .xbar_guang.xbar_lk_current i{background-position:-102px 0;}
+            .xbar_order.xbar_lk_current i{background-position:-26px 0;}
+            .xbar_data.xbar_lk_current i.xbar_ico_data {background-position: 0 0;}
+            .xbar_lk_current .xbar_name{color:#333;}
 
     .xbar_bd{display:block;position:absolute;left:50px;top:0px;height:100%;width:300px;visibility:hidden;-webkit-transition:all .15s ease-out;-webkit-transform:translateX(-100%);}
     .xbar_bd_show{-webkit-transform:translateX(0);visibility: visible;}
