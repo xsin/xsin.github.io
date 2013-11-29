@@ -201,10 +201,13 @@ yx_xdata_i18n['zh-CN'] = {
         viewed:"\u770B\u8FC7",//看过
         myViewed:"\u6700\u8FD1\u6D4F\u89C8\u8FC7",//最近浏览过
         like:"\u731C\u559C\u6B22",//猜喜欢
-        myLike:"\u731C\u559C\u6B22",
+        myLike:"\u731C\u4F60\u559C\u6B22",//猜你喜欢
         coupon:"\u4F18\u60E0\u5238",//优惠券
         guang:"\u901B\u901B",//逛逛
         xdata:"\u6613\u6570\u636E",//易数据
+        myFav:"\u6211\u7684\u6536\u85CF\u5939",//我的收藏夹
+        fav:"\u6536\u85CF\u5939",//收藏夹
+        myInfo:"\u6211\u7684\u4FE1\u606F",//我的信息
     }
 };;
 /* S 数据 */
@@ -413,6 +416,9 @@ J("data",function(p){
                 data.total.click_trans_rate = parseFloat(data.total.click_trans_rate);
             };
             J.data["CurrentKeyData"] = data;
+            if(_params.date_type==='today'){
+                J.data["TodayKeyData"] = data;
+            };
             J.data['jqXHRKeyData'] = null;
             J.$win.trigger(J.EVT.data.KeyDataChange,[err,data]);
             if(err){
@@ -887,11 +893,12 @@ J("ui",function(M,V,C){
         <div id="xbar" class="xbar"> 
             <div class="xbar_hd"> 
                 <div id="xbarList" class="xbar_lists"> 
-                    <a data-xbarid="mine" href="javascript:;" class="xbar_lk xbar_mine"><img src="http://ecd.oa.com/30x30" class="xbar_avatar"><span class="xbar_name" data-i18n="xbar.notLogin">我</span></a>
+                    <a data-xbarid="mine" href="javascript:;" class="xbar_lk xbar_mine"><img src="http://ecd.oa.com/30x30" class="xbar_avatar"><span class="xbar_name" data-i18n="xbar.notLogin">未登录</span></a>
                     <a data-xbarid="order" href="javascript:;" class="xbar_lk xbar_order"><i class="xbar_ico_guang"></i><span class="xbar_name" data-i18n="xbar.order">订单</span></a>
                     <a data-xbarid="cart" href="javascript:;" class="xbar_lk xbar_cart"><i class="xbar_ico_cart"></i><span class="xbar_name" data-i18n="xbar.cart">购物车</span></a>
+                    <a data-xbarid="fav" href="javascript:;" class="xbar_lk xbar_fav"><i class="xbar_ico_fav"></i><span class="xbar_name" data-i18n="xbar.fav">收藏夹</span></a>
                     <a data-xbarid="view" href="javascript:;" class="xbar_lk xbar_view"><i class="xbar_ico_view"></i><span class="xbar_name" data-i18n="xbar.viewed">看过</span></a>
-                    <a data-xbarid="fav" href="javascript:;" class="xbar_lk xbar_fav"><i class="xbar_ico_fav"></i><span class="xbar_name" data-i18n="xbar.like">猜喜欢</span></a>
+                    <a data-xbarid="like" href="javascript:;" class="xbar_lk xbar_like"><i class="xbar_ico_like"></i><span class="xbar_name" data-i18n="xbar.like">猜喜欢</span></a>
                     <a data-xbarid="coupon" href="javascript:;" class="xbar_lk xbar_coupon"><i class="xbar_ico_coupon"></i><span class="xbar_name" data-i18n="xbar.coupon">优惠券</span></a>
                     <a data-xbarid="guang" href="javascript:;" class="xbar_lk xbar_guang"><i class="xbar_ico_guang"></i><span class="xbar_name" data-i18n="xbar.guang">逛逛</span></a>
                     <a data-xbarid="data" href="javascript:;" class="xbar_lk xbar_data"><i class="xbar_ico_data"></i><span class="xbar_name" data-i18n="xbar.xdata">易数据</span></a>
@@ -939,14 +946,21 @@ J("ui",function(M,V,C){
                 </div>
                 <div class="xpanel xpanelA" id="xpanel_fav">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_fav">&larr;</a>
-                    <div class="xpanel_tit" data-i18n="xbar.myLike">猜喜欢</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.myFav">我的收藏夹</div>
+                    <div class="xpanel_bd">
+                        <div class="xpanel_inner"></div>
+                    </div> 
+                </div>
+                <div class="xpanel xpanelA" id="xpanel_like">
+                    <a href="javascript:;" class="xbar_close" rel="xpanel_like">&larr;</a>
+                    <div class="xpanel_tit" data-i18n="xbar.myLike">猜你喜欢</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner"></div>
                     </div> 
                 </div>
                 <div class="xpanel xpanelA" id="xpanel_mine">
                     <a href="javascript:;" class="xbar_close" rel="xpanel_mine">&larr;</a>
-                    <div class="xpanel_tit">我自己</div> 
+                    <div class="xpanel_tit" data-i18n="xbar.myInfo">我的信息</div> 
                     <div class="xpanel_bd">
                         <div class="xpanel_inner"></div>
                     </div> 
@@ -1293,6 +1307,7 @@ J("modchart",function(p){
         isVisible:false,
         hasAjaxError:false,
         data:{},
+        keyData:{},
         tagData:null,
         dataType:1,
         chartOpts:null,
@@ -1572,6 +1587,7 @@ J("modchart",function(p){
             var me = this;
             //reset data
             this.data={};
+            this.keyData={};
             this.loadDateRangeData(tagData,dates,function(err,d){
 
                 if(err){
@@ -1604,6 +1620,7 @@ J("modchart",function(p){
         loadDateRangeData:function(tagData,dateRanges,cbk){
 
             if(dateRanges.length===0){
+                //console.log(this.keyData);
                 cbk(null,this.data);
                 return;
             };
@@ -1637,6 +1654,7 @@ J("modchart",function(p){
             this.hasAjaxError=false;
             
             this.data[dateKey]=[];
+            this.keyData[dateKey]=[];
             //从服务器取数据
             //采用按maxDateCountPerTime天分割轮询查询的方式，提升查询性能
             this.getDataByDates(tagData.ytagIds,dates,dateKey,function(err,d){
@@ -1655,18 +1673,24 @@ J("modchart",function(p){
             var len = d.length,
                 r =[],
                 dataByTime=null,
-                //TODO:DragClickData接口增加uv,pv字段
-                pv = J.data.CurrentKeyData.total.pv,
-                uv = J.data.CurrentKeyData.total.uv||0,
+                dataByTime1 = null,
+                keyData = this.keyData[dateKey],
+                pv = 0,
+                uv = 0,
                 rateByPv = 0,
                 rateByUv = 0,
                 valToday = 0;
             for(var i=0;i<len;i++){
+                dataByTime1 = keyData[i];
+                pv = (dataByTime1&&dataByTime1.pv)||0;
+                uv = (dataByTime1&&dataByTime1.uv)||0;
                 dataByTime={
                     t:d[i].t,
                     x:d[i].t,
                     y:0,
                     date:J.data.getDateTimeStr(new Date(d[i].t),{len:10}),
+                    pv:pv,
+                    uv:uv,
                     rateByPv:0,
                     rateByUv:0,
                     click_num:d[i].click_num,
@@ -2076,6 +2100,53 @@ J("modchart",function(p){
             this.tagData.treePath[this.tagData.treePath.length-1].clActive="";
             return true;
         },
+        //获取页面总体数据如pv/uv数据
+        getPageKeyData:function(dateRangeObj,cbk){
+            var sdate = dateRangeObj.sdate,
+                edate = dateRangeObj.edate,
+                dateKey = 'PageKeyData-'+dateRangeObj.id+"_"+J.data.bizInfo.pid+'_'+J.data.bizInfo.wsid,
+                _params = {
+                    date_type:'custom',
+                    start_date:sdate,
+                    end_date:edate
+                },
+                todayStr = J.data.getDateTimeStr(new Date(),{len:10}),
+                len,
+                tempItem,
+                tempItem1,
+                cacheStr;
+
+            //已经统计过
+            if( (cacheStr=localStorage[dateKey]) ){
+                cbk(null,JSON.parse(cacheStr));
+                return;
+            }
+            this.jqXHR = J.data.getKeyData(_params,function(err,data){
+                if(err){
+                    cbk(err);
+                    return;
+                }
+                if(!data.status){
+                    cbk('getPageKeyData:'+i18n.t('ajax.serverError')+","+data.errmsg);
+                    return;
+                }
+                //如果最后一天是今天
+                len = data.data.length;
+                if(todayStr===edate.substr(0,10)){
+                    tempItem = data.data[len-1];
+                    tempItem1 = J.data.TodayKeyData||{total:{click_num:0,click_trans_rate:0,order_num:0,pv:0,uv:0}};
+                    tempItem.click_num = tempItem1.total.click_num;
+                    tempItem.click_trans_rate=tempItem1.total.click_trans_rate;
+                    tempItem.order_num = tempItem1.total.order_num;
+                    tempItem.pv = tempItem1.total.pv;
+                    tempItem.uv =tempItem1.total.uv||0;
+                    data.data[len-1] = tempItem;
+                }
+                localStorage[dateKey]=JSON.stringify(data);
+                cbk(null,data);
+            });
+
+        },
         getDataByDates:function(tagids,dates,dateKey,cbk,maxDateCountPerTime){
             maxDateCountPerTime = maxDateCountPerTime ||5;
             if(dates.length==0){
@@ -2092,6 +2163,7 @@ J("modchart",function(p){
                     page_tag_ids:tagids.join(',')
                 },
                 me = this,
+                dateKey1 = sdate.substr(0,10)+'-'+edate.substr(0,10),
                 tempItem,tempDate;
 
             this.jqXHR=J.data.getRangeClickData(_params,function(err,d){
@@ -2109,10 +2181,25 @@ J("modchart",function(p){
                     tempDate = new Date(c);
                     tempDate = new Date(tempDate.getFullYear(),tempDate.getMonth(),tempDate.getDate());
                     tempItem.t = tempDate.getTime();
+                    tempItem.s_date = tempItem.s_date||J.data.getDateTimeStr(tempDate,{len:10});
                     me.data[dateKey].push(tempItem);
                 };
-                //递归
-                me.getDataByDates(tagids,dates,dateKey,cbk,maxDateCountPerTime);
+                //获取页面整体数据
+                me.getPageKeyData({
+                    sdate:sdate,
+                    edate:edate,
+                    id:dateKey1
+                },function(err1,d1){
+                    if(err1){
+                        me.hasAjaxError=true;
+                        cbk(err1);
+                        return;
+                    }
+                    me.keyData[dateKey]=me.keyData[dateKey].concat(d1.data);
+                    //递归
+                    me.getDataByDates(tagids,dates,dateKey,cbk,maxDateCountPerTime);
+                });
+                
             });
         },
         endDateIsToday:function(dateKey){
@@ -2155,9 +2242,11 @@ J("modchart",function(p){
                     <th><span data-i18n="com.date">日期</span></th>
                     <th><span data-i18n="nav.a">点击量</span>(CN)</th>
                     <th><span data-i18n="nav.b">下单量</span>(ON)</th>
-                    <th><span data-i18n="chart2.transRateByClick">每点击转化率</span>(ON/CN)</th>
+                    <th><span data-i18n="chart2.transRateByClick">转化率</span>(ON/CN)</th>
+                    <th>PV</th>
+                    <th>UV</th>
                     <th>{{lblDataPerPV}}</th>
-                    <!--<th>{{lblDataPerUV}}</th>-->
+                    <th>{{lblDataPerUV}}</th>
                 </tr>
             </thead>
             <tbody>
@@ -2168,8 +2257,10 @@ J("modchart",function(p){
                         <td>{{click_num}}</td>
                         <td>{{order_num}}</td>
                         <td>{{click_trans_rate}}%</td>
+                        <td>{{pv}}</td>
+                        <td>{{uv}}</td>
                         <td>{{rateByPv}}%</td>
-                        <!--<td>{{rateByUv}}%</td>-->
+                        <td>{{rateByUv}}%</td>
                     </tr>
                     {{/childRow}}
                     {{^childRow}}
@@ -2179,8 +2270,10 @@ J("modchart",function(p){
                         <td>{{click_num}}</td>
                         <td>{{order_num}}</td>
                         <td>{{click_trans_rate}}%</td>
+                        <td>{{pv}}</td>
+                        <td>{{uv}}</td>
                         <td>{{rateByPv}}%</td>
-                        <!--<td>{{rateByUv}}%</td>-->
+                        <td>{{rateByUv}}%</td>
                     </tr>
                     {{/childRow}}
                 {{/items}}
@@ -2193,7 +2286,9 @@ J("modchart",function(p){
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
-                    <!--<td>&nbsp;</td>-->
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
                 </tr>
                 {{#total}}
                 <tr class="data_detail_sum">
@@ -2201,8 +2296,10 @@ J("modchart",function(p){
                     <td>{{click}}</td>
                     <td>{{order}}</td>
                     <td>{{transRate}}%</td>
+                    <td>{{pv}}</td>
+                    <td>{{uv}}</td>
                     <td>{{valueByPV}}%</td>
-                    <!--<td>{{valueByUV}}%</td>-->
+                    <td>{{valueByUV}}%</td>
                 </tr>
                 {{/total}}
             </tfoot>
@@ -2264,14 +2361,18 @@ J("modchart",function(p){
                 order:0,
                 transRate:0,
                 valueByPV:0,
-                valueByUV:0
+                valueByUV:0,
+                pv:0,
+                uv:0
             },
             total2={
                 click:0,
                 order:0,
                 transRate:0,
                 valueByPV:0,
-                valueByUV:0
+                valueByUV:0,
+                pv:0,
+                uv:0
             };
 
             for(var i=0;i<len;i++){
@@ -2292,6 +2393,8 @@ J("modchart",function(p){
                 total1.transRate+=tempItem.click_trans_rate;
                 total1.valueByPV+=tempItem.rateByPv;
                 total1.valueByUV+=tempItem.rateByUv;
+                total1.pv+=tempItem.pv;
+                total1.uv+=tempItem.uv;
                 if(tempItem1){
                     data.items.push(tempItem1);
                     total2.click+=tempItem1.click_num;
@@ -2299,6 +2402,8 @@ J("modchart",function(p){
                     total2.transRate+=tempItem1.click_trans_rate;
                     total2.valueByPV+=tempItem1.rateByPv;
                     total2.valueByUV+=tempItem1.rateByUv;
+                    total2.pv+=tempItem1.pv;
+                    total2.uv+=tempItem1.uv;
                 }
             };//for
 
@@ -2894,16 +2999,46 @@ J("ytag",function(p){
 });;
 J('ytagExt',function(M,V,C){
 
-    C.feeling = {
-        _init:function(){
-            J.$win.bind(J.EVT.uiXData.UIReady,function(e){
-                C.feeling.onUIReady();
-            });
-        },
-        onUIReady:function(){
-            console.log(J.data.CurrentClickData);
-        }
-    };
+	C.feeling = {
+		_init:function(){
+			J.$win.bind(J.EVT.uiXData.UIReady,function(e){
+				C.feeling.onUIReady();
+			});
+		},
+
+		onUIReady:function(){
+			//console.log(J.data.CurrentClickData);
+			//J.data.getClickDataById('92000');
+			var ytagStatus=false;
+
+			$(".mod_subcate_main").bind({
+				dblclick:function(){
+					var $target=$(this).find("a");
+
+					if(ytagStatus==false){
+						for(var i=0; i<$target.length; i++){
+							var $this=$($target[i]);
+							var ytag=$this.attr("ytag");
+							if(ytag != undefined){
+								$this.append("<span>("+J.data.getClickDataById(ytag).click_num+")</span>")
+							}
+						}
+						ytagStatus=true;
+					}else{
+						$target.find("span").remove();
+						ytagStatus=false;
+					}
+					//for(i in $target){
+						//var ytag=$($target[i]).attr("ytag");
+						//console.info(ytag);
+						//if(ytag != undefined){
+							//J.data.getClickDataById("'" + ytag + "'")
+						//}
+					//}
+				},
+			});
+		}
+	};
 
 });;
 J("modrank",function(p){
@@ -3315,203 +3450,40 @@ J('joy',function(M,V,C){
     // 获取用户qq
     M.userQQ = G.header.common.getCookie("yx_uin");
 
-    V.cartTemplate = J.heredoc(function(){/*
-        <ul class="xbar_goods clearfix" id="xbarCart">
-            {{#data}}
-            <li>
-                <a href="{{url}}" class="xbar_goods_img" target="_blank">
-                    <img src="{{img}}" alt="">
-                </a>
-                <div class="xbar_goods_info">
-                    <p class="xbar_goods_name">
-                        <a href="{{url}}" target="_blank">{{name}}</a>
-                    </p>
-                    <p class="xbar_goods_price">
-                        <i>&yen;</i><span>{{price}}</span>
-                    </p>
-                </div>
-            </li>
-            {{/data}}
-        </ul>
-    */});
-
-    V.viewTemplate = J.heredoc(function(){/*
-        <ul class="xbar_goods clearfix" id="xbarView">
-            {{#data}}
-            <li>
-                <a href="{{url}}" class="xbar_goods_img" target="_blank">
-                    <img src="{{img}}" alt="">
-                </a>
-                <div class="xbar_goods_info">
-                    <p class="xbar_goods_name">
-                        <a href="{{url}}" target="_blank">{{name}}</a>
-                    </p>
-                    <p class="xbar_goods_price">
-                        <i>&yen;</i><span>{{price}}</span>
-                    </p>
-                </div>
-            </li>
-            {{/data}}
-        </ul>
-    */});
-
-    V.favTemplate = J.heredoc(function(){/*
-        <ul class="xbar_goods clearfix" id="xbarFav">
-            {{#data}}
-            <li>
-                <a href="{{url}}" class="xbar_goods_img" target="_blank">
-                    <img src="{{img}}" alt="">
-                </a>
-                <div class="xbar_goods_info">
-                    <p class="xbar_goods_name">
-                        <a href="{{url}}" target="_blank">{{name}}</a>
-                    </p>
-                    <p class="xbar_goods_price">
-                        <i>&yen;</i><span>{{price}}</span>
-                    </p>
-                </div>
-            </li>
-            {{/data}}
-        </ul>
-    */});
-
-    V.orderTemplate = J.heredoc(function(){/*
-        <ul class="xbar_goods clearfix" id="xbarOrder">
-            {{#data}}
-            <li>
-                <a href="{{url}}" class="xbar_goods_img" target="_blank">
-                    <img src="{{img}}" alt="">
-                </a>
-                <div class="xbar_goods_info">
-                    <p class="xbar_goods_name">
-                        <a href="{{url}}" target="_blank">{{name}}</a>
-                    </p>
-                    <p class="xbar_goods_price">
-                        <i>&yen;</i><span>{{price}}</span>
-                    </p>
-                </div>
-            </li>
-            {{/data}}
-        </ul>
-    */});
-
-    M.showTemplate = function(name){
-        switch(name){
-            case "cart":
-                $.ajax({
-                     url:'http://cart.buy.yixun.com/minicart/minilistislogincmem?uid='+M.userID+'&pnum=10',
-                     dataType:"jsonp",
-                     jsonp:"callback",
-                     success:function(result){
-                        // console.log(data);
-                        var _goodsInfo = {
-                            data : []
-                        };
-                        var data = result.data;
-                        // console.log(data);
-                        $.each(data, function(i, item) {
-                            _goodsInfo.data.push({
-                                url : 'http://item.'+G.header.domain+'/item-' + item.product_id + '.html',
-                                name : item.name,
-                                img : G.header.common._getPicUrl(item.product_char_id,"middle", 0),
-                                price : (item.price / 100).toFixed(1),
-                                count : item.buy_count
-                            });
-                        });
-                        // console.log();
-                        $("#xpanel_cart .xpanel_inner").html(J.toHtml(V.cartTemplate,_goodsInfo));
-                     }
-                });
-                break;
-            case "view":
-                $.ajax({
-                     url:'http://s6.smart.yixun.com/w/tf/gettfx?tfid=100004&type=jsonp',
-                     dataType:"jsonp",
-                     jsonp:"callback",
-                     success:function(result){
-                        // console.log(result);
-                        var _goodsInfo = {
-                            data : []
-                        };
-                        var data = result.data.POS_HISTORY;
-                        console.log(data);
-                        $.each(data, function(i, item) {
-                            _goodsInfo.data.push({
-                                url : item.URL,
-                                name : item.TITLE,
-                                img : item.IMG,
-                                price : item.PRICE,
-                                count : 0
-                            });
-                        });
-                        // console.log();
-                        $("#xpanel_view .xpanel_inner").html(J.toHtml(V.viewTemplate,_goodsInfo));
-                     }
-                });
-                break;
-            case "fav":
-                // console.log(M.userQQ);
-                var tfids = 100001; //未知参数
-                $.ajax({
-                     url:'http://s1.smart.yixun.com/w/tf/gettfxs?tfids='+tfids+'&uin='+M.userQQ,
-                     dataType:"jsonp",
-                     jsonp:"callback",
-                     success:function(result){
-                        console.log(result);
-                        var _goodsInfo = {
-                            data : []
-                        };
-                        var data = result[tfids].data.POS_1;
-                        console.log(data);
-                        $.each(data, function(i, item) {
-                            _goodsInfo.data.push({
-                                url : item.URL,
-                                name : item.TITLE,
-                                img : item.IMG,
-                                price : item.PRICE,
-                                count : 0
-                            });
-                        });
-                        // console.log();
-                        $("#xpanel_fav .xpanel_inner").html(J.toHtml(V.favTemplate,_goodsInfo));
-                     }
-                });
-                break;
-            case "order":
-                // console.log(M.userQQ);
-                $.ajax({
-                     url:'http://buy.yixun.com/json.php?mod=showorder&act=getUserOrdersInOneMonth&pageIndex=1',
-                     dataType:"jsonp",
-                     jsonp:"callback",
-                     success:function(result){
-                        console.log(result);
-                        var _goodsInfo = {
-                            data : []
-                        };
-                        var data = result.data;
-                        console.log(data);
-                        $.each(data, function(i, item) {
-                            _goodsInfo.data.push({
-                                url : "http://base.yixun.com/orderdetail-"+item.businessDealId+"-html",
-                                name : item.dealList[0]["productList"][0]["itemTitle"],
-                                img : item.dealList[0]["productList"][0]["itemUrl"],
-                                price : item.payScore,
-                                count : 0
-                            });
-                        });
-                        console.log();
-                        $("#xpanel_order .xpanel_inner").html(J.toHtml(V.orderTemplate,_goodsInfo));
-                     }
-                });
-                break;
-            case "coupon":
-                
-                break;
-            default: 
-                console.log("none panel");
+    // 获取用户名称
+    M.getUserName  = function(data){
+        var d = data;
+        if(d.account.toString().indexOf('Login_QQ_') == 0 || 'true' === G.util.cookie.get('__BINDQQACCOUNT')){//QQ用户
+            var cps_msg = G.util.cookie.get("cps_msg").split('|');
+            if (cps_msg.length >= 2 && cps_msg[0] == d.uid) {
+                cps_msg.shift();
+                return G.util.parse.encodeHtml(cps_msg.join('|'));
+            }
+            else{
+                var qq_nick = G.util.cookie.get("qq_nick").split('|');
+                if (qq_nick.length >= 2 && qq_nick[0] == d.uid) {
+                    qq_nick.shift();
+                    return G.logic.login.cutString(G.util.parse.encodeHtml(qq_nick.join('|')), G.logic.login._loginNameCutLen);
+                }
+            }
         }
+        else if(d.account.toString().indexOf('Login_Alipay_') == 0){//支付宝
+            return G.logic.login.cutString(G.util.parse.encodeHtml(d.name || d.account), G.logic.login._loginNameCutLen);
+        }
+        else if (/^\d+@51fanli$/.test(d.account.toString())) {//51fanli
+            var cps_msg = G.util.cookie.get("cps_msg").split('|');
+            if (cps_msg.length >= 2 && cps_msg[0] == d.uid) {
+                return cps_msg[1];
+            }
+        }
+        else if (d.account.toString().indexOf('Login_SHAuto_') == 0) {//安悦用户
+            return G.logic.login.cutString(G.util.parse.encodeHtml(d.account.substr(13)), G.logic.login._loginNameCutLen);
+        }
+        //易迅帐号
+        return G.logic.login.cutString(G.util.parse.encodeHtml(d.name || d.account), G.logic.login._loginNameCutLen);
     };
 
+    // G.util.token方法（global.js）
     M.token = {
         //给连接加上token
         addToken : function(url,type){
@@ -3550,66 +3522,410 @@ J('joy',function(M,V,C){
         }
     }
 
+    // 错误信息 模板
+    V.errTemplate = J.heredoc(function(){/*
+        <div class="xbar_tips_error">
+            请登录或刷新页面。
+        </div>
+    */});
+
+    // 加载中 模板
+    V.loadingTemplate = J.heredoc(function(){/*
+        <div class="xbar_tips_loading">
+            数据加载中
+        </div>
+    */});
+
+    // 个人中心 模板
+    V.mineTemplate = J.heredoc(function(){/*
+        <div class="xbar_mineinfo" id="xbarMine">
+            <div class="xbar_mineinfo_info">
+                <img src="{{img}}" alt="">
+                <p><b>{{name}}</b></p>
+                <p>{{level_name}}</p>
+            </div>
+            <div class="xbar_mineinfo_detail">
+                <p class="xbar_mineinfo_item">
+                    <span class="xbar_mineinfo_tit">我的积分：</span>
+                    <span class="xbar_mineinfo_cnt">{{jifen}}</span>
+                </p>
+                <p class="xbar_mineinfo_item">
+                    <span class="xbar_mineinfo_tit">消费金额：</span>
+                    <span class="xbar_mineinfo_cnt">&yen; {{fee}}</span>
+                </p>
+            </div>
+        </div>
+    */});
+
+    // 购物车 模板
+    V.cartTemplate = J.heredoc(function(){/*
+        <div class="xbar_goods clearfix xbar_cartinfo" id="xbarCart">
+            <ul class=" xbar_cartinfo_list">
+            {{#data}}
+                <li>
+                    <a href="{{url}}" class="xbar_goods_img" target="_blank">
+                        <img src="{{img}}" alt="">
+                    </a>
+                    <div class="xbar_goods_info">
+                        <p class="xbar_goods_name">
+                            <a href="{{url}}" target="_blank">{{name}}</a>
+                        </p>
+                        <p class="xbar_goods_price">
+                            <span><i>&yen;</i>{{price}}</span><i>&times;</i><span>{{count}}</span>
+                        </p>
+                    </div>
+                </li>
+                {{/data}}
+            </ul>
+            <div class="xbar_cartinfo_total">
+                {{#total}}
+                <p>共<b>{{count}}</b>件商品，总计：<b>{{price}}</b></p>
+                <p>满29元免运费</p>
+                <a href="http://buy.yixun.com/showcart.html" class="mod_btn mod_btn_bg2 mod_btn_large" target="_blank">去结算<i></i></a>
+                {{/total}}
+            </div>
+        </div>
+
+    */});
+
+    // 最近浏览 模板
+    V.viewTemplate = J.heredoc(function(){/*
+        <ul class="xbar_goods clearfix" id="xbarView">
+            {{#data}}
+            <li>
+                <a href="{{url}}" class="xbar_goods_img" target="_blank">
+                    <img src="{{img}}" alt="">
+                </a>
+                <div class="xbar_goods_info">
+                    <p class="xbar_goods_name">
+                        <a href="{{url}}" target="_blank">{{name}}</a>
+                    </p>
+                    <p class="xbar_goods_price">
+                        <i>&yen;</i><span>{{price}}</span>
+                    </p>
+                </div>
+            </li>
+            {{/data}}
+        </ul>
+    */});
+
+    // 猜你喜欢 模板
+    V.likeTemplate = J.heredoc(function(){/*
+        <ul class="xbar_goods clearfix" id="xbarLike">
+            {{#data}}
+            <li>
+                <a href="{{url}}" class="xbar_goods_img" target="_blank">
+                    <img src="{{img}}" alt="">
+                </a>
+                <div class="xbar_goods_info">
+                    <p class="xbar_goods_name">
+                        <a href="{{url}}" target="_blank">{{name}}</a>
+                    </p>
+                    <p class="xbar_goods_price">
+                        <i>&yen;</i><span>{{price}}</span>
+                    </p>
+                </div>
+            </li>
+            {{/data}}
+        </ul>
+    */});
+
+    // 订单 模板
+    V.orderTemplate = J.heredoc(function(){/*
+        <div class="xbar_orderinfo_wrap">
+            {{#data}}
+            <div class="xbar_orderinfo">
+                <div class="xbar_orderinfo_hd">
+                    <a href="http://base.yixun.com/orderdetail-{{businessDealId}}-html" target="_blank" class="xbar_orderinfo_num">订单：{{businessDealId}}</a><!-- <span class="xbar_orderinfo_count">共1件</span> --><span class="xbar_orderinfo_state">{{bdealGenTime}}</span>
+                </div>
+                <div class="xbar_orderinfo_bd">
+                    {{#dealList}}
+                    <div class="xbar_orderinfo_item">
+                        <div class="xbar_orderinfo_title">
+                            共计：<span class="xbar_orderinfo_title_num">&yen;{{dealPayment}}</span><span class="xbar_orderinfo_title_status">{{dealStateStr}}</span>
+                        </div>
+                        <div class="xbar_orderinfo_pic">
+                            <ul>
+                                {{#productList}}
+                                <li>
+                                    <a href="http://item.yixun.com/item-{{productId}}.html" target="_blank" title="{{itemTitle}}"><img src="{{itemUrl}}" alt=""></a>
+                                </li>
+                                {{/productList}}
+                            </ul>
+                        </div>
+                    </div>
+                    {{/dealList}}
+                </div>
+                <!-- <div class="xbar_orderinfo_info">
+                    <p class="xbar_orderinfo_row">
+                        <span class="xbar_orderinfo_row_tit">总额：</span>
+                        <span class="xbar_orderinfo_row_cnt"><span class="xbar_orderinfo_price">¥9999.00</span>（微信支付）</span>
+                    </p>
+                    <p class="xbar_orderinfo_row">
+                        <span class="xbar_orderinfo_row_tit">时间：</span>
+                        <span class="xbar_orderinfo_row_cnt">2013-8-22</span>
+                    </p>
+                    <div class="xbar_orderinfo_btn">
+                        <a href="#" class="mod_btn mod_btn_large">去支付</a>
+                    </div>
+                </div> -->
+            </div>
+            {{/data}}
+        </div>
+    */});
+
+    // 收藏夹 模板
+    V.favTemplate = J.heredoc(function(){/*
+        <ul class="xbar_goods clearfix" id="xbarFav">
+            {{#data}}
+            <li>
+                <a href="{{url}}" class="xbar_goods_img" target="_blank">
+                    <img src="{{img}}" alt="">
+                </a>
+                <div class="xbar_goods_info">
+                    <p class="xbar_goods_name">
+                        <a href="{{url}}" target="_blank">{{name}}</a>
+                    </p>
+                    <p class="xbar_goods_price">
+                        <i>&yen;</i><span>{{price}}</span>
+                    </p>
+                </div>
+            </li>
+            {{/data}}
+        </ul>
+    */});
+
+    M.showTemplate = function(name){
+        switch(name){
+            case "mine":
+                $.ajax({
+                     url:'http://base.yixun.com/json.php?mod=vip&act=getVipInfo&uid='+M.userID,
+                     dataType:"jsonp",
+                     jsonp:"callback",
+                     beforeSend:function(){
+                        $("#xpanel_mine .xpanel_inner").html(V.loadingTemplate);
+                     },
+                     success:function(result){
+                        console.log(result);
+                        if (result.errno == 0) {
+                            // console.log(result);
+                            var info = result.data;
+                            var _mineInfo = [];
+                            _mineInfo.push({
+                                img : "http://qlogo2.store.qq.com/qzone/"+info.qq+"/"+info.qq+"/100",
+                                name : M.userName,
+                                level_name : info.levelDesc,
+                                jifen : info.point,
+                                fee : info.experience+info.virtualExpPoints
+                            });
+                            console.log(_mineInfo);
+                            $("#xpanel_mine .xpanel_inner").html(J.toHtml(V.mineTemplate,_mineInfo[0]));
+                        }else{
+                            $("#xpanel_mine .xpanel_inner").html(V.errTemplate);
+                        }
+                     }
+                });
+                // $("#xpanel_mine .xpanel_inner").html(J.toHtml(V.mineTemplate,""));
+                break;
+            case "cart":
+                $.ajax({
+                     url:'http://cart.buy.yixun.com/minicart/minilistislogincmem?uid='+M.userID+'&pnum=10',
+                     dataType:"jsonp",
+                     jsonp:"callback",
+                     beforeSend:function(){
+                        $("#xpanel_cart .xpanel_inner").html(V.loadingTemplate);
+                     },
+                     success:function(result){
+                        console.log(result);
+                        if (result.errno == 0) {
+                            var _goodsInfo = {
+                                data : [],
+                                total : []
+                            };
+                            var data = result.data,
+                                totalCount = 0,
+                                totalPrice = 0;
+                            // console.log(data);
+                            $.each(data, function(i, item) {
+                                _goodsInfo.data.push({
+                                    url : 'http://item.'+G.header.domain+'/item-' + item.product_id + '.html',
+                                    name : item.name,
+                                    img : G.header.common._getPicUrl(item.product_char_id,"middle", 0),
+                                    price : (item.price / 100).toFixed(2),
+                                    count : item.buy_count
+                                });
+                                totalCount += parseInt(item.buy_count),
+                                totalPrice += (parseInt(item.price)*parseInt(item.buy_count));
+                            });
+                            _goodsInfo.total.push({
+                                price : (totalPrice / 100).toFixed(2),
+                                count : totalCount
+                            });
+                            // console.log();
+                            $("#xpanel_cart .xpanel_inner").html(J.toHtml(V.cartTemplate,_goodsInfo));
+                        }else{
+                            $("#xpanel_cart .xpanel_inner").html(V.errTemplate);
+                        }
+                     }
+                });
+                break;
+            case "fav":
+                $.ajax({
+                     url:'http://base.yixun.com/json.php?mod=favor&act=getlist&uid='+M.userID+'&page=1&perpage=100',
+                     dataType:"jsonp",
+                     jsonp:"callback",
+                     beforeSend:function(){
+                        $("#xpanel_fav .xpanel_inner").html(V.loadingTemplate);
+                     },
+                     success:function(result){
+                        console.log(result);
+                        if (result.errno == 0) {
+                            var _goodsInfo = {
+                                data : []
+                            };
+                            var data = result.data;
+                            // console.log(data);
+                            $.each(data, function(i, item) {
+                                _goodsInfo.data.push({
+                                    url : 'http://item.'+G.header.domain+'/item-' + item.product_id + '.html',
+                                    name : item.name,
+                                    img : G.header.common._getPicUrl(item.product_char_id,"middle", 0),
+                                    price : (item.price / 100).toFixed(1),
+                                    count : item.buy_count
+                                });
+                            });
+                            // console.log();
+                            $("#xpanel_fav .xpanel_inner").html(J.toHtml(V.favTemplate,_goodsInfo));
+                        }else{
+                            $("#xpanel_fav .xpanel_inner").html(V.errTemplate);
+                        }
+                     }
+                });
+                break;
+            case "view":
+                $.ajax({
+                     url:'http://s6.smart.yixun.com/w/tf/gettfx?tfid=100004&type=jsonp',
+                     dataType:"jsonp",
+                     jsonp:"callback",
+                     beforeSend:function(){
+                        $("#xpanel_view .xpanel_inner").html(V.loadingTemplate);
+                     },
+                     success:function(result){
+                        // console.log(result);
+                        var _goodsInfo = {
+                            data : []
+                        };
+                        var data = result.data.POS_HISTORY;
+                        console.log(data);
+                        $.each(data, function(i, item) {
+                            _goodsInfo.data.push({
+                                url : item.URL,
+                                name : item.TITLE,
+                                img : item.IMG,
+                                price : item.PRICE,
+                                count : 0
+                            });
+                        });
+                        // console.log();
+                        $("#xpanel_view .xpanel_inner").html(J.toHtml(V.viewTemplate,_goodsInfo));
+                     }
+                });
+                break;
+            case "like":
+                // console.log(M.userQQ);
+                var tfids = 100001; //未知参数
+                $.ajax({
+                     url:'http://s1.smart.yixun.com/w/tf/gettfxs?tfids='+tfids+'&uin='+M.userQQ,
+                     dataType:"jsonp",
+                     jsonp:"callback",
+                     beforeSend:function(){
+                        $("#xpanel_like .xpanel_inner").html(V.loadingTemplate);
+                     },
+                     success:function(result){
+                        console.log(result);
+                        var _goodsInfo = {
+                            data : []
+                        };
+                        var data = result[tfids].data.POS_1;
+                        console.log(data);
+                        $.each(data, function(i, item) {
+                            _goodsInfo.data.push({
+                                url : item.URL,
+                                name : item.TITLE,
+                                img : item.IMG,
+                                price : item.PRICE,
+                                count : 0
+                            });
+                        });
+                        // console.log();
+                        $("#xpanel_like .xpanel_inner").html(J.toHtml(V.likeTemplate,_goodsInfo));
+                     }
+                });
+                break;
+            case "order":
+                // console.log(M.userQQ);
+                $.ajax({
+                     url:'http://buy.yixun.com/json.php?mod=showorder&act=getUserOrdersInOneMonth&pageIndex=1',
+                     dataType:"jsonp",
+                     jsonp:"callback",
+                     beforeSend:function(){
+                        $("#xpanel_order .xpanel_inner").html(V.loadingTemplate);
+                     },
+                     success:function(result){
+                        console.log(result);
+                        if (result.errno == 0) {
+                            // var _goodsInfo = {
+                            //     data : []
+                            // };
+                            // var data = result.data;
+                            // console.log(data);
+                            // $.each(data, function(i, item) {
+                            //     _goodsInfo.data.push({
+                            //         url : "http://base.yixun.com/orderdetail-"+item.businessDealId+"-html",
+                            //         name : item.dealList[0]["productList"][0]["itemTitle"],
+                            //         img : item.dealList[0]["productList"][0]["itemUrl"],
+                            //         price : item.payScore,
+                            //         count : 0
+                            //     });
+                            // });
+                            // console.log();
+                            result.data.reverse();
+
+                            $("#xpanel_order .xpanel_inner").html(J.toHtml(V.orderTemplate,result));
+                        }else{
+                            $("#xpanel_order .xpanel_inner").html(V.errTemplate);
+                        }
+                     }
+                });
+                break;
+            case "coupon":
+                
+                break;
+            default: 
+                console.log("none panel");
+        }
+    };
+
     M.renderPersonalInfo = function(){
         G.logic.login.getLoginUser(function(o){
             console.log(o);
             if(o && o.errno == 0){//已登录
-                //请求VIP用户信息
-                // self.uid = G.logic.login.getLoginUid();
-                // $.ajax({
-                //     type : 'GET',
-                //     url : M.token.addToken('http://base.51buy.com/json.php?mod=vip&act=getVipInfo&uid=' + self.uid, 'jq'),
-                //     dataType : 'jsonp',
-                //     crossDomain : true,
-                //     jsonpCallback : 'getVipUserInfo',
-                //     success : function(o){
-                //         console.log(o);
-                //         if((o.errno == 0) && o.data){
-                            // 成功登录
-                //         }
-                //     }
-                // });
                 var self = o.data;
+                M.userName = self.name;
                 $('.xbar_mine .xbar_name').html(self.name);
                 $('.xbar_avatar').attr('src','http://qlogo2.store.qq.com/qzone/'+self.qq+'/'+self.qq+'/50')
             }
             else{//未登录
+                // $(".xbar_mine").attr("href","https://base.yixun.com/login.html?url="+location.href);
                 $(".xbar_mine .xbar_name").html("未登录");
+                $(".xbar_order").hide();
+                $(".xbar_cart").hide();
+
             }
         });
     };
 
-    M.getUserName  = function(data){
-        var d = data;
-        if(d.account.toString().indexOf('Login_QQ_') == 0 || 'true' === G.util.cookie.get('__BINDQQACCOUNT')){//QQ用户
-            var cps_msg = G.util.cookie.get("cps_msg").split('|');
-            if (cps_msg.length >= 2 && cps_msg[0] == d.uid) {
-                cps_msg.shift();
-                return G.util.parse.encodeHtml(cps_msg.join('|'));
-            }
-            else{
-                var qq_nick = G.util.cookie.get("qq_nick").split('|');
-                if (qq_nick.length >= 2 && qq_nick[0] == d.uid) {
-                    qq_nick.shift();
-                    return G.logic.login.cutString(G.util.parse.encodeHtml(qq_nick.join('|')), G.logic.login._loginNameCutLen);
-                }
-            }
-        }
-        else if(d.account.toString().indexOf('Login_Alipay_') == 0){//支付宝
-            return G.logic.login.cutString(G.util.parse.encodeHtml(d.name || d.account), G.logic.login._loginNameCutLen);
-        }
-        else if (/^\d+@51fanli$/.test(d.account.toString())) {//51fanli
-            var cps_msg = G.util.cookie.get("cps_msg").split('|');
-            if (cps_msg.length >= 2 && cps_msg[0] == d.uid) {
-                return cps_msg[1];
-            }
-        }
-        else if (d.account.toString().indexOf('Login_SHAuto_') == 0) {//安悦用户
-            return G.logic.login.cutString(G.util.parse.encodeHtml(d.account.substr(13)), G.logic.login._loginNameCutLen);
-        }
-        //易迅帐号
-        return G.logic.login.cutString(G.util.parse.encodeHtml(d.name || d.account), G.logic.login._loginNameCutLen);
-    };
+
 
     C._init = function(){
         M.renderPersonalInfo();
@@ -3619,7 +3935,6 @@ J('joy',function(M,V,C){
             M.showTemplate(panelId);
         }); 
     };
-
 
 });
 ;
@@ -3639,14 +3954,14 @@ J('lv',function(M,V,C){
             <h4>可用券：</h4>
             <ul class="xcoupon_list xcoupon_list1">
                 {{#items1}}
-                <li><a href="{{url}}" title="{{name}}">{{name}}</a></li>
+                <li><a href="{{url}}" target="_blank" title="{{name}}">{{name}}</a></li>
                 {{/items1}}
             </ul>
             {{/cnt1}}
             <h4>可领券：</h4>
             <ul class="xcoupon_list xcoupon_list2">
                 {{#items2}}
-                <li><a href="{{url}}" target="_blank" title="{{name}}">{{name}}</a></li>
+                <li><a href="{{url}}" target="_blank" title="{{title}}">{{title}}</a></li>
                 {{/items2}}
             </ul>
         */}),
@@ -3681,7 +3996,7 @@ J('lv',function(M,V,C){
             };
             if(myCoupons.total>0){
                 data.items1.push({
-                    url:"javascript:;",
+                    url:"http://base.yixun.com/mycoupon.html",
                     name:myCoupons.coupons[0].coupon_name
                 });
                 data.cnt1=1;
@@ -3706,7 +4021,7 @@ J('lv',function(M,V,C){
     C.quan = {
         _init:function(){
             if(!M.isSearchex) return;
-            J.$win.bind(J.EVT.data.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
+            J.$win.bind(J.EVT.dataXCoupon.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
                 if(err){
                     return;
                 }

@@ -14,14 +14,14 @@ J('lv',function(M,V,C){
             <h4>可用券：</h4>
             <ul class="xcoupon_list xcoupon_list1">
                 {{#items1}}
-                <li><a href="{{url}}" title="{{name}}">{{name}}</a></li>
+                <li><a href="{{url}}" target="_blank" title="{{name}}">{{name}}</a></li>
                 {{/items1}}
             </ul>
             {{/cnt1}}
             <h4>可领券：</h4>
             <ul class="xcoupon_list xcoupon_list2">
                 {{#items2}}
-                <li><a href="{{url}}" target="_blank" title="{{name}}">{{name}}</a></li>
+                <li><a href="{{url}}" target="_blank" title="{{title}}">{{title}}</a></li>
                 {{/items2}}
             </ul>
         */}),
@@ -56,7 +56,7 @@ J('lv',function(M,V,C){
             };
             if(myCoupons.total>0){
                 data.items1.push({
-                    url:"javascript:;",
+                    url:"http://base.yixun.com/mycoupon.html",
                     name:myCoupons.coupons[0].coupon_name
                 });
                 data.cnt1=1;
@@ -81,7 +81,7 @@ J('lv',function(M,V,C){
     C.quan = {
         _init:function(){
             if(!M.isSearchex) return;
-            J.$win.bind(J.EVT.data.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
+            J.$win.bind(J.EVT.dataXCoupon.onGetAllCoupon,function(e,err,myCoupons,hotCoupons){
                 if(err){
                     return;
                 }

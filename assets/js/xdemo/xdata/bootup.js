@@ -1,26 +1,29 @@
 (function($,R,D){
 
 var isDebug = location.href.indexOf('debug')!=-1,
-    prefix = "http://oxox.io/assets/js/xdemo/xdata/",
+    prefixXData = "http://oxox.io/assets/js/xdemo/xdata/",
+    prefixXCoupon = "http://oxox.io/assets/js/xdemo/xcoupon/",
     t = new Date().getTime(),
-    bizJs = isDebug?[prefix+'all.min.js?t='+t]:[
-        prefix+"i18n.js?t="+t,
-        prefix+"data.js?t="+t,
-        prefix+"ui.xbar.js?t="+t,
-        prefix+"ui.xdata.js?t="+t,
-        prefix+"modchart.js?t="+t,
-        prefix+"pagechart.js?t="+t,
-        prefix+"modeditor.js?t="+t,
-        prefix+"ytag.js?t="+t,
-        prefix+"modrank.js?t="+t
+    bizJs = (!isDebug)?[prefixXData+'all.min.js?t='+t]:[
+        prefixXData+"score.js?t="+t,
+        prefixXData+"i18n.js?t="+t,
+        prefixXData+"data.js?t="+t,
+        prefixXData+"ui.xbar.js?t="+t,
+        prefixXData+"ui.xdata.js?t="+t,
+        prefixXData+"modchart.js?t="+t,
+        prefixXData+"pagechart.js?t="+t,
+        prefixXData+"modeditor.js?t="+t,
+        prefixXData+"ytag.js?t="+t,
+        prefixXData+"ytag.ext.js?t="+t,
+        prefixXData+"modrank.js?t="+t,
+        prefixXCoupon+"data.js?t="+t,
+        prefixXCoupon+"joy.js?t="+t,
+        prefixXCoupon+"lv.js?t="+t,
+        prefixXCoupon+"aron.js?t="+t
     ],
     cbk = function($s){
         //加载第三方库
-        $s([prefix+"base.js?t="+t,
-            "http://oxox.io/jq/oxmenu/jquery.oxtree.js?t="+t,
-            "http://oxox.io/jq/oxi18n/jquery.oxi18n.js?t="+t,
-            prefix+"score.js?t="+t
-        ],"base");
+        $s([prefixXData+"base.js?t="+t],"base");
         //加载xdata逻辑js
         $s.ready('base',function(){
             $s(bizJs,"biz");

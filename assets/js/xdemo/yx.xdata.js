@@ -4,7 +4,7 @@ var isDebug = location.href.indexOf('debug')!=-1,
     prefixXData = "http://oxox.io/assets/js/xdemo/xdata/",
     prefixXCoupon = "http://oxox.io/assets/js/xdemo/xcoupon/",
     t = new Date().getTime(),
-    bizJs = (!isDebug)?[prefixXData+'all.min.js?t='+t]:[
+    bizJs = (!isDebug)?[prefixXData+'all.debug.js?t='+t]:[
         prefixXData+"score.js?t="+t,
         prefixXData+"i18n.js?t="+t,
         prefixXData+"data.js?t="+t,
