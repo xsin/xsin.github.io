@@ -1,8 +1,8 @@
 (function($,R,D){
 
 var isDebug = location.href.indexOf('debug')!=-1,
-    prefixXData = "https://rawgithub.com/oxox/oxox.github.io/xbar_v1/assets/js/xdemo/xdata/",
-    prefixXCoupon = "https://rawgithub.com/oxox/oxox.github.io/xbar_v1/assets/js/xdemo/xcoupon/",
+    prefixXData = "http://rawgithub.com/oxox/oxox.github.io/xbar_v1/assets/js/xdemo/xdata/",
+    prefixXCoupon = "http://rawgithub.com/oxox/oxox.github.io/xbar_v1/assets/js/xdemo/xcoupon/",
     t = new Date().getTime(),
     bizJs = (!isDebug)?[prefixXData+'all.debug.js?t='+t]:[
         prefixXData+"score.js?t="+t,

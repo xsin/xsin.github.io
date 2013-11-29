@@ -4,7 +4,7 @@
 J('lv',function(M,V,C){
     M.isSearchex = location.href.indexOf('searchex.yixun.com')>-1;
     
-    M.quan = {};
+    M.quan = {};alert(1);
     V.quan = {
         tplHD:J.heredoc(function(){/*
             <a class="goods_more_tag xcoupon_lnk"gtagtype="he">可用券<i></i><span></span></a>
