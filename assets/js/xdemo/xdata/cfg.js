@@ -1,10 +1,10 @@
 {
   "name": "易数据V2",
   "version": "2.0.0",
-  "css": ["http://oxox.io/assets/css/xdemo.yixun.xdata.css"],
-  "js": ["http://oxox.io/assets/js/xdemo/yx.xdata.js"],
+  "css": ["https://raw.github.com/oxox/oxox.github.io/xbar_v1/assets/css/xdemo.yixun.xdata.css"],
+  "js": ["https://raw.github.com/oxox/oxox.github.io/xbar_v1/assets/js/xdemo/xdata/bootup.js"],
   "matches": ["http://*.yixun.com/*"],
-  "ename": "ecd.yixun.xdata",
+  "ename": "ecd.yixun.xdata2",
   "author": "levinhuang",
-  "descrition": "易迅数据统计"
+  "descrition": "易数据V2"
 }
