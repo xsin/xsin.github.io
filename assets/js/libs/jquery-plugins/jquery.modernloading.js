@@ -1,8 +1,35 @@
 /**
  * A jquery plugin implementing modern-ui loading effect
  * @author Levin
- * @created 7/14/13 11:20 AM
- * @version 1.0.0
+ * @created 2/17/14 11:20 AM
+ * @version 1.0.1
+ */
+ /*
+ .modern-loading {
+  position: absolute;
+  z-index: 10000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  background: #94c849;
+}
+.modern-loading-dot {
+  position: absolute;
+  top: 0;
+  right: 100%;
+  width: 5px;
+  height: 5px;
+  background: #FFFFFF;
+  transition-property: right;
+  transition-timing-function: ease-out;
+  -webkit-transition-property: right;
+  -webkit-transition-timing-function: ease-out;
+}
+.modern-loading-ani {
+  right: 0;
+}
  */
 (function($){
     var $win = $(window);
@@ -55,8 +82,8 @@
         animate:function(){
             this.$dots.toggleClass(this.opts.clAni);
             var me = this;
-            clearTimeout(me.timer);
-            this.timer=setTimeout(function(){
+            clearRequestTimeout(me.timer);
+            this.timer=requestTimeout(function(){
                 me.animate();
             },this.opts.maxAniDuration*1000);
 
@@ -69,7 +96,7 @@
             this.isRunning=true;
         },
         stop:function(){
-            clearTimeout(this.timer);
+            clearRequestTimeout(this.timer);
             this.$dots.removeClass(this.opts.clAni);
             this.isRunning=false;
             return this;
@@ -151,3 +178,112 @@
         return str;
     };
 })(jQuery);
+
+// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+// requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
+// Ref:https://gist.github.com/mamboer/8179563
+(function(W) {
+    var lastTime = 0,
+        vendors = ['ms', 'moz', 'webkit', 'o'],
+        x,
+        length,
+        currTime,
+        timeToCall,
+        requestAnimFrame0,
+        cancelAnimFrame0;
+ 
+    for(x = 0, length = vendors.length; x < length && !requestAnimFrame0; ++x) {
+        requestAnimFrame0 = W[vendors[x]+'RequestAnimationFrame'];
+        cancelAnimFrame0 = 
+          W[vendors[x]+'CancelAnimationFrame'] || W[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+ 
+    if (!requestAnimFrame0){
+        W.requestAnimationFrame = function(callback, element) {
+            currTime = new Date().getTime();
+            timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            lastTime = currTime + timeToCall;
+            return W.setTimeout(function() { callback(currTime + timeToCall); }, 
+              timeToCall);
+        };
+    } else {
+        W.requestAnimationFrame = requestAnimFrame0;
+    }
+ 
+    if (!cancelAnimFrame0){
+        W.cancelAnimationFrame = function(id) {
+            W.clearTimeout(id);
+        };
+    } else {
+        W.cancelAnimationFrame = cancelAnimFrame0;
+    }
+ 
+    /**
+     * Behaves the same as setTimeout except uses requestAnimationFrame() where possible for better performance
+     * @param {function} fn The callback function
+     * @param {int} delay The delay in milliseconds
+     */
+    W.requestTimeout = function(fn, delay) {
+        if( !requestAnimFrame0)
+                return W.setTimeout(fn, delay);
+                
+        var start = new Date().getTime(),
+            handle = new Object();
+            
+        function loop(){
+            var current = new Date().getTime(),
+                delta = current - start;
+                
+            delta >= delay ? fn.call() : handle.value = requestAnimFrame0(loop);
+        };
+        
+        handle.value = requestAnimFrame0(loop);
+        return handle;
+    };
+     
+    /**
+     * Behaves the same as clearTimeout except uses cancelRequestAnimationFrame() where possible for better performance
+     * @param {int|object} fn The callback function
+     */
+    W.clearRequestTimeout = function(handle) {
+        cancelAnimFrame0?cancelAnimFrame0(handle.value):W.clearTimeout(handle);
+    };
+ 
+    /**
+     * Behaves the same as setInterval except uses requestAnimationFrame() where possible for better performance
+     * @param {function} fn The callback function
+     * @param {int} delay The delay in milliseconds
+     */
+    W.requestInterval = function(fn, delay) {
+        if( !requestAnimFrame0 )
+                return W.setInterval(fn, delay);
+                
+        var start = new Date().getTime(),
+            handle = new Object();
+            
+        function loop() {
+            var current = new Date().getTime(),
+                delta = current - start;
+                
+            if(delta >= delay) {
+                fn.call();
+                start = new Date().getTime();
+            }
+     
+            handle.value = requestAnimFrame0(loop);
+        };
+        
+        handle.value = requestAnimFrame0(loop);
+        return handle;
+    }
+     
+    /**
+     * Behaves the same as clearInterval except uses cancelRequestAnimationFrame() where possible for better performance
+     * @param {int|object} fn The callback function
+     */
+    W.clearRequestInterval = function(handle) {
+        cancelAnimFrame0?cancelAnimFrame0(handle.value):W.clearInterval(handle);
+    };
+ 
+})(window);
