@@ -3865,7 +3865,7 @@ J('joy',function(M,V,C){
             case "order":
                 // console.log(M.userQQ);
                 $.ajax({
-                     url:'http://buy.yixun.com/json.php?mod=showorder&act=getUserOrdersInOneMonth&pageIndex=1',
+                     url:'http://buy.yixun.com/json.php?mod=showorder&act=getUserOrders&pageIndex=1',
                      dataType:"jsonp",
                      jsonp:"callback",
                      beforeSend:function(){
