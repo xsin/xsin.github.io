@@ -1,4 +1,4 @@
-oxox.github.io
+oxox
 ===============
 
-A fucking cool front-end group from 51buy.com.
+An universal webdev team from Shenzhen, China.
