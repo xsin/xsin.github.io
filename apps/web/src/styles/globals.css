@@ -53,13 +53,16 @@
 @theme {
   --container-shell: 1440px;
   --spacing-gutter: clamp(20px, 4.2vw, 64px);
-  --spacing-nav: 76px;
   --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
   --font-display: 'Instrument Serif', 'Songti SC', 'STSong', Georgia, serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 @theme inline {
+  /* Nav height has exactly one source, `--nav-h` in base.css; inlining the
+     reference makes `h-nav` follow its mobile override instead of hard-coding
+     a second value. */
+  --spacing-nav: var(--nav-h);
   --color-bg: var(--bg);
   --color-bg-2: var(--bg-2);
   --color-bg-3: var(--bg-3);

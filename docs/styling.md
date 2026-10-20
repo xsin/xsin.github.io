@@ -11,25 +11,30 @@ not a hand-written CSS framework beside Tailwind.
    (`--background`, `--border`, `--ring`, …) so `:root` has a single home. They
    are exposed to Tailwind through `@theme` / `@theme inline` in `globals.css`.
    Never hardcode a color in a component.
-2. **One selector, one place.** A selector is defined once; context-specific
+2. **Layout constants have one source too.** `--nav-h` is the only nav height;
+   `h-nav` follows it through `@theme inline { --spacing-nav: var(--nav-h) }`,
+   so the mobile override reaches the utility. Never restate the number in
+   `@theme` — that is how the nav stayed 76px on phones while everything keyed
+   to `--nav-h` had already dropped to 64px.
+3. **One selector, one place.** A selector is defined once; context-specific
    overrides belong in an `@media` block next to the component they adjust, never
    as a second top-level rule. `globals.css` keeps only the Tailwind wiring and
    the unlayered Radix overrides — it must not re-declare `:root`, `html` or
    `body`, because a later unlayered rule silently wins (this once blanked the
    body gradients).
-3. **Layout, spacing, typography, color and states use Tailwind utilities in
+4. **Layout, spacing, typography, color and states use Tailwind utilities in
    JSX.** Prefer the 4px scale (`1 = 4px`) and the named tokens
    (`text-ink`, `text-fg-muted`, `border-line`, `bg-panel`, `text-brand`, …).
-4. **Reusable UI is a component with `cva` variants**, not a new class name.
+5. **Reusable UI is a component with `cva` variants**, not a new class name.
    - `components/ui/button.tsx` is the only Button source
      (`default` / `outline` / `ghost`, plus size scale).
    - `components/ui/brand.tsx` holds `Container`, `StatusPill`, `Chip`,
      `IconButton`, `LangButton`, `SectionLabel`, `ThemeGlyph`.
-5. **CSS is for what utilities cannot express.** `styles/visuals.css` holds
+6. **CSS is for what utilities cannot express.** `styles/visuals.css` holds
    WebGL/Canvas stacking, the HUD/marquee/scanline artwork, the custom cursor,
    keyframes, conic/radial gradients and masks, reduced-motion overrides, and a
    small number of shadcn/Radix overrides. Anything else belongs in JSX.
-6. **No call-site overrides** of a component's color, border, height or font
+7. **No call-site overrides** of a component's color, border, height or font
    size. Page files may adjust layout only (`w-full`, `gap-*`, margins).
 
 ## File map

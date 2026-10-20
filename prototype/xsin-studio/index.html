@@ -77,6 +77,9 @@
       --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
       --gutter: clamp(20px, 4.2vw, 64px);
       --max: 1440px;
+      /* Single source for the nav bar and everything keyed to it: the mobile
+         menu offset, sticky rails and hero padding all read this token. The
+         Tailwind build must bridge it, not declare a second value. */
       --nav-h: 76px;
       --radius-sm: 6px;
       --radius-md: 12px;
