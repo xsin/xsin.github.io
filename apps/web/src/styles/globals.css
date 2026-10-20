@@ -29,51 +29,10 @@
 }
 
 /*
- * The editorial design system lives in design.css (ported from the approved
- * prototype). These shadcn tokens alias it so shadcn/ui primitives inherit the
- * same palette, borders and ring.
+ * The editorial design system, including the shadcn token aliases, lives in
+ * base.css. This file only wires those tokens into Tailwind and keeps the
+ * Radix overrides that must stay unlayered.
  */
-:root {
-  --background: var(--bg);
-  --foreground: var(--ink);
-  --card: var(--bg-2);
-  --card-foreground: var(--ink);
-  --popover: var(--bg-2);
-  --popover-foreground: var(--ink);
-  --primary: var(--brand);
-  --primary-foreground: var(--brand-ink);
-  --secondary: var(--panel-2);
-  --secondary-foreground: var(--ink);
-  --muted: var(--panel);
-  --muted-foreground: var(--fg-muted);
-  --accent: var(--panel-2);
-  --accent-foreground: var(--ink);
-  --destructive: #ff6b6b;
-  --border: var(--line);
-  --input: var(--line-strong);
-  --ring: var(--brand);
-  --radius: 0.625rem;
-}
-
-@layer base {
-  * {
-    border-color: var(--border);
-  }
-
-  html {
-    background: var(--bg);
-  }
-
-  body {
-    background: var(--background);
-    color: var(--foreground);
-  }
-
-  button:not(:disabled),
-  [role='button']:not(:disabled) {
-    cursor: pointer;
-  }
-}
 
 /* Radix/shadcn dialogs must sit above the site nav and its z-index: 100. */
 [data-slot='dialog-overlay'] {
@@ -89,7 +48,7 @@
 /*
  * Brand tokens exposed to Tailwind. Utilities such as `text-brand`,
  * `border-line`, `bg-panel` and `max-w-shell` all resolve to the semantic
- * variables declared in design.css, so the two layers share one palette.
+ * variables declared in base.css, so the two layers share one palette.
  */
 @theme {
   --container-shell: 1440px;

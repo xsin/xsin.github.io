@@ -39,6 +39,35 @@
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --shadow: 0 32px 100px rgba(0, 0, 0, 0.35);
+
+  /* shadcn/ui bridge. shadcn primitives read these names; they alias the
+     editorial tokens above. They live here so `:root` has one home. */
+  --background: var(--bg);
+  --foreground: var(--ink);
+  --card: var(--bg-2);
+  --card-foreground: var(--ink);
+  --popover: var(--bg-2);
+  --popover-foreground: var(--ink);
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-ink);
+  --secondary: var(--panel-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--panel);
+  --muted-foreground: var(--fg-muted);
+  --accent: var(--panel-2);
+  --accent-foreground: var(--ink);
+  --destructive: #ff6b6b;
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--brand);
+  --radius: 0.625rem;
+}
+
+/* Small screens: a shorter nav. Kept beside the token block it overrides. */
+@media (max-width: 760px) {
+  :root {
+    --nav-h: 64px;
+  }
 }
 
 html[data-theme="light"] {
@@ -63,6 +92,11 @@ html[data-theme="light"] {
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+/* shadcn's default border colour, so `border` utilities stay on-palette. */
+* {
+  border-color: var(--border);
 }
 
 html {
@@ -113,6 +147,11 @@ input {
 button {
   border: 0;
   background: none;
+}
+
+/* Native buttons and Radix/shadcn triggers share one cursor rule. */
+button:not(:disabled),
+[role='button']:not(:disabled) {
   cursor: pointer;
 }
 
@@ -146,10 +185,4 @@ ol {
 :focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 3px;
-}
-
-@media (max-width: 760px) {
-  :root {
-    --nav-h: 64px;
-  }
 }
