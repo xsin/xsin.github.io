@@ -12,6 +12,7 @@ import { Cursor } from '@/components/site/Cursor';
 import { ProductDialog } from '@/components/site/ProductDialog';
 import { CommandPalette } from '@/components/site/CommandPalette';
 import { InstallDialog } from '@/components/site/InstallDialog';
+import { UpdatePrompt } from '@/components/site/UpdatePrompt';
 import { useActiveSection } from '@/lib/useActiveSection';
 import { useReveals, useIsReady } from '@/lib/useReveals';
 
@@ -91,6 +92,7 @@ export function App() {
         }}
       />
       <InstallDialog open={installOpen} onClose={() => setInstallOpen(false)} />
+      <UpdatePrompt />
     </>
   );
 }

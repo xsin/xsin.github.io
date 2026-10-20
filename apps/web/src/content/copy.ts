@@ -202,6 +202,11 @@ export const COPY = {
       'palette.github': 'Open GitHub',
       'palette.install': 'Install app',
 
+      'pwa.title': 'A new version is ready',
+      'pwa.body': 'Reload to get the latest build. Your files stay on this machine.',
+      'pwa.reload': 'Reload',
+      'pwa.later': 'Later',
+
       'toast.copied': 'Copied to clipboard',
       'toast.copyFail': 'Copy failed — select the text instead',
       'toast.themeDark': 'Theme: dark',
@@ -413,6 +418,11 @@ export const COPY = {
       'palette.copyMuse': '复制 O Muse 安装命令',
       'palette.github': '打开 GitHub',
       'palette.install': '安装应用',
+
+      'pwa.title': '新版本已就绪',
+      'pwa.body': '刷新页面以获取最新版本，文件仍然只留在你的机器上。',
+      'pwa.reload': '立即更新',
+      'pwa.later': '稍后',
 
       'toast.copied': '已复制到剪贴板',
       'toast.copyFail': '复制失败——请手动选择文本',

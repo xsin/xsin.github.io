@@ -86,6 +86,10 @@ reproducible. The copy deck, including what is a fact versus editorial, is in
   palette and install sheet.
 - Theme and locale are persisted in `localStorage` (`xsin.theme`, `xsin.lang`)
   and applied before first paint.
+- The PWA registers in **prompt** mode: a new service worker installs and waits,
+  and the app shows an update banner with *Reload* / *Later* instead of swapping
+  the build under the visitor. Update checks run hourly and when the tab becomes
+  visible.
 - The hero, routing diagram, stem player and craft experiments are WebGL, Canvas
   2D and SVG; they respect `prefers-reduced-motion` and degrade to CSS/SVG
   fallbacks when WebGL is unavailable.
