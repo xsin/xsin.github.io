@@ -5,6 +5,7 @@ import { App } from './App';
 import { ThemeProvider } from '@/lib/theme';
 import { I18nProvider } from '@/lib/i18n';
 import { ToastProvider } from '@/lib/toast';
+import { AmbientSoundProvider } from '@/lib/useAmbientSound';
 
 document.documentElement.classList.add('js');
 
@@ -16,7 +17,9 @@ createRoot(root).render(
     <ThemeProvider>
       <I18nProvider>
         <ToastProvider>
-          <App />
+          <AmbientSoundProvider>
+            <App />
+          </AmbientSoundProvider>
         </ToastProvider>
       </I18nProvider>
     </ThemeProvider>

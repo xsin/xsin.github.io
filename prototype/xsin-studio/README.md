@@ -32,6 +32,10 @@ the service worker and the install prompt.
 - **O Muse** — press play. The four stems are synthesised locally with Web Audio
   (no audio files). Mute and solo the lanes; the waveforms are live analysers.
 - **Command palette** — `⌘K` / `Ctrl+K`, then filter and press Enter.
+- **Ambient sound** — the top-bar toggle (also in the mobile menu). The page is
+  silent until your first click; then a slow D-minor bed fades in. The toggle
+  stops it for this page view only — nothing is stored. Design notes:
+  [`docs/sound.md`](../../docs/sound.md).
 - **Product dossiers** — deep-linkable at `#/work/ai-bobby` and `#/work/o-muse`.
 - **Design controls** — bottom-left dock: grid, motion, custom cursor, theme.
   Keyboard: `G` grid, `M` motion, `C` cursor, `T` theme, `L` language.
@@ -55,6 +59,15 @@ the service worker and the install prompt.
   `prefers-reduced-motion` freezes every loop and skips the preloader. If WebGL
   is unavailable the hero falls back to a CSS chrome orb; without JavaScript the
   preloader and reveal states are disabled so the page still reads.
+- **Sound**: one optional ambient bed (“Deep Field”), synthesised with Web Audio
+  and never loaded as a file: a D-minor drone, open-fifth pads that change every
+  9.6 s, filtered air and sparse bells, looping every 38.4 s. It starts only on
+  the first real gesture, fades in over 3.2 s, suspends in background tabs, and
+  is never remembered — a manual mute lasts for the page view. The control is an
+  equaliser glyph with `aria-pressed`, not a speaker with a tooltip.
+- **Footer legal**: the ICP filing (`粤ICP备2021128240号-5`, linked to
+  `beian.miit.gov.cn`) and the studio address sit in the legal line, set in
+  sans 10px so they read as information rather than as another mono label.
 - **Data**: product facts are taken from the local READMEs of
   `xsin/ai-bobby` (0.2.2 public beta; 0.2.3 internal beta adds NVIDIA NIM) and
   `xsin/o-muse` (0.2.2 public beta, 0.3.0 preview). The production build will
@@ -64,7 +77,9 @@ the service worker and the install prompt.
 
 ```
 index.html            structure + all CSS
-app.js                i18n, WebGL shaders, Canvas, Web Audio, dialogs, PWA UI
+sfx.js                the in-house Web Audio kit (oscillators, noise, reverb, envelopes)
+ambient.js            "Deep Field": the ambient bed composed from sfx.js
+app.js                i18n, WebGL shaders, Canvas, the stem synth, dialogs, PWA UI
 COPY.md               reviewed copy deck: brand lines vs product facts
 manifest.webmanifest  installable shell
 sw.js                 network-first service worker

@@ -70,6 +70,9 @@
       'nav.contact': 'Contact',
       'nav.install': 'Install',
 
+      'sound.on': 'Enable ambient sound',
+      'sound.off': 'Mute ambient sound',
+
       'hero.eyebrow': 'Independent software studio',
       'hero.h1':
         '<span class="line"><span><em>Local-first</em></span></span><span class="line"><span>software</span></span><span class="line"><span>for the age.</span></span>',
@@ -289,6 +292,9 @@
       'nav.craft': '手艺',
       'nav.contact': '联系',
       'nav.install': '安装',
+
+      'sound.on': '开启环境音',
+      'sound.off': '关闭环境音',
 
       'hero.eyebrow': '独立软件工作室',
       'hero.h1':
@@ -737,6 +743,7 @@
     renderPalette();
     if (productDialog && productDialog.open && state.currentProduct) renderProductDialog(state.currentProduct);
     updatePlayLabel();
+    syncSoundUi();
   }
 
   function setLang(next) {
@@ -2416,6 +2423,72 @@
     }
   }
 
+  /* The toggle is silent until the visitor asks for sound: no context is
+     created before a gesture, nothing is written to storage, and a manual
+     "off" is remembered only for this page view. */
+  let bgm = null;
+
+  function syncSoundUi() {
+    const on = Boolean(bgm && bgm.on);
+    $$('#soundBtn, [data-action="sound"]').forEach((btn) => {
+      btn.classList.toggle('is-on', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      const label = t(on ? 'sound.off' : 'sound.on');
+      btn.setAttribute('aria-label', label);
+      btn.setAttribute('title', label);
+    });
+  }
+
+  function setupSound() {
+    bgm = new AmbientSound();
+    if (new URLSearchParams(window.location.search).has('sound-debug')) window.__bgm = bgm;
+
+    $$('#soundBtn, [data-action="sound"]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        await bgm.toggle();
+        syncSoundUi();
+      });
+    });
+
+    let armed = true;
+    const onFirstGesture = (event) => {
+      if (!armed || !bgm) return;
+      /* Tabbing through the page should not start music; Enter/Space should. */
+      if (event.type === 'keydown' && event.key !== 'Enter' && event.key !== ' ') return;
+      const target = event.target;
+      if (target && target.closest && target.closest('#soundBtn, [data-action="sound"]')) {
+        armed = false;
+        return;
+      }
+      armed = false;
+      if (!bgm.manualOff && !bgm.on) bgm.enable().then(syncSoundUi);
+    };
+    ['pointerdown', 'keydown', 'touchstart'].forEach((type) =>
+      document.addEventListener(type, onFirstGesture, { capture: true, passive: true })
+    );
+
+    /* If the context came up suspended (no gesture was available yet), the
+       next real gesture is the one that can start it. */
+    ['pointerdown', 'keydown'].forEach((type) =>
+      document.addEventListener(
+        type,
+        () => {
+          if (bgm && bgm.on) bgm.resume();
+        },
+        { capture: true, passive: true }
+      )
+    );
+
+    /* A background tab should not keep playing; returning restores it. */
+    document.addEventListener('visibilitychange', () => {
+      if (!bgm || !bgm.on) return;
+      if (document.hidden) bgm.suspend();
+      else bgm.resume();
+    });
+
+    syncSoundUi();
+  }
+
   function rgba(hex, alpha) {
     const value = parseInt(hex.slice(1), 16);
     const r = (value >> 16) & 255;
@@ -3315,6 +3388,7 @@
     setupHeroShader();
     setupCraft();
     setupPwa();
+    setupSound();
 
     setGrid(state.grid, false);
     setMotion(!state.reduced, false, false);

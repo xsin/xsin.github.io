@@ -11,6 +11,9 @@ export const COPY = {
       'nav.contact': 'Contact',
       'nav.install': 'Install',
 
+      'sound.on': 'Enable ambient sound',
+      'sound.off': 'Mute ambient sound',
+
       'hero.eyebrow': 'Independent software studio',
       'hero.h1':
         '<span class="line"><span><em>Local-first</em></span></span><span class="line"><span>software</span></span><span class="line"><span>for the age.</span></span>',
@@ -236,6 +239,9 @@ export const COPY = {
       'nav.craft': '手艺',
       'nav.contact': '联系',
       'nav.install': '安装',
+
+      'sound.on': '开启环境音',
+      'sound.off': '关闭环境音',
 
       'hero.eyebrow': '独立软件工作室',
       'hero.h1':

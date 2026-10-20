@@ -93,6 +93,20 @@ reproducible. The copy deck, including what is a fact versus editorial, is in
 - The hero, routing diagram, stem player and craft experiments are WebGL, Canvas
   2D and SVG; they respect `prefers-reduced-motion` and degrade to CSS/SVG
   fallbacks when WebGL is unavailable.
+- Optional ambient sound ("Deep Field") is synthesised with Web Audio — no audio
+  files. It stays silent until the first real gesture, fades in over 3.2 s, and
+  is switched from the top bar. The mix is deliberately distant: the noise layer
+  is routed to the reverb only, so it sits behind the content. A manual mute
+  lasts for the page view; nothing is written to `localStorage`. The synthesised
+  primitives live in
+  [`apps/web/src/lib/audio/sfx.ts`](apps/web/src/lib/audio/sfx.ts) and the
+  composition in
+  [`apps/web/src/lib/audio/ambientBgm.ts`](apps/web/src/lib/audio/ambientBgm.ts);
+  the design is in [`docs/sound.md`](docs/sound.md).
+
+## License
+
+MIT — see [`LICENSE`](LICENSE). Copyright © 2026 XSin Studio.
 
 ## Deploy to GitHub Pages
 

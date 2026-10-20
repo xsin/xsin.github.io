@@ -5,6 +5,7 @@ import { usePreferences } from '@/lib/usePreferences';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { IconButton, LangButton, ThemeGlyph } from '@/components/ui/brand';
+import { SoundToggle } from './SoundToggle';
 
 const items = [
   { id: 'work', key: 'nav.work', no: '01' },
@@ -62,6 +63,7 @@ export function MobileMenu({ open, onClose, onInstall }: { open: boolean; onClos
       <div className="flex items-center justify-between gap-4">
         <span className="font-mono text-[9px] tracking-[0.08em] text-faint">GMT+8 · {clock.slice(0, 5)}</span>
         <div className="flex items-center gap-2">
+          <SoundToggle />
           <IconButton aria-label="Toggle theme" onClick={toggleTheme}>
             <ThemeGlyph />
           </IconButton>

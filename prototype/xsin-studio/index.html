@@ -618,6 +618,101 @@
       background: var(--panel);
     }
 
+    /* ---------- ambient sound toggle ---------- */
+
+    .sound-btn {
+      position: relative;
+    }
+
+    .sound-glyph {
+      display: flex;
+      align-items: flex-end;
+      gap: 2px;
+      width: 16px;
+      height: 14px;
+    }
+
+    .sound-glyph i {
+      display: block;
+      width: 2px;
+      height: 6px;
+      border-radius: 1px;
+      background: currentColor;
+      opacity: 0.45;
+      transform-origin: bottom;
+      transition: height 0.3s var(--ease), opacity 0.3s;
+    }
+
+    .sound-glyph i:nth-child(2) {
+      height: 10px;
+    }
+
+    .sound-glyph i:nth-child(3) {
+      height: 13px;
+    }
+
+    .sound-glyph i:nth-child(4) {
+      height: 8px;
+    }
+
+    .sound-btn.is-on .sound-glyph i {
+      opacity: 1;
+      background: var(--accent-text);
+      animation: sound-bars 1.7s var(--ease) infinite;
+    }
+
+    .sound-btn.is-on .sound-glyph i:nth-child(2) {
+      animation-delay: 0.22s;
+    }
+
+    .sound-btn.is-on .sound-glyph i:nth-child(3) {
+      animation-delay: 0.46s;
+    }
+
+    .sound-btn.is-on .sound-glyph i:nth-child(4) {
+      animation-delay: 0.11s;
+    }
+
+    /* Muted: one hairline through the bars. */
+    .sound-btn::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 20px;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.7;
+      transform: translate(-50%, -50%) rotate(-45deg);
+      pointer-events: none;
+    }
+
+    .sound-btn.is-on::after {
+      opacity: 0;
+    }
+
+    @keyframes sound-bars {
+      0%,
+      100% {
+        transform: scaleY(0.38);
+      }
+      50% {
+        transform: scaleY(1);
+      }
+    }
+
+    .reduce-motion .sound-btn.is-on .sound-glyph i {
+      animation: none;
+      transform: scaleY(0.9);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .sound-btn.is-on .sound-glyph i {
+        animation: none;
+        transform: scaleY(0.9);
+      }
+    }
+
     /* ---------- nav ---------- */
 
     .nav {
@@ -2533,6 +2628,26 @@
       transition: color 0.2s;
     }
 
+    .footer-legal-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 16px;
+    }
+
+    .footer-legal {
+      color: var(--muted);
+      font-family: var(--font-sans);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      transition: color 0.2s;
+    }
+
+    a.footer-legal:hover {
+      color: var(--ink);
+    }
+
     .footer-bottom button:hover {
       color: var(--ink);
     }
@@ -3810,6 +3925,7 @@
           <span id="navClockTime">20:04:27</span><span>GMT+8</span>
         </div>
         <button class="icon-btn palette-btn" id="paletteBtn" type="button" aria-label="Open command palette" data-cursor="⌘K">⌘K</button>
+        <button class="icon-btn sound-btn" id="soundBtn" type="button" aria-label="Enable ambient sound" aria-pressed="false" title="Enable ambient sound" data-cursor="SOUND"><span class="sound-glyph" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
         <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle color theme" data-cursor="THEME"><span class="theme-glyph" aria-hidden="true"></span></button>
         <button class="lang-btn" id="langBtn" type="button" aria-label="Switch language" data-cursor="LANG"><span id="langLabel">EN</span></button>
         <button class="btn btn-primary btn-sm install-nav" type="button" data-install data-i18n="nav.install">Install</button>
@@ -3829,6 +3945,7 @@
     <div class="mobile-menu-foot">
       <span class="mono" id="mobileClock">GMT+8 · 20:04</span>
       <div class="mobile-menu-tools">
+        <button class="icon-btn sound-btn" type="button" data-action="sound" aria-label="Enable ambient sound" aria-pressed="false" title="Enable ambient sound"><span class="sound-glyph" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
         <button class="icon-btn" type="button" data-action="theme" aria-label="Toggle theme"><span class="theme-glyph" aria-hidden="true"></span></button>
         <button class="lang-btn" type="button" data-action="lang" aria-label="Switch language">EN</button>
         <button class="btn btn-primary btn-sm" type="button" data-install data-i18n="nav.install">Install</button>
@@ -4140,7 +4257,11 @@
       </div>
 
       <div class="footer-bottom">
-        <span>© 2026 XSIN STUDIO</span>
+        <div class="footer-legal-row">
+          <span>© 2026 XSIN STUDIO</span>
+          <a class="footer-legal" href="https://beian.miit.gov.cn/" target="_blank" rel="noreferrer">粤ICP备2021128240号-5</a>
+          <span class="footer-legal">深圳市光明区迳口古村225-3</span>
+        </div>
         <span data-i18n="footer.draft">DESIGN DRAFT / v0.1 — NOT PRODUCTION</span>
         <span>REACT 19 · VITE 8 · TS 7 · TAILWIND 4 · SHADCN/UI</span>
         <button type="button" id="backTop" data-i18n="footer.top">BACK TO TOP ↑</button>
@@ -4212,6 +4333,8 @@
     </div>
   </dialog>
 
+  <script src="./sfx.js" defer></script>
+  <script src="./ambient.js" defer></script>
   <script src="./app.js" defer></script>
 </body>
 </html>

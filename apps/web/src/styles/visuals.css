@@ -1074,6 +1074,93 @@ html.js [data-reveal].in-view {
   }
 }
 
+/* ---------- ambient sound toggle ---------- */
+
+.sound-toggle {
+  position: relative;
+}
+
+.sound-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  width: 16px;
+  height: 14px;
+}
+
+.sound-bars i {
+  display: block;
+  width: 2px;
+  height: 6px;
+  border-radius: 1px;
+  background: currentColor;
+  opacity: 0.45;
+  transform-origin: bottom;
+  transition: height 0.3s var(--ease), opacity 0.3s;
+}
+
+.sound-bars i:nth-child(2) {
+  height: 10px;
+}
+
+.sound-bars i:nth-child(3) {
+  height: 13px;
+}
+
+.sound-bars i:nth-child(4) {
+  height: 8px;
+}
+
+.sound-toggle.is-on .sound-bars i {
+  opacity: 1;
+  background: var(--brand-text);
+  animation: sound-bars 1.7s var(--ease) infinite;
+}
+
+.sound-toggle.is-on .sound-bars i:nth-child(2) {
+  animation-delay: 0.22s;
+}
+
+.sound-toggle.is-on .sound-bars i:nth-child(3) {
+  animation-delay: 0.46s;
+}
+
+.sound-toggle.is-on .sound-bars i:nth-child(4) {
+  animation-delay: 0.11s;
+}
+
+/* Muted: one hairline through the bars. */
+.sound-toggle::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  pointer-events: none;
+}
+
+.sound-toggle.is-on::after {
+  opacity: 0;
+}
+
+@keyframes sound-bars {
+  0%,
+  100% {
+    transform: scaleY(0.38);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+html.reduce-motion .sound-toggle.is-on .sound-bars i {
+  transform: scaleY(0.9);
+}
+
 /* ---------- reduced motion ---------- */
 
 html.reduce-motion *,

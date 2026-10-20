@@ -96,6 +96,16 @@ machine is your call.
 - The hero "software" / "tools" choice is a brand decision. "Instruments" was
   removed because AI Bobby is a gateway, not a musical instrument.
 
+## Ambient sound
+
+The toggle has no visible label; these strings are the accessible name and the
+native tooltip.
+
+| EN | ZH |
+|---|---|
+| Enable ambient sound | 开启环境音 |
+| Mute ambient sound | 关闭环境音 |
+
 ## Open questions
 
 1. Hero noun: **software** (current), **tools**, or a bilingual split

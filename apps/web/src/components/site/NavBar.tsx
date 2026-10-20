@@ -4,6 +4,7 @@ import { useClock } from '@/lib/useClock';
 import { usePreferences } from '@/lib/usePreferences';
 import { cn } from '@/lib/utils';
 import { BrandMark } from './BrandMark';
+import { SoundToggle } from './SoundToggle';
 import { Button } from '@/components/ui/button';
 import { Container, IconButton, LangButton, ThemeGlyph } from '@/components/ui/brand';
 
@@ -90,6 +91,7 @@ export function NavBar({
           >
             ⌘K
           </IconButton>
+          <SoundToggle />
           <IconButton aria-label="Toggle color theme" data-cursor="THEME" aria-pressed={theme === 'light'} onClick={toggleTheme}>
             <ThemeGlyph />
           </IconButton>
