@@ -1,6 +1,6 @@
 # XSin Studio
 
-The production product-showcase PWA for [XSin Studio](https://xsin.github.io):
+The production product-showcase PWA for XSin Studio:
 local-first tools for the machine on your desk.
 
 Two products today:
@@ -95,6 +95,8 @@ reproducible. The copy deck, including what is a fact versus editorial, is in
 The workflow in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
 builds the workspace and publishes `apps/web/dist` with GitHub Pages.
 
-One-time repository setting: **Settings → Pages → Build and deployment → Source:
-GitHub Actions**. The site is a user page (`xsin.github.io`), so Vite's base is
-`/` and no subpath configuration is needed.
+One-time repository settings: **Settings → Pages → Build and deployment → Source:
+GitHub Actions**, plus the custom domain recorded in
+[`apps/web/public/CNAME`](apps/web/public/CNAME). The CNAME file is part of the
+published artifact, so the domain survives every deploy. DNS: apex `A` records
+to the GitHub Pages IPs (`185.199.108-111.153`), `www` CNAME to `xsin.github.io`.
