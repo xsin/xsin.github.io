@@ -1,0 +1,17 @@
+{
+  "$schema": "./src/schema.ts",
+  "products": [
+    {
+      "slug": "ai-bobby",
+      "source": { "kind": "github", "repo": "xsin/ai-bobby" },
+      "overrides": "overrides/ai-bobby.json",
+      "snapshot": "snapshots/ai-bobby.md"
+    },
+    {
+      "slug": "o-muse",
+      "source": { "kind": "github", "repo": "xsin/o-muse" },
+      "overrides": "overrides/o-muse.json",
+      "snapshot": "snapshots/o-muse.md"
+    }
+  ]
+}

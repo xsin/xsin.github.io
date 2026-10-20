@@ -1,0 +1,155 @@
+/* ============================================================
+   XSin Studio — tokens and base
+   One semantic token source (docs/spec-ui.md). Components consume
+   these through Tailwind utilities (see globals.css @theme) and
+   never hardcode a color. Base resets are minimal on purpose:
+   Tailwind's preflight does the rest.
+   ============================================================ */
+
+:root {
+  --bg: #06070a;
+  --bg-2: #0a0c11;
+  --bg-3: #0e1118;
+  --ink: #f3f4ee;
+  --fg-muted: #9ba1ad;
+  --faint: #666d7a;
+  --line: rgba(243, 244, 238, 0.13);
+  --line-strong: rgba(243, 244, 238, 0.28);
+  --panel: rgba(255, 255, 255, 0.035);
+  --panel-2: rgba(255, 255, 255, 0.07);
+  --brand: #c8ff3d;
+  --brand-strong: #d9ff70;
+  --brand-ink: #0a0d02;
+  --brand-text: #c8ff3d;
+  --blue: #5b7cfa;
+  --cyan: #7af3ff;
+  --teal: #5eead4;
+  --violet: #a78bfa;
+  --screen: #06070b;
+  --font-display: "Instrument Serif", "Songti SC", "STSong", Georgia, serif;
+  --font-sans: "Space Grotesk", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --gutter: clamp(20px, 4.2vw, 64px);
+  --max: 1440px;
+  --nav-h: 76px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow: 0 32px 100px rgba(0, 0, 0, 0.35);
+}
+
+html[data-theme="light"] {
+  --bg: #f2f1e9;
+  --bg-2: #eae9e0;
+  --bg-3: #e3e2d8;
+  --ink: #0b0c0e;
+  --fg-muted: #5a5e66;
+  --faint: #8b8e94;
+  --line: rgba(11, 12, 14, 0.14);
+  --line-strong: rgba(11, 12, 14, 0.3);
+  --panel: rgba(255, 255, 255, 0.52);
+  --panel-2: rgba(255, 255, 255, 0.78);
+  --brand: #c8ff3d;
+  --brand-strong: #b9f22a;
+  --brand-ink: #0a0d02;
+  --brand-text: #3143ff;
+  --shadow: 0 32px 100px rgba(11, 12, 14, 0.1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-x: hidden;
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse 70% 50% at 78% -8%, rgba(91, 124, 250, 0.16), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 8% 22%, rgba(200, 255, 61, 0.05), transparent 65%),
+    var(--bg);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html[data-theme="light"] body {
+  background:
+    radial-gradient(ellipse 60% 42% at 82% -6%, rgba(200, 255, 61, 0.22), transparent 60%),
+    radial-gradient(ellipse 50% 36% at 4% 18%, rgba(49, 67, 255, 0.07), transparent 65%),
+    var(--bg);
+}
+
+::selection {
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+img,
+svg,
+canvas {
+  display: block;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+dl,
+dd {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --nav-h: 64px;
+  }
+}

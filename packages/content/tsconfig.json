@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    // Sources run directly under tsx and are consumed through the "exports"
+    // map, so relative imports keep their .ts extension (noEmit, never built).
+    "allowImportingTsExtensions": true
+  },
+  "include": ["src"]
+}

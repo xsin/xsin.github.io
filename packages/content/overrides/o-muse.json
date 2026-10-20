@@ -1,0 +1,94 @@
+{
+  "index": 2,
+  "name": "O Muse",
+  "mark": "OM",
+  "color": "#5eead4",
+  "color2": "#a78bfa",
+  "links": {
+    "github": "https://github.com/xsin/o-muse",
+    "releases": "https://github.com/xsin/o-muse/releases",
+    "website": "https://xsin.github.io/o-muse/",
+    "install": "curl -fsSL https://xsin.github.io/o-muse/releases/latest/install.sh | bash"
+  },
+  "facts": {
+    "latestVersion": "0.2.2"
+  },
+  "en": {
+    "status": "v0.2.2 · PUBLIC BETA",
+    "category": "MUSIC PRODUCTION SUITE / MACOS",
+    "tagline": "The musician’s toolbox.",
+    "title": "Every stem.<br><em>Under your control.</em>",
+    "body": "A local-first macOS suite that turns music-production chores into focused apps. Stem Player, Kontakt Library Manager and Audio Plugin Manager share one toolbox and one rule: audio stays on your machine.",
+    "features": [
+      {
+        "title": "Stem Player",
+        "body": "Split vocals, drums, bass and other with Demucs. Practice with M/S, shift key ±12 semitones, slow down to 50–120%."
+      },
+      {
+        "title": "Kontakt Library Manager",
+        "body": "Find missing paths, duplicate SNPIDs and broken volumes; create or repair .nicnt files without touching the registry by hand."
+      },
+      {
+        "title": "Audio Plugin Manager",
+        "body": "Scan AU / VST / VST3 / AAX / CLAP, sort by disk usage, move across volumes with symlinks, restore or trash safely."
+      },
+      {
+        "title": "Born local",
+        "body": "Separation runs on-device. Online is only for update checks and a one-time runtime download."
+      }
+    ],
+    "chips": [
+      "4 STEMS",
+      "DEMUCS",
+      "LOCAL AUDIO"
+    ],
+    "foot": "TAURI 2 + RUST",
+    "note": "0.3.0 (UI v2) is implemented and in preview; the public beta is 0.2.2. The first separation downloads a separate runtime (~259MB).",
+    "spec": {
+      "Platform": "macOS · arm64 / x64",
+      "Runtime": "Tauri 2 + Rust",
+      "Separation": "Demucs · 4 stems",
+      "License": "Apache-2.0"
+    },
+    "cardBody": "A local-first macOS suite that turns music-production chores into focused apps. Stem Player, Kontakt Library Manager and Audio Plugin Manager share one toolbox and one rule: audio stays on your machine."
+  },
+  "zh": {
+    "status": "v0.2.2 · 公测",
+    "category": "音乐制作工具箱 / MACOS",
+    "tagline": "音乐人的全能工具箱。",
+    "title": "每一轨。<br><em>都由你掌控。</em>",
+    "body": "一个本地优先的 macOS 工具箱，把音乐制作的琐事拆成专注的小 App：分轨播放器、Kontakt 音源库管理与音频插件管理。同一条规则：音频留在你的机器上。",
+    "features": [
+      {
+        "title": "分轨播放器",
+        "body": "用 Demucs 拆出人声、鼓、贝斯与其他四轨。M/S 选练习轨，±12 半音改调，50–120% 调速。"
+      },
+      {
+        "title": "Kontakt 音源库管理",
+        "body": "找出缺失路径、重复 SNPID 与断卷；创建或修复 .nicnt，不必手改注册表。"
+      },
+      {
+        "title": "音频插件管理",
+        "body": "扫描 AU / VST / VST3 / AAX / CLAP，按占用排序，跨卷移动时留软链，安全还原或移入废纸篓。"
+      },
+      {
+        "title": "生来本地",
+        "body": "分轨在本机完成；联网只用于检查更新与首次下载运行时。"
+      }
+    ],
+    "chips": [
+      "4 条分轨",
+      "DEMUCS",
+      "本地音频"
+    ],
+    "foot": "TAURI 2 + RUST",
+    "note": "0.3.0（UI v2）已实现并在预览；公开测试版为 0.2.2。首次分轨需下载独立运行时（约 259MB）。",
+    "spec": {
+      "平台": "macOS · arm64 / x64",
+      "运行时": "Tauri 2 + Rust",
+      "分离引擎": "Demucs · 4 轨",
+      "许可证": "Apache-2.0"
+    },
+    "cardBody": "一个本地优先的 macOS 工具箱，把音乐制作的琐事拆成专注的小 App：分轨播放器、Kontakt 音源库管理与音频插件管理。同一条规则：音频留在你的机器上。"
+  }
+}

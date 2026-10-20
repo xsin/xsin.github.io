@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["vite/client", "node"],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@xsin/content": ["../../packages/content/src/index.ts"],
+      "@xsin/content/products.json": ["../../packages/content/data/products.json"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}

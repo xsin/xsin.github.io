@@ -1,0 +1,11 @@
+.idea
+node_modules
+dist
+dist-ssr
+.vite
+.turbo
+*.local
+packages/content/.cache
+playwright-report
+test-results
+.DS_Store

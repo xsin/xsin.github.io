@@ -1,0 +1,258 @@
+[
+  {
+    "slug": "ai-bobby",
+    "index": 1,
+    "name": "AI Bobby",
+    "mark": "AB",
+    "color": "#5b7cfa",
+    "color2": "#7af3ff",
+    "links": {
+      "github": "https://github.com/xsin/ai-bobby",
+      "releases": "https://github.com/xsin/ai-bobby/releases",
+      "website": "https://xsin.github.io/ai-bobby/",
+      "install": "curl -fsSL https://xsin.github.io/ai-bobby/releases/latest/install.sh | bash"
+    },
+    "facts": {
+      "readmeExcerpt": "AI Bobby is a local-first desktop gateway that puts OpenCode's free model pool, WorkBuddy (CN)",
+      "latestVersion": "0.2.3"
+    },
+    "en": {
+      "status": "v0.2.3 · INTERNAL BETA",
+      "category": "LOCAL AI GATEWAY / MACOS",
+      "tagline": "All your models. One endpoint.",
+      "title": "All your models.<br><em>One endpoint.</em>",
+      "body": "A local gateway for macOS that folds free-tier pools like OpenCode and NVIDIA together with WorkBuddy and WorkBuddy AI into one OpenAI-compatible endpoint. Four sources today, more on the way — three protocols, four clients, one key, and a native control panel for imports, backups and restores.",
+      "cardBody": "A local gateway for macOS that folds free-tier pools like OpenCode and NVIDIA together with WorkBuddy and WorkBuddy AI into one OpenAI-compatible endpoint. Four sources today, more on the way — three protocols, four clients, one key.",
+      "features": [
+        {
+          "title": "Every pool, one catalog",
+          "body": "Free-tier pools such as OpenCode and NVIDIA sit beside WorkBuddy CN and WorkBuddy AI, with per-model pricing, multi-account round-robin and failover. New pools join the same catalog."
+        },
+        {
+          "title": "Every protocol",
+          "body": "Chat Completions, Responses and Anthropic Messages share one canonical stream."
+        },
+        {
+          "title": "One-click import",
+          "body": "Dry-run diff, automatic backup and idempotent writes for Codex, Claude Code, DSH and WorkBuddy."
+        },
+        {
+          "title": "Loopback by default",
+          "body": "Loopback only, browser Origin requests rejected, keys stored 0600, zero telemetry."
+        }
+      ],
+      "chips": [
+        "MULTI-SOURCE",
+        "3 PROTOCOLS",
+        "1 ENDPOINT"
+      ],
+      "foot": "OPENAI-COMPATIBLE",
+      "note": "0.2.3 (NVIDIA NIM) is in internal beta; the public beta is 0.2.2. WorkBuddy still requires you to scan the official QR code yourself. The current build is ad-hoc signed and not notarized.",
+      "spec": [
+        {
+          "label": "Platform",
+          "value": "macOS · arm64 / x64"
+        },
+        {
+          "label": "Sources",
+          "value": "OpenCode · NVIDIA · WorkBuddy CN/AI"
+        },
+        {
+          "label": "Endpoint",
+          "value": "127.0.0.1:46890"
+        },
+        {
+          "label": "Protocols",
+          "value": "Chat · Responses · Messages"
+        },
+        {
+          "label": "License",
+          "value": "MIT"
+        }
+      ]
+    },
+    "zh": {
+      "status": "v0.2.3 · 内测中",
+      "category": "本地 AI 网关 / MACOS",
+      "tagline": "所有模型。一个端点。",
+      "title": "所有模型。<br><em>一个端点。</em>",
+      "body": "一个运行在 macOS 本机的 AI 网关：把 OpenCode、NVIDIA 这样的带免费额度的模型池，与 WorkBuddy、WorkBuddy AI 收进同一个 OpenAI 兼容端点。今天四个来源，以后还会更多——三种协议、四个客户端、一把 Key，外加原生控制面板管理导入、备份与恢复。",
+      "cardBody": "一个运行在 macOS 本机的 AI 网关：把 OpenCode、NVIDIA 这样的带免费额度的模型池，与 WorkBuddy、WorkBuddy AI 收进同一个 OpenAI 兼容端点。今天四个来源，以后还会更多——三种协议、四个客户端、一把 Key。",
+      "features": [
+        {
+          "title": "多源合一，一份清单",
+          "body": "OpenCode、NVIDIA 等带免费额度的模型池，与 WorkBuddy CN、WorkBuddy AI 并列展示，带每条模型的计价提示、多账号轮询与故障转移；新模型池接进同一份清单。"
+        },
+        {
+          "title": "协议全说",
+          "body": "Chat Completions、Responses 与 Anthropic Messages 共用同一条规范化事件流。"
+        },
+        {
+          "title": "一键导入",
+          "body": "先看 dry-run diff，再自动备份并幂等写入 Codex、Claude Code、DSH 与 WorkBuddy。"
+        },
+        {
+          "title": "默认只走回环",
+          "body": "只监听回环地址，拒绝浏览器 Origin 请求，Key 以 0600 存放，零遥测。"
+        }
+      ],
+      "chips": [
+        "多源接入",
+        "3 种协议",
+        "1 个端点"
+      ],
+      "foot": "OPENAI 兼容",
+      "note": "0.2.3（NVIDIA NIM）在内测中，公开 beta 仍是 0.2.2。WorkBuddy 仍需你亲自扫描官方二维码登录；当前构建为 ad-hoc 签名，尚未公证。",
+      "spec": [
+        {
+          "label": "平台",
+          "value": "macOS · arm64 / x64"
+        },
+        {
+          "label": "模型源",
+          "value": "OpenCode · NVIDIA · WorkBuddy CN/AI"
+        },
+        {
+          "label": "端点",
+          "value": "127.0.0.1:46890"
+        },
+        {
+          "label": "协议",
+          "value": "Chat · Responses · Messages"
+        },
+        {
+          "label": "许可证",
+          "value": "MIT"
+        }
+      ]
+    },
+    "source": {
+      "kind": "github",
+      "repo": "xsin/ai-bobby"
+    }
+  },
+  {
+    "slug": "o-muse",
+    "index": 2,
+    "name": "O Muse",
+    "mark": "OM",
+    "color": "#5eead4",
+    "color2": "#a78bfa",
+    "links": {
+      "github": "https://github.com/xsin/o-muse",
+      "releases": "https://github.com/xsin/o-muse/releases",
+      "website": "https://xsin.github.io/o-muse/",
+      "install": "curl -fsSL https://xsin.github.io/o-muse/releases/latest/install.sh | bash"
+    },
+    "facts": {
+      "readmeExcerpt": "O Muse 是一个 macOS 桌面应用（Tauri 2 + React 19），把音乐制作相关的",
+      "latestVersion": "0.2.2"
+    },
+    "en": {
+      "status": "v0.2.2 · PUBLIC BETA",
+      "category": "MUSIC PRODUCTION SUITE / MACOS",
+      "tagline": "The musician’s toolbox.",
+      "title": "Every stem.<br><em>Under your control.</em>",
+      "body": "A local-first macOS suite that turns music-production chores into focused apps. Stem Player, Kontakt Library Manager and Audio Plugin Manager share one toolbox and one rule: audio stays on your machine.",
+      "cardBody": "A local-first macOS suite that turns music-production chores into focused apps. Stem Player, Kontakt Library Manager and Audio Plugin Manager share one toolbox and one rule: audio stays on your machine.",
+      "features": [
+        {
+          "title": "Stem Player",
+          "body": "Split vocals, drums, bass and other with Demucs. Practice with M/S, shift key ±12 semitones, slow down to 50–120%."
+        },
+        {
+          "title": "Kontakt Library Manager",
+          "body": "Find missing paths, duplicate SNPIDs and broken volumes; create or repair .nicnt files without touching the registry by hand."
+        },
+        {
+          "title": "Audio Plugin Manager",
+          "body": "Scan AU / VST / VST3 / AAX / CLAP, sort by disk usage, move across volumes with symlinks, restore or trash safely."
+        },
+        {
+          "title": "Born local",
+          "body": "Separation runs on-device. Online is only for update checks and a one-time runtime download."
+        }
+      ],
+      "chips": [
+        "4 STEMS",
+        "DEMUCS",
+        "LOCAL AUDIO"
+      ],
+      "foot": "TAURI 2 + RUST",
+      "note": "0.3.0 (UI v2) is implemented and in preview; the public beta is 0.2.2. The first separation downloads a separate runtime (~259MB).",
+      "spec": [
+        {
+          "label": "Platform",
+          "value": "macOS · arm64 / x64"
+        },
+        {
+          "label": "Runtime",
+          "value": "Tauri 2 + Rust"
+        },
+        {
+          "label": "Separation",
+          "value": "Demucs · 4 stems"
+        },
+        {
+          "label": "License",
+          "value": "Apache-2.0"
+        }
+      ]
+    },
+    "zh": {
+      "status": "v0.2.2 · 公测",
+      "category": "音乐制作工具箱 / MACOS",
+      "tagline": "音乐人的全能工具箱。",
+      "title": "每一轨。<br><em>都由你掌控。</em>",
+      "body": "一个本地优先的 macOS 工具箱，把音乐制作的琐事拆成专注的小 App：分轨播放器、Kontakt 音源库管理与音频插件管理。同一条规则：音频留在你的机器上。",
+      "cardBody": "一个本地优先的 macOS 工具箱，把音乐制作的琐事拆成专注的小 App：分轨播放器、Kontakt 音源库管理与音频插件管理。同一条规则：音频留在你的机器上。",
+      "features": [
+        {
+          "title": "分轨播放器",
+          "body": "用 Demucs 拆出人声、鼓、贝斯与其他四轨。M/S 选练习轨，±12 半音改调，50–120% 调速。"
+        },
+        {
+          "title": "Kontakt 音源库管理",
+          "body": "找出缺失路径、重复 SNPID 与断卷；创建或修复 .nicnt，不必手改注册表。"
+        },
+        {
+          "title": "音频插件管理",
+          "body": "扫描 AU / VST / VST3 / AAX / CLAP，按占用排序，跨卷移动时留软链，安全还原或移入废纸篓。"
+        },
+        {
+          "title": "生来本地",
+          "body": "分轨在本机完成；联网只用于检查更新与首次下载运行时。"
+        }
+      ],
+      "chips": [
+        "4 条分轨",
+        "DEMUCS",
+        "本地音频"
+      ],
+      "foot": "TAURI 2 + RUST",
+      "note": "0.3.0（UI v2）已实现并在预览；公开测试版为 0.2.2。首次分轨需下载独立运行时（约 259MB）。",
+      "spec": [
+        {
+          "label": "平台",
+          "value": "macOS · arm64 / x64"
+        },
+        {
+          "label": "运行时",
+          "value": "Tauri 2 + Rust"
+        },
+        {
+          "label": "分离引擎",
+          "value": "Demucs · 4 轨"
+        },
+        {
+          "label": "许可证",
+          "value": "Apache-2.0"
+        }
+      ]
+    },
+    "source": {
+      "kind": "github",
+      "repo": "xsin/o-muse"
+    }
+  }
+]

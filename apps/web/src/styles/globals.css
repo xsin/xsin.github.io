@@ -1,0 +1,132 @@
+@import 'tailwindcss';
+@import './fonts.css';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import './base.css' layer(base);
+@import './visuals.css' layer(components);
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+/*
+ * The editorial design system lives in design.css (ported from the approved
+ * prototype). These shadcn tokens alias it so shadcn/ui primitives inherit the
+ * same palette, borders and ring.
+ */
+:root {
+  --background: var(--bg);
+  --foreground: var(--ink);
+  --card: var(--bg-2);
+  --card-foreground: var(--ink);
+  --popover: var(--bg-2);
+  --popover-foreground: var(--ink);
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-ink);
+  --secondary: var(--panel-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--panel);
+  --muted-foreground: var(--fg-muted);
+  --accent: var(--panel-2);
+  --accent-foreground: var(--ink);
+  --destructive: #ff6b6b;
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--brand);
+  --radius: 0.625rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    background: var(--bg);
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+/* Radix/shadcn dialogs must sit above the site nav and its z-index: 100. */
+[data-slot='dialog-overlay'] {
+  z-index: 200;
+  background: rgb(2 3 5 / 0.72);
+  backdrop-filter: blur(14px);
+}
+
+[data-slot='dialog-content'] {
+  z-index: 201;
+}
+
+/*
+ * Brand tokens exposed to Tailwind. Utilities such as `text-brand`,
+ * `border-line`, `bg-panel` and `max-w-shell` all resolve to the semantic
+ * variables declared in design.css, so the two layers share one palette.
+ */
+@theme {
+  --container-shell: 1440px;
+  --spacing-gutter: clamp(20px, 4.2vw, 64px);
+  --spacing-nav: 76px;
+  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-display: 'Instrument Serif', 'Songti SC', 'STSong', Georgia, serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-bg-3: var(--bg-3);
+  --color-ink: var(--ink);
+  --color-fg-muted: var(--fg-muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-text: var(--brand-text);
+  --color-blue: var(--blue);
+  --color-cyan: var(--cyan);
+  --color-teal: var(--teal);
+  --color-violet: var(--violet);
+  --color-screen: var(--screen);
+}
+
+@layer base {
+  .tw-root {
+    isolation: isolate;
+    min-height: 100dvh;
+  }
+}
+
+@custom-variant zh (&:where(html[lang='zh-CN'] *));

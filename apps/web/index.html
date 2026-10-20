@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>XSin Studio — Local-first software</title>
+    <meta
+      name="description"
+      content="XSin Studio — an independent software studio building modern, local-first tools: AI Bobby, a local AI gateway, and O Muse, the musician’s toolbox."
+    />
+    <meta name="theme-color" content="#06070a" />
+    <meta name="color-scheme" content="dark light" />
+    <script>
+      (() => {
+        try {
+          const theme = localStorage.getItem('xsin.theme');
+          document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+          document.documentElement.classList.toggle('dark', theme !== 'light');
+          const saved = localStorage.getItem('xsin.lang');
+          const zh = saved ? saved === 'zh' : navigator.language.toLowerCase().startsWith('zh');
+          document.documentElement.lang = zh ? 'zh-CN' : 'en';
+        } catch {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+    <meta property="og:title" content="XSin Studio — Local-first software" />
+    <meta property="og:description" content="Keys, audio and data stay on your machine. Two tools. One philosophy." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://xsin.github.io/" />
+    <meta property="og:site_name" content="XSin Studio" />
+    <meta property="og:image" content="https://xsin.github.io/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://xsin.github.io/og.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="XSin" />
+    <link rel="canonical" href="https://xsin.github.io/" />
+    <link rel="icon" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icons/icon-180.png" />
+    <link rel="preload" href="/fonts/space-grotesk.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/instrument-serif-italic.woff2" as="font" type="font/woff2" crossorigin />
+  </head>
+  <body>
+    <div id="root" class="tw-root"></div>
+    <noscript>
+      <p style="padding: 48px; font-family: monospace">
+        This product showcase needs JavaScript for its live WebGL and Canvas experiments.
+      </p>
+    </noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

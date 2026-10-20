@@ -1,0 +1,26 @@
+{
+  "name": "@xsin/content",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./products.json": "./data/products.json"
+  },
+  "scripts": {
+    "collect": "tsx src/collect.ts",
+    "build": "tsx src/collect.ts --offline",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "collect:live": "tsx src/collect.ts"
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}
