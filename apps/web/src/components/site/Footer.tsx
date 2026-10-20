@@ -67,6 +67,7 @@ export function Footer() {
             >
               粤ICP备2021128240号-5
             </a>
+            <span className="font-sans text-[10px] normal-case tracking-[0.04em] text-fg-muted">深圳市光明区迳口古村225-3</span>
           </div>
           <span>{t('footer.draft')}</span>
           <span className="hidden md:inline">REACT 19 · VITE 8 · TS 7 · TAILWIND 4 · SHADCN/UI</span>

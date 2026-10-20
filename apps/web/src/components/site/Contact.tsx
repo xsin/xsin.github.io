@@ -53,7 +53,7 @@ export function Contact({ onInstall }: { onInstall: () => void }) {
         </div>
 
         <div
-          className="relative z-[2] mt-20 grid gap-6 border-t border-line pt-5 max-[760px]:grid-cols-1 md:grid-cols-3"
+          className="relative z-[2] mt-20 grid gap-6 border-t border-line pt-5 max-[760px]:grid-cols-1 md:grid-cols-2 xl:grid-cols-4"
           data-reveal
         >
           <div className="flex flex-col gap-2">
@@ -69,6 +69,10 @@ export function Contact({ onInstall }: { onInstall: () => void }) {
                 O Muse ↗
               </a>
             </div>
+          </div>
+          <div className="flex flex-col gap-2">
+            <span className="font-mono text-[7px] uppercase tracking-[0.16em] text-faint">{t('contact.address')}</span>
+            <address className="text-xs not-italic leading-[1.6] text-fg-muted">深圳市光明区迳口古村225-3</address>
           </div>
           <div className="flex flex-col gap-2">
             <span className="font-mono text-[7px] uppercase tracking-[0.16em] text-faint">{t('contact.time')}</span>
