@@ -2,6 +2,7 @@
   "name": "xsin-studio",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@12.14.0",
   "engines": {
