@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 export function Cursor() {
   const dot = useRef<HTMLDivElement>(null);
@@ -65,12 +66,19 @@ export function Cursor() {
     };
   }, []);
 
-  return (
+  /*
+   * Portal to <body>: #root carries `isolation: isolate` for the scoped
+   * preflight, which traps the cursor in its own stacking context. Dialogs are
+   * portalled to <body> above that context, so a cursor left inside #root is
+   * painted underneath the dialog backdrop and appears to vanish.
+   */
+  return createPortal(
     <>
       <div className="cursor-dot" ref={dot} aria-hidden="true" />
       <div className="cursor-ring" ref={ring} aria-hidden="true">
         <span ref={label} />
       </div>
-    </>
+    </>,
+    document.body
   );
 }
