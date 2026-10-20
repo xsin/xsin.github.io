@@ -57,7 +57,17 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-4 font-mono text-[7px] uppercase tracking-[0.1em] text-faint">
-          <span>© 2026 XSIN STUDIO</span>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span>© 2026 XSIN STUDIO</span>
+            <a
+              className="font-sans text-[10px] normal-case tracking-[0.04em] text-fg-muted transition-colors hover:text-ink"
+              href="https://beian.miit.gov.cn/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              粤ICP备2021128240号-5
+            </a>
+          </div>
           <span>{t('footer.draft')}</span>
           <span className="hidden md:inline">REACT 19 · VITE 8 · TS 7 · TAILWIND 4 · SHADCN/UI</span>
           <button
