@@ -47,6 +47,15 @@ jobs:
       - name: Build
         run: pnpm --filter @xsin/web build
 
+      # The custom domain travels inside the artifact: Pages reads dist/CNAME.
+      # (deploy-pages has no `cname` input — that belongs to branch deploys.)
+      - name: Verify the custom domain ships in the artifact
+        run: |
+          test -s apps/web/dist/CNAME || {
+            echo "::error::apps/web/dist/CNAME is missing; Pages would drop the custom domain"
+            exit 1
+          }
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
