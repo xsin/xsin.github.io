@@ -113,6 +113,15 @@ MIT — see [`LICENSE`](LICENSE). Copyright © 2026 XSin Studio.
 The workflow in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
 builds the workspace and publishes `apps/web/dist` with GitHub Pages.
 
+Deployment is **artifact-based**, not branch-based: `actions/upload-pages-artifact`
+packages `apps/web/dist`, and `actions/deploy-pages` hands that artifact to the
+Pages service over its API. Nothing is committed and **no `gh-pages` branch is
+created** — that branch only exists when a workflow pushes built files to a
+branch (for example with `peaceiris/actions-gh-pages`), which this repository
+does not do. Because of that, the Pages source must stay on **GitHub Actions**;
+switching it to “Deploy from a branch” leaves the site on a branch that is not
+being built (this repository has only `main`) and the site returns 404.
+
 One-time repository settings: **Settings → Pages → Build and deployment → Source:
 GitHub Actions**, plus the custom domain recorded in
 [`apps/web/public/CNAME`](apps/web/public/CNAME). The CNAME file is part of the
